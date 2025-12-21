@@ -1,0 +1,69 @@
+# ======================
+# Environment
+# ======================
+.env
+.env.backup
+.env.production
+.env.local
+.env.testing
+
+# ======================
+# Laravel
+# ======================
+/vendor
+/node_modules
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+/storage/logs/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+
+# ======================
+# Testing & Cache
+# ======================
+.phpunit.result.cache
+.phpunit.cache
+/coverage
+
+# ======================
+# Frontend logs
+# ======================
+npm-debug.log
+yarn-error.log
+*.log
+
+# ======================
+# IDE / Editor
+# ======================
+.vscode/*
+.idea/
+.fleet/
+.zed/
+.nova/
+.phpactor.json
+*.iml
+
+# ======================
+# OS Files
+# ======================
+Thumbs.db
+.DS_Store
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# ======================
+# Auth / Secrets
+# ======================
+/auth.json
+
+# ======================
+# Homestead / Vagrant
+# ======================
+Homestead.yaml
+Homestead.json
+/.vagrant
