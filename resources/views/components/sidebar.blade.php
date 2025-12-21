@@ -10,7 +10,7 @@
                 <ul class="pc-navbar">
 
                     <x-sidebar.links title='Home' icon='ti ti-dashboard' route='home' />
-                    @if (Auth::user()->role?->role_name == 'supervisor')
+                    @if (Auth::user()->role_id == 1)
                         <x-sidebar.links title='Data Users' icon='ti ti-users' route='users.index' />
                     @endif
                     <x-sidebar.links title='Data Pegawai' icon='ti ti-users' route='pegawai.index' />
