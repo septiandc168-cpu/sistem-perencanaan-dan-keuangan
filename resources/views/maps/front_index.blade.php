@@ -70,12 +70,6 @@
             #map-filter .form-control-sm {
                 font-size: 0.85rem;
             }
-
-            /* Custom marker icon styling */
-            .custom-marker-div-icon {
-                background: transparent !important;
-                border: none !important;
-            }
         </style>
     @endpush
 
@@ -137,26 +131,7 @@
                     markersGroup.clearLayers();
                     list.forEach(r => {
                         if (!r.lat || !r.lng) return;
-                        
-                        // Get image path from various possible fields
-                        const imagePath = r.gambar || r.foto || r.image || r.image_path || r.photo || null;
-                        const imageUrl = imagePath ? (imagePath.startsWith('http') ? imagePath : `{{ asset('storage') }}/${imagePath}`) : null;
-                        
-                        // Create custom icon with image if available
-                        let customIcon;
-                        if (imageUrl) {
-                            customIcon = L.divIcon({
-                                html: `<div style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden; border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.3); background: #fff; display: flex; align-items: center; justify-content: center;">
-                                    <img src="${imageUrl}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\\'color:#999;font-size:20px\\'>📍</span>'">
-                                </div>`,
-                                className: 'custom-marker-div-icon',
-                                iconSize: [40, 40],
-                                iconAnchor: [20, 40],
-                                popupAnchor: [0, -40]
-                            });
-                        }
-                        
-                        const m = customIcon ? L.marker([r.lat, r.lng], { icon: customIcon }) : L.marker([r.lat, r.lng]);
+                        const m = L.marker([r.lat, r.lng]);
 
                         const formatDate = (d) => {
                             if (!d) return '-';
@@ -176,16 +151,8 @@
                         const nama = r.nama_kegiatan ?? r.judul ?? '-';
                         const jenis = r.jenis_kegiatan ?? r.kategori ?? '-';
 
-                        // Add image to popup if available
-                        const imageHtml = imageUrl ? `
-                            <div class="mb-2" style="text-align:center;">
-                                <img src="${imageUrl}" alt="${nama}" style="max-width:100%; max-height:200px; border-radius:4px; object-fit:cover;">
-                            </div>
-                        ` : '';
-
                         const popup = `
                             <div style="min-width:200px">
-                                ${imageHtml}
                                 <strong>${nama}</strong>
                                 <div><small class="text-muted">${jenis}</small></div>
                                 <table class="table table-sm mt-2 mb-1">
