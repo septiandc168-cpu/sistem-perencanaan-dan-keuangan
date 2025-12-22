@@ -3,13 +3,13 @@
 @section('content')
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="mb-0">Edit Rencana Kegiatan — {{ $report->nama_kegiatan }}</h3>
+            <h3 class="mb-0">Edit Rencana Kegiatan — {{ $rencana_kegiatan->nama_kegiatan }}</h3>
             <div>
                 <a href="{{ route('rencana_kegiatan.index') }}">Kembali</a>
             </div>
         </div>
 
-        <form id="report-form" action="{{ route('rencana_kegiatan.update', $report->id) }}" method="POST" enctype="multipart/form-data">
+        <form id="rencana-kegiatan-form" action="{{ route('rencana_kegiatan.update', $rencana_kegiatan->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             @if ($errors->any())
@@ -28,7 +28,7 @@
                     <div class="mb-3">
                         <label class="form-label">Nama Kegiatan</label>
                         <input type="text" name="nama_kegiatan" class="form-control" placeholder="Nama kegiatan"
-                            value="{{ old('nama_kegiatan', $report->nama_kegiatan) }}" required>
+                            value="{{ old('nama_kegiatan', $rencana_kegiatan->nama_kegiatan) }}" required>
                     </div>
 
                     <div class="mb-3">
@@ -36,7 +36,7 @@
                         <select name="jenis_kegiatan" class="form-select" required>
                             <option value="">Pilih jenis kegiatan</option>
                             @php
-                                $currentJenis = old('jenis_kegiatan', $report->jenis_kegiatan ?? '');
+                                $currentJenis = old('jenis_kegiatan', $rencana_kegiatan->jenis_kegiatan ?? '');
                                 $cj = strtolower(trim($currentJenis));
                                 $predefined = ['konservasi', 'usaha masyarakat', 'edukasi', 'lainnya'];
                             @endphp
@@ -53,21 +53,21 @@
 
                     <div class="mb-3">
                         <label class="form-label">Deskripsi</label>
-                        <textarea name="deskripsi" class="form-control" rows="3">{{ old('deskripsi', $report->deskripsi) }}</textarea>
+                        <textarea name="deskripsi" class="form-control" rows="3">{{ old('deskripsi', $rencana_kegiatan->deskripsi) }}</textarea>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Tujuan</label>
-                        <textarea name="tujuan" class="form-control" rows="2">{{ old('tujuan', $report->tujuan) }}</textarea>
+                        <textarea name="tujuan" class="form-control" rows="2">{{ old('tujuan', $rencana_kegiatan->tujuan) }}</textarea>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Koordinat Lokasi</label>
                         <div class="input-group">
                             <input type="text" id="location_lat" name="lat" class="form-control"
-                                placeholder="Latitude" readonly required value="{{ old('lat', $report->lat) }}">
+                                placeholder="Latitude" readonly required                                 value="{{ old('lat', $rencana_kegiatan->lat) }}">
                             <input type="text" id="location_lng" name="lng" class="form-control"
-                                placeholder="Longitude" readonly required value="{{ old('lng', $report->lng) }}">
+                                placeholder="Longitude" readonly required value="{{ old('lng', $rencana_kegiatan->lng) }}">
                             <button type="button" id="use-location" class="btn btn-outline-secondary">Gunakan Lokasi
                                 Saya</button>
                         </div>
@@ -77,19 +77,19 @@
                     <div class="mb-3">
                         <label class="form-label">Desa / Wilayah</label>
                         <input type="text" name="desa" class="form-control" placeholder="Nama desa atau wilayah"
-                            value="{{ old('desa', $report->desa) }}">
+                            value="{{ old('desa', $rencana_kegiatan->desa) }}">
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Tanggal Mulai</label>
                             <input type="date" name="tanggal_mulai" class="form-control"
-                                value="{{ old('tanggal_mulai', $report->tanggal_mulai ? \Carbon\Carbon::parse($report->tanggal_mulai)->format('Y-m-d') : null) }}">
+                                value="{{ old('tanggal_mulai', $rencana_kegiatan->tanggal_mulai ? \Carbon\Carbon::parse($rencana_kegiatan->tanggal_mulai)->format('Y-m-d') : null) }}">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Tanggal Selesai</label>
                             <input type="date" name="tanggal_selesai" class="form-control"
-                                value="{{ old('tanggal_selesai', $report->tanggal_selesai ? \Carbon\Carbon::parse($report->tanggal_selesai)->format('Y-m-d') : null) }}">
+                                value="{{ old('tanggal_selesai', $rencana_kegiatan->tanggal_selesai ? \Carbon\Carbon::parse($rencana_kegiatan->tanggal_selesai)->format('Y-m-d') : null) }}">
                         </div>
                     </div>
 
@@ -97,25 +97,25 @@
                         <label class="form-label">Penanggung Jawab</label>
                         <input type="text" name="penanggung_jawab" class="form-control"
                             placeholder="Nama Penanggung Jawab"
-                            value="{{ old('penanggung_jawab', $report->penanggung_jawab) }}">
+                            value="{{ old('penanggung_jawab', $rencana_kegiatan->penanggung_jawab) }}">
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Kelompok / Komunitas Pelaksana</label>
                         <input type="text" name="kelompok" class="form-control" placeholder="Nama kelompok"
-                            value="{{ old('kelompok', $report->kelompok) }}">
+                            value="{{ old('kelompok', $rencana_kegiatan->kelompok) }}">
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Estimasi Jumlah Peserta</label>
                         <input type="number" name="estimasi_peserta" class="form-control" min="0"
-                            value="{{ old('estimasi_peserta', $report->estimasi_peserta) }}">
+                            value="{{ old('estimasi_peserta', $rencana_kegiatan->estimasi_peserta) }}">
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Estimasi Anggaran (opsional)</label>
                         <input type="number" step="0.01" name="estimasi_anggaran" class="form-control"
-                            value="{{ old('estimasi_anggaran', $report->estimasi_anggaran) }}">
+                            value="{{ old('estimasi_anggaran', $rencana_kegiatan->estimasi_anggaran) }}">
                     </div>
 
                     <div class="mb-3">
@@ -123,7 +123,7 @@
                         <select name="status" class="form-select" required>
                             <option value="">-- Pilih Status --</option>
                             @php
-                                $currentStatus = old('status', $report->status ?? '');
+                                $currentStatus = old('status', $rencana_kegiatan->status ?? '');
                             @endphp
 
                             <option value="direncanakan" {{ $currentStatus == 'direncanakan' ? 'selected' : '' }}>
@@ -142,8 +142,8 @@
                     <div class="mb-3">
                         <label class="form-label">Unggah Foto (opsional)</label>
                         <input type="file" name="foto" class="form-control mb-1">
-                        @if ($report->foto)
-                            <div class="mt-1"><a href="{{ asset('storage/' . $report->foto) }}" target="_blank">Lihat
+                        @if ($rencana_kegiatan->foto)
+                            <div class="mt-1"><a href="{{ asset('storage/' . $rencana_kegiatan->foto) }}" target="_blank">Lihat
                                     foto saat ini</a></div>
                         @endif
                     </div>
@@ -151,8 +151,8 @@
                     <div class="mb-3">
                         <label class="form-label">Unggah Dokumen (opsional)</label>
                         <input type="file" name="dokumen" class="form-control mb-1">
-                        @if ($report->dokumen)
-                            <div class="mt-1"><a href="{{ asset('storage/' . $report->dokumen) }}"
+                        @if ($rencana_kegiatan->dokumen)
+                            <div class="mt-1"><a href="{{ asset('storage/' . $rencana_kegiatan->dokumen) }}"
                                     target="_blank">Lihat
                                     dokumen saat ini</a></div>
                         @endif
@@ -183,8 +183,8 @@
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                const initialLat = parseFloat('{{ $report->lat ?? -6.2 }}');
-                const initialLng = parseFloat('{{ $report->lng ?? 106.816666 }}');
+                const initialLat = parseFloat('{{ $rencana_kegiatan->lat ?? -6.2 }}');
+                const initialLng = parseFloat('{{ $rencana_kegiatan->lng ?? 106.816666 }}');
                 const map = L.map('map-create').setView([initialLat, initialLng], 12);
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -241,7 +241,7 @@
                     map.invalidateSize();
                 }, 250);
                 // client-side date check with optional auto-swap
-                const form = document.getElementById('report-form');
+                const form = document.getElementById('rencana-kegiatan-form');
                 form.addEventListener('submit', function(e) {
                     const startEl = document.querySelector('input[name="tanggal_mulai"]');
                     const endEl = document.querySelector('input[name="tanggal_selesai"]');

@@ -13,7 +13,7 @@ class RencanaKegiatanController extends Controller
 {
     public function index(Request $request)
     {
-        $reports = RencanaKegiatan::all();
+        $rencanaKegiatans = RencanaKegiatan::all();
         // Provide SweetAlert delete configuration so the frontend can
         // show a confirmation dialog when links with
         // `data-confirm-delete` are clicked.
@@ -32,7 +32,7 @@ class RencanaKegiatanController extends Controller
 
         session()->flash('alert.delete', json_encode($confirm, JSON_UNESCAPED_SLASHES));
 
-        return view('rencana_kegiatan.index', compact('reports'));
+        return view('rencana_kegiatan.index', compact('rencanaKegiatans'));
     }
 
     public function create()
@@ -72,10 +72,10 @@ class RencanaKegiatanController extends Controller
         $validated = $request->validate($rules, $messages);
 
         if ($request->hasFile('foto')) {
-            $validated['foto'] = $request->file('foto')->store('reports', 'public');
+            $validated['foto'] = $request->file('foto')->store('rencana_kegiatans', 'public');
         }
         if ($request->hasFile('dokumen')) {
-            $validated['dokumen'] = $request->file('dokumen')->store('reports/docs', 'public');
+            $validated['dokumen'] = $request->file('dokumen')->store('rencana_kegiatans/docs', 'public');
         }
 
         // if both dates present and end before start, swap them automatically
@@ -127,22 +127,25 @@ class RencanaKegiatanController extends Controller
      */
     public function frontIndex()
     {
-        $reports = RencanaKegiatan::whereNotNull('lat')->whereNotNull('lng')->get();
-        return view('rencana_kegiatan.front_index', compact('reports'));
+        $rencanaKegiatans = RencanaKegiatan::whereNotNull('lat')->whereNotNull('lng')->get();
+        return view('rencana_kegiatan.front_index', compact('rencanaKegiatans'));
     }
 
-    public function show(RencanaKegiatan $map)
+    public function show(String $id)
     {
-        return view('rencana_kegiatan.show', ['report' => $map]);
+        $rencana_kegiatan = RencanaKegiatan::find($id);
+        return view('rencana_kegiatan.show', compact('rencana_kegiatan'));
     }
 
-    public function edit(RencanaKegiatan $map)
+    public function edit(String $id)
     {
-        return view('rencana_kegiatan.edit', ['report' => $map]);
+        $rencana_kegiatan = RencanaKegiatan::find($id);
+        return view('rencana_kegiatan.edit', compact('rencana_kegiatan'));
     }
 
-    public function update(Request $request, RencanaKegiatan $map)
+    public function update(Request $request, String $id)
     {
+        $map = RencanaKegiatan::findOrFail($id);
         Log::info('RencanaKegiatanController@update called', ['id' => $map->id, 'input' => $request->all()]);
 
         $rules = [
@@ -180,13 +183,13 @@ class RencanaKegiatanController extends Controller
             if ($map->foto) {
                 Storage::disk('public')->delete($map->foto);
             }
-            $validated['foto'] = $request->file('foto')->store('reports', 'public');
+            $validated['foto'] = $request->file('foto')->store('rencana_kegiatans', 'public');
         }
         if ($request->hasFile('dokumen')) {
             if ($map->dokumen) {
                 Storage::disk('public')->delete($map->dokumen);
             }
-            $validated['dokumen'] = $request->file('dokumen')->store('reports/docs', 'public');
+            $validated['dokumen'] = $request->file('dokumen')->store('rencana_kegiatans/docs', 'public');
         }
 
         // if both dates present and end before start, swap them automatically
@@ -206,21 +209,21 @@ class RencanaKegiatanController extends Controller
 
         $data = [
             'judul' => $validated['nama_kegiatan'] ?? ($validated['judul'] ?? $map->judul),
-            'nama_kegiatan' => $validated['nama_kegiatan'] ?? $map->nama_kegiatan,
-            'jenis_kegiatan' => $validated['jenis_kegiatan'] ?? $map->jenis_kegiatan,
-            'kategori' => $validated['jenis_kegiatan'] ?? $map->kategori,
-            'deskripsi' => $validated['deskripsi'] ?? $map->deskripsi,
-            'tujuan' => $validated['tujuan'] ?? $map->tujuan,
-            'lat' => $validated['lat'] ?? $map->lat,
-            'lng' => $validated['lng'] ?? $map->lng,
-            'desa' => $validated['desa'] ?? $map->desa,
-            'tanggal_mulai' => $validated['tanggal_mulai'] ?? $map->tanggal_mulai,
-            'tanggal_selesai' => $validated['tanggal_selesai'] ?? $map->tanggal_selesai,
-            'penanggung_jawab' => $validated['penanggung_jawab'] ?? $map->penanggung_jawab,
-            'kelompok' => $validated['kelompok'] ?? $map->kelompok,
-            'estimasi_peserta' => $validated['estimasi_peserta'] ?? $map->estimasi_peserta,
-            'estimasi_anggaran' => $validated['estimasi_anggaran'] ?? $map->estimasi_anggaran,
-            'status' => $validated['status'] ?? $map->status,
+            'nama_kegiatan' => $validated['nama_kegiatan'],
+            'jenis_kegiatan' => $validated['jenis_kegiatan'],
+            'kategori' => $validated['jenis_kegiatan'],
+            'deskripsi' => $validated['deskripsi'] ?? null,
+            'tujuan' => $validated['tujuan'] ?? null,
+            'lat' => $validated['lat'],
+            'lng' => $validated['lng'],
+            'desa' => $validated['desa'] ?? null,
+            'tanggal_mulai' => $validated['tanggal_mulai'] ?? null,
+            'tanggal_selesai' => $validated['tanggal_selesai'] ?? null,
+            'penanggung_jawab' => $validated['penanggung_jawab'] ?? null,
+            'kelompok' => $validated['kelompok'] ?? null,
+            'estimasi_peserta' => $validated['estimasi_peserta'] ?? null,
+            'estimasi_anggaran' => $validated['estimasi_anggaran'] ?? null,
+            'status' => $validated['status'],
         ];
 
         if (isset($validated['foto'])) $data['foto'] = $validated['foto'];
@@ -232,17 +235,19 @@ class RencanaKegiatanController extends Controller
         return redirect()->route('rencana_kegiatan.index');
     }
 
-    public function destroy(RencanaKegiatan $map)
+    public function destroy(String $id)
     {
+        $rencana_kegiatan = RencanaKegiatan::find($id);
+        
         // remove files
-        if ($map->foto) {
-            Storage::disk('public')->delete($map->foto);
+        if ($rencana_kegiatan->foto) {
+            Storage::disk('public')->delete($rencana_kegiatan->foto);
         }
-        if ($map->dokumen) {
-            Storage::disk('public')->delete($map->dokumen);
+        if ($rencana_kegiatan->dokumen) {
+            Storage::disk('public')->delete($rencana_kegiatan->dokumen);
         }
 
-        $map->delete();
+        $rencana_kegiatan->delete();
         Alert::success('Berhasil', 'Rencana kegiatan berhasil dihapus.');
         return redirect()->route('rencana_kegiatan.index');
     }

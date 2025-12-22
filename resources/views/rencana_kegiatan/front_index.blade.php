@@ -77,9 +77,9 @@
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                const reports = @json($reports ?? []);
+                const rencanaKegiatans = @json($rencanaKegiatans ?? []);
                 const showUrlBase = "{{ url('rencana_kegiatan') }}";
-                const defaultCenter = reports.length ? [reports[0].lat, reports[0].lng] : [-6.200000, 106.816666];
+                const defaultCenter = rencanaKegiatans.length ? [rencanaKegiatans[0].lat, rencanaKegiatans[0].lng] : [-6.200000, 106.816666];
 
                 const street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
@@ -93,7 +93,7 @@
 
                 const map = L.map('front-map', {
                     layers: [street]
-                }).setView(defaultCenter, reports.length ? 6 : 5);
+                }).setView(defaultCenter, rencanaKegiatans.length ? 6 : 5);
 
                 const baseMaps = {
                     'Street': street,
@@ -175,12 +175,12 @@
                 }
 
                 // build filter options
-                const kategoriSet = [...new Set(reports.map(r => r.kategori).filter(Boolean))];
-                const yearsSet = [...new Set(reports.map(r => r.created_at ? new Date(r.created_at).getFullYear() :
+                const kategoriSet = [...new Set(rencanaKegiatans.map(r => r.kategori).filter(Boolean))];
+                const yearsSet = [...new Set(rencanaKegiatans.map(r => r.created_at ? new Date(r.created_at).getFullYear() :
                     null).filter(Boolean))].sort((a, b) => b - a);
-                const periodeSet = [...new Set(reports.map(r => r.periode).filter(Boolean))];
-                const desaSet = [...new Set(reports.map(r => r.desa).filter(Boolean))];
-                const zonaSet = [...new Set(reports.map(r => r.zona).filter(Boolean))];
+                const periodeSet = [...new Set(rencanaKegiatans.map(r => r.periode).filter(Boolean))];
+                const desaSet = [...new Set(rencanaKegiatans.map(r => r.desa).filter(Boolean))];
+                const zonaSet = [...new Set(rencanaKegiatans.map(r => r.zona).filter(Boolean))];
 
                 const kContainer = document.getElementById('filter-kategori');
                 kategoriSet.forEach(k => {
@@ -249,7 +249,7 @@
                     const selectedZona = Array.from(document.querySelectorAll(
                         '#filter-zona input[type=checkbox]:checked')).map(i => i.value);
 
-                    const filtered = reports.filter(r => {
+                    const filtered = rencanaKegiatans.filter(r => {
                         if (selectedKategori.length && !(r.kategori && selectedKategori.includes(r.kategori)))
                             return false;
                         if (selectedYears.length) {
@@ -281,7 +281,7 @@
                 }
 
                 // initial load
-                addMarkers(reports);
+                addMarkers(rencanaKegiatans);
                 if (markersGroup.getLayers().length) map.fitBounds(markersGroup.getBounds().pad(0.1));
 
                 document.getElementById('apply-filters').addEventListener('click', applyFilters);
@@ -290,7 +290,7 @@
                     document.querySelectorAll(
                         '#filter-kategori input, #filter-year input, #filter-periode input, #filter-desa input, #filter-zona input'
                     ).forEach(i => i.checked = false);
-                    addMarkers(reports);
+                    addMarkers(rencanaKegiatans);
                     if (markersGroup.getLayers().length) map.fitBounds(markersGroup.getBounds().pad(0.1));
                 });
 

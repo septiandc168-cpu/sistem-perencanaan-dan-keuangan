@@ -9,7 +9,7 @@
             </div>
         </div>
 
-        <form id="report-form" action="{{ route('rencana_kegiatan.store') }}" method="POST" enctype="multipart/form-data">
+        <form id="rencana-kegiatan-form" action="{{ route('rencana_kegiatan.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="row">
                 <div class="col-md-5">
@@ -181,7 +181,7 @@
             });
             // client-side date check with optional auto-swap for create form
             document.addEventListener('DOMContentLoaded', function() {
-                const form = document.getElementById('report-form');
+                const form = document.getElementById('rencana-kegiatan-form');
                 if (!form) return;
                 form.addEventListener('submit', function(e) {
                     const startEl = document.querySelector('input[name="tanggal_mulai"]');

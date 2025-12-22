@@ -25,25 +25,25 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($reports as $i => $report)
+                        @forelse ($rencanaKegiatans as $i => $rencanaKegiatan)
                             <tr>
                                 <td>{{ $i + 1 }}</td>
-                                <td>{{ $report->nama_kegiatan ?? ($report->judul ?? '-') }}</td>
-                                <td>{{ $report->desa ?? '-' }}</td>
+                                <td>{{ $rencanaKegiatan->nama_kegiatan ?? ($rencanaKegiatan->judul ?? '-') }}</td>
+                                <td>{{ $rencanaKegiatan->desa ?? '-' }}</td>
                                 <td>
-                                    @if ($report->tanggal_mulai)
-                                        {{ \Carbon\Carbon::parse($report->tanggal_mulai)->format('d/m/Y') }}
-                                        @if ($report->tanggal_selesai)
-                                            - {{ \Carbon\Carbon::parse($report->tanggal_selesai)->format('d/m/Y') }}
+                                    @if ($rencanaKegiatan->tanggal_mulai)
+                                        {{ \Carbon\Carbon::parse($rencanaKegiatan->tanggal_mulai)->format('d/m/Y') }}
+                                        @if ($rencanaKegiatan->tanggal_selesai)
+                                            - {{ \Carbon\Carbon::parse($rencanaKegiatan->tanggal_selesai)->format('d/m/Y') }}
                                         @endif
                                     @else
                                         -
                                     @endif
                                 </td>
-                                <td>{{ $report->jenis_kegiatan ?? ($report->kategori ?? '-') }}</td>
+                                <td>{{ $rencanaKegiatan->jenis_kegiatan ?? ($rencanaKegiatan->kategori ?? '-') }}</td>
                                 <td>
                                     <span
-                                        class="badge bg-{{ $report->status == 'direncanakan' ? 'secondary' : ($report->status == 'sedang berlangsung' ? 'warning text-dark' : ($report->status == 'selesai' ? 'success' : 'danger')) }}">{{ ucfirst($report->status) }}</span>
+                                        class="badge bg-{{ $rencanaKegiatan->status == 'direncanakan' ? 'secondary' : ($rencanaKegiatan->status == 'sedang berlangsung' ? 'warning text-dark' : ($rencanaKegiatan->status == 'selesai' ? 'success' : 'danger')) }}">{{ ucfirst($rencanaKegiatan->status) }}</span>
                                 </td>
                                 <td>
                                     <div class="dropdown">
@@ -51,13 +51,13 @@
                                             data-bs-toggle="dropdown" aria-expanded="false">Aksi</a>
                                         <ul class="dropdown-menu">
                                             <li><a class="dropdown-item"
-                                                    href="{{ route('rencana_kegiatan.show', $report->id) }}">Detail</a></li>
+                                                    href="{{ route('rencana_kegiatan.show', $rencanaKegiatan) }}">Detail</a></li>
                                             <li><a class="dropdown-item"
-                                                    href="{{ route('rencana_kegiatan.edit', $report->id) }}">Edit</a>
+                                                    href="{{ route('rencana_kegiatan.edit', $rencanaKegiatan) }}">Edit</a>
                                             </li>
                                             <li>
                                                 <a class="dropdown-item text-danger"
-                                                    href="{{ route('rencana_kegiatan.destroy', $report->id) }}"
+                                                    href="{{ route('rencana_kegiatan.destroy', $rencanaKegiatan) }}"
                                                     data-confirm-delete="true">Hapus Data</a>
                                             </li>
                                             <li><a class="dropdown-item" href="#">Buat Laporan</a></li>

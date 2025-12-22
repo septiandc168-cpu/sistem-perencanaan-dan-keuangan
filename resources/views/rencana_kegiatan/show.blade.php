@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="mb-0">Detail Rencana Kegiatan — {{ $report->nama_kegiatan }}</h3>
+            <h3 class="mb-0">Detail Rencana Kegiatan — {{ $rencana_kegiatan->nama_kegiatan }}</h3>
             <div>
                 <a href="{{ route('rencana_kegiatan.index') }}">Kembali</a>
             </div>
@@ -14,60 +14,60 @@
                 <table class="table">
                     <tr>
                         <th>Nama Kegiatan</th>
-                        <td>{{ $report->nama_kegiatan }}</td>
+                        <td>{{ $rencana_kegiatan->nama_kegiatan }}</td>
                     </tr>
                     <tr>
                         <th>Jenis Kegiatan</th>
-                        <td>{{ $report->jenis_kegiatan }}</td>
+                        <td>{{ $rencana_kegiatan->jenis_kegiatan }}</td>
                     </tr>
                     <tr>
                         <th>Desa</th>
-                        <td>{{ $report->desa }}</td>
+                        <td>{{ $rencana_kegiatan->desa }}</td>
                     </tr>
                     <tr>
                         <th>Tanggal</th>
                         <td>
-                            @if ($report->tanggal_mulai)
-                                {{ \Carbon\Carbon::parse($report->tanggal_mulai)->format('d/m/Y') }}
-                                @if ($report->tanggal_selesai)
-                                    - {{ \Carbon\Carbon::parse($report->tanggal_selesai)->format('d/m/Y') }}
+                            @if ($rencana_kegiatan->tanggal_mulai)
+                                {{ \Carbon\Carbon::parse($rencana_kegiatan->tanggal_mulai)->format('d/m/Y') }}
+                                @if ($rencana_kegiatan->tanggal_selesai)
+                                    - {{ \Carbon\Carbon::parse($rencana_kegiatan->tanggal_selesai)->format('d/m/Y') }}
                                 @endif
                             @endif
                         </td>
                     </tr>
                     <tr>
                         <th>Penanggung Jawab</th>
-                        <td>{{ $report->penanggung_jawab }}</td>
+                        <td>{{ $rencana_kegiatan->penanggung_jawab }}</td>
                     </tr>
                     <tr>
                         <th>Kelompok</th>
-                        <td>{{ $report->kelompok }}</td>
+                        <td>{{ $rencana_kegiatan->kelompok }}</td>
                     </tr>
                     <tr>
                         <th>Estimasi Peserta</th>
-                        <td>{{ $report->estimasi_peserta }}</td>
+                        <td>{{ $rencana_kegiatan->estimasi_peserta }}</td>
                     </tr>
                     <tr>
                         <th>Estimasi Anggaran</th>
-                        <td>{{ $report->estimasi_anggaran }}</td>
+                        <td>{{ $rencana_kegiatan->estimasi_anggaran }}</td>
                     </tr>
                     <tr>
                         <th>Status</th>
-                        <td>{{ ucfirst($report->status) }}</td>
+                        <td>{{ ucfirst($rencana_kegiatan->status) }}</td>
                     </tr>
                 </table>
 
-                @if ($report->foto)
+                @if ($rencana_kegiatan->foto)
                     <div class="mb-3">
                         <h5>Foto</h5>
-                        <img src="{{ asset('storage/' . $report->foto) }}" alt="foto" class="img-fluid">
+                        <img src="{{ asset('storage/' . $rencana_kegiatan->foto) }}" alt="foto" class="img-fluid">
                     </div>
                 @endif
 
-                @if ($report->dokumen)
+                @if ($rencana_kegiatan->dokumen)
                     <div class="mb-3">
                         <h5>Dokumen</h5>
-                        <a href="{{ asset('storage/' . $report->dokumen) }}" target="_blank">Download dokumen</a>
+                        <a href="{{ asset('storage/' . $rencana_kegiatan->dokumen) }}" target="_blank">Download dokumen</a>
                     </div>
                 @endif
             </div>
@@ -85,8 +85,8 @@
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                const lat = parseFloat('{{ $report->lat ?? -6.2 }}');
-                const lng = parseFloat('{{ $report->lng ?? 106.816666 }}');
+                const lat = parseFloat('{{ $rencana_kegiatan->lat ?? -6.2 }}');
+                const lng = parseFloat('{{ $rencana_kegiatan->lng ?? 106.816666 }}');
                 const map = L.map('map-show').setView([lat, lng], 13);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
