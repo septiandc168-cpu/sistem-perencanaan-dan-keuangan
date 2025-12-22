@@ -66,13 +66,13 @@ Route::resource('pegawai', PegawaiController::class);
 Route::resource('users', UserController::class)->middleware('isSupervisor');
 Route::post('user-update-role', [UserController::class, 'updateRole'])->name('users.update-role');
 Route::resource('bagian', BagianController::class);
-Route::get('/maps', [App\Http\Controllers\MapController::class, 'index'])->name('maps.index');
-Route::get('/maps/create', [App\Http\Controllers\MapController::class, 'create'])->name('maps.create');
-Route::post('/maps', [App\Http\Controllers\MapController::class, 'store'])->name('maps.store');
-Route::resource('maps', App\Http\Controllers\MapController::class)->except(['index', 'create', 'store']);
+Route::get('/rencana_kegiatan', [App\Http\Controllers\RencanaKegiatanController::class, 'index'])->name('rencana_kegiatan.index');
+Route::get('/rencana_kegiatan/create', [App\Http\Controllers\RencanaKegiatanController::class, 'create'])->name('rencana_kegiatan.create');
+Route::post('/rencana_kegiatan', [App\Http\Controllers\RencanaKegiatanController::class, 'store'])->name('rencana_kegiatan.store');
+Route::resource('rencana_kegiatan', App\Http\Controllers\RencanaKegiatanController::class)->except(['index', 'create', 'store']);
 
 // Public/front map (full-screen map with markers)
-Route::get('/frontmaps', [App\Http\Controllers\MapController::class, 'frontIndex'])->name('maps.front');
+Route::get('/front_rencana_kegiatan', [App\Http\Controllers\RencanaKegiatanController::class, 'frontIndex'])->name('rencana_kegiatan.front');
 
 
 // Route::get('/truncate', function () {

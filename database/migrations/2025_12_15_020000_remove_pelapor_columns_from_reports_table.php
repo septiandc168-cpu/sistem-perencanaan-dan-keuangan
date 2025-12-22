@@ -8,11 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('reports', function (Blueprint $table) {
-            if (Schema::hasColumn('reports', 'nama_pelapor')) {
+        Schema::table('rencana_kegiatans', function (Blueprint $table) {
+            if (Schema::hasColumn('rencana_kegiatans', 'nama_pelapor')) {
                 $table->dropColumn('nama_pelapor');
             }
-            if (Schema::hasColumn('reports', 'no_hp')) {
+            if (Schema::hasColumn('rencana_kegiatans', 'no_hp')) {
                 $table->dropColumn('no_hp');
             }
         });
@@ -20,7 +20,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('reports', function (Blueprint $table) {
+        Schema::table('rencana_kegiatans', function (Blueprint $table) {
             $table->string('nama_pelapor')->nullable()->after('id');
             $table->string('no_hp')->nullable()->after('nama_pelapor');
         });

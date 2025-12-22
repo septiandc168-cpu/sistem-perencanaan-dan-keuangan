@@ -5,11 +5,11 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h3 class="mb-0">Edit Rencana Kegiatan — {{ $report->nama_kegiatan }}</h3>
             <div>
-                <a href="{{ route('maps.index') }}">Kembali</a>
+                <a href="{{ route('rencana_kegiatan.index') }}">Kembali</a>
             </div>
         </div>
 
-        <form id="report-form" action="{{ route('maps.update', $report->id) }}" method="POST" enctype="multipart/form-data">
+        <form id="report-form" action="{{ route('rencana_kegiatan.update', $report->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             @if ($errors->any())

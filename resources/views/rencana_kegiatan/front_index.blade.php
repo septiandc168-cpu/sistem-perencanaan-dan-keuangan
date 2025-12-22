@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container-fluid p-0" style="position:relative;">
-        <h3 class="mb-3 ps-3">Peta Publik — Lokasi Kegiatan</h3>
+        <h3 class="mb-3 ps-3">Lokasi Kegiatan</h3>
         <div id="front-map" style="width:100%; height:75vh; border:1px solid #ddd; border-radius:4px;"></div>
 
         <div id="map-filter"
@@ -78,7 +78,7 @@
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const reports = @json($reports ?? []);
-                const showUrlBase = "{{ url('maps') }}";
+                const showUrlBase = "{{ url('rencana_kegiatan') }}";
                 const defaultCenter = reports.length ? [reports[0].lat, reports[0].lng] : [-6.200000, 106.816666];
 
                 const street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

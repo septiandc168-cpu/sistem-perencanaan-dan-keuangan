@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Report;
+use App\Models\RencanaKegiatan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
 
-class MapController extends Controller
+class RencanaKegiatanController extends Controller
 {
     public function index(Request $request)
     {
-        $reports = Report::all();
+        $reports = RencanaKegiatan::all();
         // Provide SweetAlert delete configuration so the frontend can
         // show a confirmation dialog when links with
         // `data-confirm-delete` are clicked.
@@ -32,12 +32,12 @@ class MapController extends Controller
 
         session()->flash('alert.delete', json_encode($confirm, JSON_UNESCAPED_SLASHES));
 
-        return view('maps.index', compact('reports'));
+        return view('rencana_kegiatan.index', compact('reports'));
     }
 
     public function create()
     {
-        return view('maps.create');
+        return view('rencana_kegiatan.create');
     }
 
     public function store(Request $request)
@@ -94,7 +94,7 @@ class MapController extends Controller
             }
         }
 
-        // map incoming fields to Report structure
+        // map incoming fields to RencanaKegiatan structure
         $data = [
             'judul' => $validated['nama_kegiatan'] ?? ($validated['judul'] ?? null),
             'nama_kegiatan' => $validated['nama_kegiatan'] ?? null,
@@ -116,10 +116,10 @@ class MapController extends Controller
             'status' => 'direncanakan',
         ];
 
-        Report::create($data);
+        RencanaKegiatan::create($data);
 
         Alert::success('Berhasil', 'Rencana kegiatan berhasil disimpan!');
-        return redirect()->route('maps.index');
+        return redirect()->route('rencana_kegiatan.index');
     }
 
     /**
@@ -127,23 +127,23 @@ class MapController extends Controller
      */
     public function frontIndex()
     {
-        $reports = Report::whereNotNull('lat')->whereNotNull('lng')->get();
-        return view('maps.front_index', compact('reports'));
+        $reports = RencanaKegiatan::whereNotNull('lat')->whereNotNull('lng')->get();
+        return view('rencana_kegiatan.front_index', compact('reports'));
     }
 
-    public function show(Report $map)
+    public function show(RencanaKegiatan $map)
     {
-        return view('maps.show', ['report' => $map]);
+        return view('rencana_kegiatan.show', ['report' => $map]);
     }
 
-    public function edit(Report $map)
+    public function edit(RencanaKegiatan $map)
     {
-        return view('maps.edit', ['report' => $map]);
+        return view('rencana_kegiatan.edit', ['report' => $map]);
     }
 
-    public function update(Request $request, Report $map)
+    public function update(Request $request, RencanaKegiatan $map)
     {
-        Log::info('MapController@update called', ['id' => $map->id, 'input' => $request->all()]);
+        Log::info('RencanaKegiatanController@update called', ['id' => $map->id, 'input' => $request->all()]);
 
         $rules = [
             'nama_kegiatan' => 'required|string',
@@ -229,10 +229,10 @@ class MapController extends Controller
         $map->update($data);
 
         Alert::success('Berhasil', 'Rencana kegiatan berhasil diperbarui!');
-        return redirect()->route('maps.index');
+        return redirect()->route('rencana_kegiatan.index');
     }
 
-    public function destroy(Report $map)
+    public function destroy(RencanaKegiatan $map)
     {
         // remove files
         if ($map->foto) {
@@ -244,6 +244,7 @@ class MapController extends Controller
 
         $map->delete();
         Alert::success('Berhasil', 'Rencana kegiatan berhasil dihapus.');
-        return redirect()->route('maps.index');
+        return redirect()->route('rencana_kegiatan.index');
     }
 }
+

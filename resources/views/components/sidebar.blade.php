@@ -15,7 +15,7 @@
                     @endif
                     <x-sidebar.links title='Data Pegawai' icon='ti ti-users' route='pegawai.index' />
                     <x-sidebar.links title='Data Bagian' icon='ti ti-users' route='bagian.index' />
-                    <x-sidebar.links title='Rencana Kegiatan' icon='ti ti-map' route='maps.index' />
+                    <x-sidebar.links title='Rencana Kegiatan' icon='ti ti-map' route='rencana_kegiatan.index' />
 
                 </ul>
             </div>

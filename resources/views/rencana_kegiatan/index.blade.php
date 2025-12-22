@@ -6,7 +6,7 @@
             <div class="card-header d-flex justify-content-between align-item-center">
                 <h4 class="card_title">Daftar Rencana Kegiatan</h4>
                 <div>
-                    <a href="{{ route('maps.create') }}" class="btn btn-primary">
+                    <a href="{{ route('rencana_kegiatan.create') }}" class="btn btn-primary">
                         Buat Rencana Kegiatan
                     </a>
                 </div>
@@ -51,13 +51,13 @@
                                             data-bs-toggle="dropdown" aria-expanded="false">Aksi</a>
                                         <ul class="dropdown-menu">
                                             <li><a class="dropdown-item"
-                                                    href="{{ route('maps.show', $report->id) }}">Detail</a></li>
+                                                    href="{{ route('rencana_kegiatan.show', $report->id) }}">Detail</a></li>
                                             <li><a class="dropdown-item"
-                                                    href="{{ route('maps.edit', $report->id) }}">Edit</a>
+                                                    href="{{ route('rencana_kegiatan.edit', $report->id) }}">Edit</a>
                                             </li>
                                             <li>
                                                 <a class="dropdown-item text-danger"
-                                                    href="{{ route('maps.destroy', $report->id) }}"
+                                                    href="{{ route('rencana_kegiatan.destroy', $report->id) }}"
                                                     data-confirm-delete="true">Hapus Data</a>
                                             </li>
                                             <li><a class="dropdown-item" href="#">Buat Laporan</a></li>
