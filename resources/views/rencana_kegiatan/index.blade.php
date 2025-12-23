@@ -34,7 +34,8 @@
                                     @if ($rencanaKegiatan->tanggal_mulai)
                                         {{ \Carbon\Carbon::parse($rencanaKegiatan->tanggal_mulai)->format('d/m/Y') }}
                                         @if ($rencanaKegiatan->tanggal_selesai)
-                                            - {{ \Carbon\Carbon::parse($rencanaKegiatan->tanggal_selesai)->format('d/m/Y') }}
+                                            -
+                                            {{ \Carbon\Carbon::parse($rencanaKegiatan->tanggal_selesai)->format('d/m/Y') }}
                                         @endif
                                     @else
                                         -
@@ -43,7 +44,7 @@
                                 <td>{{ $rencanaKegiatan->jenis_kegiatan ?? ($rencanaKegiatan->kategori ?? '-') }}</td>
                                 <td>
                                     <span
-                                        class="badge bg-{{ $rencanaKegiatan->status == 'direncanakan' ? 'secondary' : ($rencanaKegiatan->status == 'sedang berlangsung' ? 'warning text-dark' : ($rencanaKegiatan->status == 'selesai' ? 'success' : 'danger')) }}">{{ ucfirst($rencanaKegiatan->status) }}</span>
+                                        class="badge bg-{{ $rencanaKegiatan->status == 'diajukan' ? 'secondary' : ($rencanaKegiatan->status == 'disetujui dan sedang berlangsung' ? 'warning text-dark' : ($rencanaKegiatan->status == 'selesai' ? 'success' : 'danger')) }}">{{ ucfirst($rencanaKegiatan->status) }}</span>
                                 </td>
                                 <td>
                                     <div class="dropdown">
@@ -51,7 +52,8 @@
                                             data-bs-toggle="dropdown" aria-expanded="false">Aksi</a>
                                         <ul class="dropdown-menu">
                                             <li><a class="dropdown-item"
-                                                    href="{{ route('rencana_kegiatan.show', $rencanaKegiatan) }}">Detail</a></li>
+                                                    href="{{ route('rencana_kegiatan.show', $rencanaKegiatan) }}">Detail</a>
+                                            </li>
                                             <li><a class="dropdown-item"
                                                     href="{{ route('rencana_kegiatan.edit', $rencanaKegiatan) }}">Edit</a>
                                             </li>

@@ -113,7 +113,7 @@ class RencanaKegiatanController extends Controller
             'estimasi_anggaran' => $validated['estimasi_anggaran'] ?? null,
             'foto' => $validated['foto'] ?? null,
             'dokumen' => $validated['dokumen'] ?? null,
-            'status' => 'direncanakan',
+            'status' => 'diajukan',
         ];
 
         RencanaKegiatan::create($data);
@@ -238,7 +238,7 @@ class RencanaKegiatanController extends Controller
     public function destroy(String $id)
     {
         $rencana_kegiatan = RencanaKegiatan::find($id);
-        
+
         // remove files
         if ($rencana_kegiatan->foto) {
             Storage::disk('public')->delete($rencana_kegiatan->foto);
@@ -252,4 +252,3 @@ class RencanaKegiatanController extends Controller
         return redirect()->route('rencana_kegiatan.index');
     }
 }
-

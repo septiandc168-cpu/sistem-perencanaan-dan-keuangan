@@ -22,6 +22,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
         // call maps seeder
-        $this->call(\Database\Seeders\MapsSeeder::class);
+        $this->call(\Database\Seeders\RencanaKegiatanSeeder::class);
     }
 }

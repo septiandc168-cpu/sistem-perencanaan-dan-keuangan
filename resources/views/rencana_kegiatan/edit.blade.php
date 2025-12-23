@@ -9,7 +9,8 @@
             </div>
         </div>
 
-        <form id="rencana-kegiatan-form" action="{{ route('rencana_kegiatan.update', $rencana_kegiatan->id) }}" method="POST" enctype="multipart/form-data">
+        <form id="rencana-kegiatan-form" action="{{ route('rencana_kegiatan.update', $rencana_kegiatan->id) }}" method="POST"
+            enctype="multipart/form-data">
             @csrf
             @method('PUT')
             @if ($errors->any())
@@ -65,7 +66,7 @@
                         <label class="form-label">Koordinat Lokasi</label>
                         <div class="input-group">
                             <input type="text" id="location_lat" name="lat" class="form-control"
-                                placeholder="Latitude" readonly required                                 value="{{ old('lat', $rencana_kegiatan->lat) }}">
+                                placeholder="Latitude" readonly required value="{{ old('lat', $rencana_kegiatan->lat) }}">
                             <input type="text" id="location_lng" name="lng" class="form-control"
                                 placeholder="Longitude" readonly required value="{{ old('lng', $rencana_kegiatan->lng) }}">
                             <button type="button" id="use-location" class="btn btn-outline-secondary">Gunakan Lokasi
@@ -126,12 +127,12 @@
                                 $currentStatus = old('status', $rencana_kegiatan->status ?? '');
                             @endphp
 
-                            <option value="direncanakan" {{ $currentStatus == 'direncanakan' ? 'selected' : '' }}>
-                                Direncanakan
+                            <option value="diajukan" {{ $currentStatus == 'diajukan' ? 'selected' : '' }}>
+                                Diajukan
                             </option>
-                            <option value="sedang berlangsung"
-                                {{ $currentStatus == 'sedang berlangsung' ? 'selected' : '' }}>
-                                Sedang Berlangsung
+                            <option value="disetujui dan sedang berlangsung"
+                                {{ $currentStatus == 'disetujui dan sedang berlangsung' ? 'selected' : '' }}>
+                                Disetujui dan Sedang Berlangsung
                             </option>
                             <option value="selesai" {{ $currentStatus == 'selesai' ? 'selected' : '' }}>
                                 Selesai
@@ -143,7 +144,8 @@
                         <label class="form-label">Unggah Foto (opsional)</label>
                         <input type="file" name="foto" class="form-control mb-1">
                         @if ($rencana_kegiatan->foto)
-                            <div class="mt-1"><a href="{{ asset('storage/' . $rencana_kegiatan->foto) }}" target="_blank">Lihat
+                            <div class="mt-1"><a href="{{ asset('storage/' . $rencana_kegiatan->foto) }}"
+                                    target="_blank">Lihat
                                     foto saat ini</a></div>
                         @endif
                     </div>

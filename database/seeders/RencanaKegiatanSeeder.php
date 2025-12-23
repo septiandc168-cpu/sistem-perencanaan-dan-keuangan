@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\Report;
+use App\Models\RencanaKegiatan;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Faker\Factory as Faker;
 
-class MapsSeeder extends Seeder
+class RencanaKegiatanSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -18,7 +18,7 @@ class MapsSeeder extends Seeder
 
         // create 10 sample rencana kegiatan
         for ($i = 0; $i < 10; $i++) {
-            Report::create([
+            RencanaKegiatan::create([
                 'nama_kegiatan' => $faker->sentence(3),
                 'jenis_kegiatan' => $faker->randomElement(['Sosialisasi', 'Pembersihan', 'Penanaman', 'Pelatihan']),
                 'deskripsi' => $faker->paragraph(),
@@ -32,7 +32,7 @@ class MapsSeeder extends Seeder
                 'estimasi_anggaran' => $faker->numberBetween(1000000, 50000000),
                 'lat' => $faker->latitude(-8.9, -6.5),
                 'lng' => $faker->longitude(107.0, 110.0),
-                'status' => $faker->randomElement(['direncanakan', 'sedang berlangsung', 'selesai']),
+                'status' => $faker->randomElement(['diajukan', 'disetujui dan sedang berlangsung', 'selesai']),
             ]);
         }
     }
