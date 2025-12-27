@@ -1,4 +1,4 @@
-@extends('layouts.mantis')
+@extends('layouts.adminlte')
 
 @section('content')
     <div class="">

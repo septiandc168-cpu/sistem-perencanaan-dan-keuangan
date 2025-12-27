@@ -1,187 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- [Head] start -->
 
 <head>
-    <title>Login Perencanaan Kegiatan</title>
-    <!-- [Meta] -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description"
-        content="Mantis is made using Bootstrap 5 design framework. Download the free admin template & use it for your project.">
-    <meta name="keywords"
-        content="Mantis, Dashboard UI Kit, Bootstrap 5, Admin Template, Admin Dashboard, CRM, CMS, Bootstrap Admin Template">
-    <meta name="author" content="CodedThemes">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Halaman Login</title>
 
-    <!-- [Favicon] icon -->
-    <link rel="icon" href="{{ asset('template/dist') }}/assets/images/favicon.svg" type="image/x-icon">
-    <!-- [Google Font] Family -->
+    <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap"
-        id="main-font-link">
-    <!-- [Tabler Icons] https://tablericons.com -->
-    <link rel="stylesheet" href="{{ asset('template/dist') }}/assets/fonts/tabler-icons.min.css">
-    <!-- [Feather Icons] https://feathericons.com -->
-    <link rel="stylesheet" href="{{ asset('template/dist') }}/assets/fonts/feather.css">
-    <!-- [Font Awesome Icons] https://fontawesome.com/icons -->
-    <link rel="stylesheet" href="{{ asset('template/dist') }}/assets/fonts/fontawesome.css">
-    <!-- [Material Icons] https://fonts.google.com/icons -->
-    <link rel="stylesheet" href="{{ asset('template/dist') }}/assets/fonts/material.css">
-    <!-- [Template CSS Files] -->
-    <link rel="stylesheet" href="{{ asset('template/dist') }}/assets/css/style.css" id="main-style-link">
-    <link rel="stylesheet" href="{{ asset('template/dist') }}/assets/css/style-preset.css">
-    @vite(['resources/js/app,js'])
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/fontawesome-free/css/all.min.css">
+    <!-- icheck bootstrap -->
+    <link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{{ asset('adminlte') }}/dist/css/adminlte.min.css">
 
     <style>
-        .auth-main {
-            background-image: url("{{ asset('images/background_login.jpg') }}");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
+    body.login-page {
+        background: url('{{ asset('adminlte/dist/img/background_login2.jpg') }}') no-repeat center center fixed;
+        background-size: cover;
+    }
 
-        /* overlay Mantis */
-        .auth-wrapper::before,
-        .auth-main::before {
-            display: none !important;
-        }
-
-        .auth-wrapper,
-        .auth-wrapper.v3 {
-            background-color: transparent !important;
-        }
-
-        /* HEADER TRANSPARAN (BIANG MASALAH) */
-        .auth-header {
-            background: transparent !important;
-            box-shadow: none !important;
-        }
-
-        /* Pastikan tidak ada pseudo overlay */
-        .auth-header::before,
-        .auth-header::after {
-            display: none !important;
-        }
-    </style>
-
-
-
+    /* Supaya card lebih jelas */
+    .login-box {
+        background: rgba(255, 255, 255, 0.85);
+        padding: 0;
+        border-radius: 10px;
+    }
+</style>
 
 </head>
-<!-- [Head] end -->
-<!-- [Body] Start -->
 
-<body>
-    <!-- [ Pre-loader ] start -->
-    <div class="loader-bg">
-        <div class="loader-track">
-            <div class="loader-fill"></div>
-        </div>
-    </div>
-    <!-- [ Pre-loader ] End -->
-
-    <div class="auth-main"
-        style="background-image: url('{{ asset('template/dist/assets/images/background_login2.jpg') }}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
-        <div class="auth-wrapper v3">
-            <div class="auth-form">
-                <div class="auth-header">
-                    {{-- <a href="#"><img src="{{ asset('template/dist') }}/assets/images/logo-dark.svg"
-                            alt="img"></a> --}}
-                </div>
-                <div class="card my-5">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-end mb-4">
-                            <h3 class="mb-0"><b>Perencanaan Kegiatan</b></h3>
-                        </div>
-                        <form action="{{ route('login') }}" method="POST">
-                            @csrf
-                            <div class="form-group mb-3">
-                                <label class="form-label">Email</label>
-                                <input type="email" name="email"
-                                    class="form-control @error('email')
-                is-invalid
-              @enderror"
-                                    placeholder="Email" autocomplete="off">
-                                @error('email')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </div>
-                            <div class="form-group mb-3">
-                                <label class="form-label">Password</label>
-                                <input type="password" name="password"
-                                    class="form-control @error('password')
-                  is-invalid
-                @enderror"
-                                    placeholder="Password">
-                                @error('password')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </div>
-
-                            <div class="d-grid mt-4">
-                                <button type="submit" class="btn btn-primary">Login</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <div class="auth-footer row">
-                    <!-- <div class=""> -->
-                    <div class="col my-1">
-                        {{-- <p class="m-0">Copyright © <a href="#">Codedthemes</a></p> --}}
-                    </div>
-                    <div class="col my-1">
-                        {{-- <p class="m-0">Distributed by <a href="https://themewagon.com">ThemeWagon</a></p> --}}
-                    </div>
-
-                    <!-- </div> -->
-                </div>
+<body class="hold-transition login-page">
+    <div class="login-box">
+        <!-- /.login-logo -->
+        <div class="card card-outline card-primary">
+            <div class="card-header text-center">
+                <a href="{{ asset('adminlte') }}/index2.html" class="h1"><b>Perencanaan Kegiatan</b></a>
             </div>
+            <div class="card-body">
+                {{-- <p class="login-box-msg">Sign in to start your session</p> --}}
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                <form action="{{ route('login') }}" method="post">
+                    @csrf
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+
+                        <div class="input-group">
+                            <input type="email" name="email" class="form-control" placeholder="Masukkan Email"
+                                autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+
+                        <div class="input-group">
+                            <input type="password" id="password" class="form-control" placeholder="Masukkan Password">
+                            <div class="input-group-append">
+                                <span class="input-group-text" id="togglePassword" style="cursor:pointer">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid text-center mt-2 mb-3">
+                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.card-body -->
         </div>
+        <!-- /.card -->
     </div>
-    <!-- [ Main Content ] end -->
-    <!-- Required Js -->
-    <script src="{{ asset('template/dist') }}/assets/js/plugins/popper.min.js"></script>
-    <script src="{{ asset('template/dist') }}/assets/js/plugins/simplebar.min.js"></script>
-    <script src="{{ asset('template/dist') }}/assets/js/plugins/bootstrap.min.js"></script>
-    <script src="{{ asset('template/dist') }}/assets/js/fonts/custom-font.js"></script>
-    <script src="{{ asset('template/dist') }}/assets/js/pcoded.js"></script>
-    <script src="{{ asset('template/dist') }}/assets/js/plugins/feather.min.js"></script>
-
-
-
-
+    <!-- /.login-box -->
 
     <script>
-        layout_change('light');
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const password = document.getElementById('password');
+            const icon = this.querySelector('i');
+
+            if (password.type === 'password') {
+                password.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                password.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
     </script>
-
-
-
-
-    <script>
-        change_box_container('false');
-    </script>
-
-
-
-    <script>
-        layout_rtl_change('false');
-    </script>
-
-
-    <script>
-        preset_change("preset-1");
-    </script>
-
-
-    <script>
-        font_change("Public-Sans");
-    </script>
-
-
-
+    <!-- jQuery -->
+    <script src="{{ asset('adminlte') }}/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="{{ asset('adminlte') }}/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="{{ asset('adminlte') }}/dist/js/adminlte.min.js"></script>
 </body>
-<!-- [Body] end -->
 
 </html>
