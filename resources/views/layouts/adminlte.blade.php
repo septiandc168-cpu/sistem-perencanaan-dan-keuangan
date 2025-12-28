@@ -17,6 +17,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/fontawesome-free/css/all.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('adminlte') }}/dist/css/adminlte.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet"
+        href="{{ asset('adminlte') }}/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
     @vite('resources/js/app.js')
 </head>
 
@@ -33,7 +38,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             class="fas fa-bars"></i></a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="/home" class="nav-link">Home</a>
+                    <a href="/home" class="nav-link">Dashboard</a>
                 </li>
             </ul>
 
@@ -41,7 +46,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <ul class="navbar-nav ml-auto">
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
-                    <button type="submit" class="btn btn-danger btn-sm">Logout</button>
+                    <button type="submit" class="btn text-danger btn-sm">Logout</button>
                 </form>
             </ul>
         </nav>
@@ -61,7 +66,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         </div><!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="/home">Home</a></li>
+                                <li class="breadcrumb-item"><a href="/home">Dashboard</a></li>
                                 <li class="breadcrumb-item active">@yield('content_title')</li>
                             </ol>
                         </div><!-- /.col -->
@@ -101,6 +106,38 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="{{ asset('adminlte') }}/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
     <script src="{{ asset('adminlte') }}/dist/js/adminlte.min.js"></script>
+    <!-- DataTables  & Plugins -->
+    <script src="{{ asset('adminlte') }}/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="{{ asset('adminlte') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="{{ asset('adminlte') }}/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="{{ asset('adminlte') }}/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="{{ asset('adminlte') }}/plugins/jszip/jszip.min.js"></script>
+    <script src="{{ asset('adminlte') }}/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="{{ asset('adminlte') }}/plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+    <script>
+        $(function() {
+            $("#table1").DataTable({
+                "responsive": true,
+                "lengthChange": true,
+                "autoWidth": false,
+                "buttons": ["print"]
+            }).buttons().container().appendTo('#table1_wrapper .col-md-6:eq(0)');
+            $('#table2').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": true,
+                "responsive": true,
+            });
+        });
+    </script>
 </body>
 
 </html>

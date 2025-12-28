@@ -17,18 +17,18 @@
     <link rel="stylesheet" href="{{ asset('adminlte') }}/dist/css/adminlte.min.css">
 
     <style>
-    body.login-page {
-        background: url('{{ asset('adminlte/dist/img/background_login2.jpg') }}') no-repeat center center fixed;
-        background-size: cover;
-    }
+        body.login-page {
+            background: url('{{ asset('adminlte/dist/img/background_login2.jpg') }}') no-repeat center center fixed;
+            background-size: cover;
+        }
 
-    /* Supaya card lebih jelas */
-    .login-box {
-        background: rgba(255, 255, 255, 0.85);
-        padding: 0;
-        border-radius: 10px;
-    }
-</style>
+        /* Supaya card lebih jelas */
+        .login-box {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 0;
+            border-radius: 10px;
+        }
+    </style>
 
 </head>
 
@@ -64,7 +64,8 @@
                         <label class="form-label">Password</label>
 
                         <div class="input-group">
-                            <input type="password" id="password" class="form-control" placeholder="Masukkan Password">
+                            <input type="password" name="password" id="password" class="form-control"
+                                placeholder="Masukkan Password">
                             <div class="input-group-append">
                                 <span class="input-group-text" id="togglePassword" style="cursor:pointer">
                                     <i class="fas fa-eye"></i>

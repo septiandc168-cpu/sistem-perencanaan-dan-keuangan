@@ -1,4 +1,4 @@
-@extends('layouts.mantis')
+@extends('layouts.adminlte')
 
 @section('content')
     <div class="container">
@@ -9,7 +9,8 @@
             </div>
         </div>
 
-        <form id="rencana-kegiatan-form" action="{{ route('rencana_kegiatan.store') }}" method="POST" enctype="multipart/form-data">
+        <form id="rencana-kegiatan-form" action="{{ route('rencana_kegiatan.store') }}" method="POST"
+            enctype="multipart/form-data">
             @csrf
             <div class="row">
                 <div class="col-md-5">
