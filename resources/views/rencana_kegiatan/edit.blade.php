@@ -1,9 +1,11 @@
-@extends('layouts.mantis')
+@extends('layouts.adminlte')
+
+@section('content_title', 'Edit Rencana Kegiatan')
 
 @section('content')
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="mb-0">Edit Rencana Kegiatan — {{ $rencana_kegiatan->nama_kegiatan }}</h3>
+            <h3 class="mb-0">{{ $rencana_kegiatan->nama_kegiatan }}</h3>
             <div>
                 <a href="{{ route('rencana_kegiatan.index') }}">Kembali</a>
             </div>

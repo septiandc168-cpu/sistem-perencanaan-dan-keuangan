@@ -23,6 +23,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         href="{{ asset('adminlte') }}/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
     @vite('resources/js/app.js')
+    @stack('styles')
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -44,10 +45,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn text-danger btn-sm">Logout</button>
-                </form>
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                        {{ ucwords(auth()->user()->name) }}
+                    </button>
+                    <div class="dropdown-menu">
+                        <form action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn text-danger btn-sm">Logout</button>
+                        </form>
+                    </div>
+                </div>
             </ul>
         </nav>
         <!-- /.navbar -->
@@ -138,6 +146,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             });
         });
     </script>
+    @stack('scripts')
 </body>
 
 </html>

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
+use RealRashid\SweetAlert\Toaster;
 
 class RencanaKegiatanController extends Controller
 {
@@ -118,7 +119,8 @@ class RencanaKegiatanController extends Controller
 
         RencanaKegiatan::create($data);
 
-        Alert::success('Berhasil', 'Rencana kegiatan berhasil disimpan!');
+        // Alert::success('Berhasil', 'Rencana kegiatan berhasil disimpan!');
+        toast('Rencana kegiatan berhasil disimpan!', 'success');
         return redirect()->route('rencana_kegiatan.index');
     }
 
@@ -231,7 +233,8 @@ class RencanaKegiatanController extends Controller
 
         $map->update($data);
 
-        Alert::success('Berhasil', 'Rencana kegiatan berhasil diperbarui!');
+        // Alert::success('Berhasil', 'Rencana kegiatan berhasil diperbarui!');
+        toast('Rencana kegiatan berhasil diperbarui!', 'success');
         return redirect()->route('rencana_kegiatan.index');
     }
 
@@ -248,7 +251,8 @@ class RencanaKegiatanController extends Controller
         }
 
         $rencana_kegiatan->delete();
-        Alert::success('Berhasil', 'Rencana kegiatan berhasil dihapus.');
+        // Alert::success('Berhasil', 'Rencana kegiatan berhasil dihapus.');
+        toast('Rencana kegiatan berhasil dihapus.', 'success');
         return redirect()->route('rencana_kegiatan.index');
     }
 }

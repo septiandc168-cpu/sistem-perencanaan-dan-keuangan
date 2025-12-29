@@ -4,16 +4,16 @@
 
 @section('content')
     <div class="card">
-        <div class="card-header">
-            <h4 class="card-title">Daftar Rencana Kegiatan</h4>
-        </div>
-        <div class="card-body">
-            <div class="d-flex justify-content-end mb-2">
+        <div class="p-2 d-flex justify-content-between border">
+            <h4 class="h5">Daftar Rencana Kegiatan</h4>
+            <div>
                 <a href="{{ route('rencana_kegiatan.create') }}" class="btn btn-primary">
                     Buat Rencana Kegiatan
                 </a>
             </div>
-            <table class="table table-sm table-responsive" id="table2">
+        </div>
+        <div class="card-body">
+            <table class="table table-sm" id="table2">
                 <thead>
                     <tr>
                         <th>No</th>
@@ -49,21 +49,20 @@
                             </td>
                             <td>
                                 <div class="dropdown">
-                                    <a class="btn dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                                        aria-expanded="false">Aksi</a>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item"
-                                                href="{{ route('rencana_kegiatan.show', $rencanaKegiatan) }}">Detail</a>
-                                        </li>
-                                        <li><a class="dropdown-item"
-                                                href="{{ route('rencana_kegiatan.edit', $rencanaKegiatan) }}">Edit</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item text-danger"
-                                                href="{{ route('rencana_kegiatan.destroy', $rencanaKegiatan) }}"
-                                                data-confirm-delete="true">Hapus Data</a>
-                                        </li>
-                                    </ul>
+                                    <a class="btn dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+                                        aria-expanded="false">
+                                        Aksi
+                                    </a>
+
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item"
+                                            href="{{ route('rencana_kegiatan.show', $rencanaKegiatan) }}">Detail</a>
+                                        <a class="dropdown-item"
+                                            href="{{ route('rencana_kegiatan.edit', $rencanaKegiatan) }}">Edit</a>
+                                        <a class="dropdown-item text-danger"
+                                            href="{{ route('rencana_kegiatan.destroy', $rencanaKegiatan) }}"
+                                            data-confirm-delete="true">Hapus Data</a>
+                                    </div>
                                 </div>
                             </td>
                         </tr>

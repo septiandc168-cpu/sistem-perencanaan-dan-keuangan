@@ -15,7 +15,7 @@
                             </div>
                         @endif
                         Welcome to Aplikasi Perencanaan Kegiatan, <strong
-                            class="capitalize">{{ auth()->user()->name }}</strong>
+                            class="capitalize">{{ ucwords(auth()->user()->name) }}</strong>
                     </div>
                 </div>
             </div>
