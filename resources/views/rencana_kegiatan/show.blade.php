@@ -50,8 +50,8 @@
                         <td>{{ $rencana_kegiatan->estimasi_peserta }}</td>
                     </tr>
                     <tr>
-                        <th>Estimasi Anggaran</th>
-                        <td>{{ $rencana_kegiatan->estimasi_anggaran }}</td>
+                        <th>Rincian Kebutuhan</th>
+                        <td>{!! $rencana_kegiatan->rincian_kebutuhan !!}</td>
                     </tr>
                     <tr>
                         <th>Status</th>

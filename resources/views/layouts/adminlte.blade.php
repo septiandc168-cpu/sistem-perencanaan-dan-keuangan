@@ -22,8 +22,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet"
         href="{{ asset('adminlte') }}/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <!-- summernote -->
+    <link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/summernote/summernote-bs4.min.css">
     @vite('resources/js/app.js')
     @stack('styles')
+    @stack('css')
+    @stack('js')
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -127,6 +131,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
     <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.print.min.js"></script>
     <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+    <!-- Summernote -->
+    <script src="{{ asset('adminlte') }}/plugins/summernote/summernote-bs4.min.js"></script>
+    <script>
+        $(function() {
+            // Summernote
+            $('#summernote').summernote()
+
+            // CodeMirror
+            CodeMirror.fromTextArea(document.getElementById("codeMirrorDemo"), {
+                mode: "htmlmixed",
+                theme: "monokai"
+            });
+        })
+    </script>
     <script>
         $(function() {
             $("#table1").DataTable({

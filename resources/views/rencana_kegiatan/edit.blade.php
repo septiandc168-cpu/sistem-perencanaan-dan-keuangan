@@ -116,9 +116,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Estimasi Anggaran (opsional)</label>
-                        <input type="number" step="0.01" name="estimasi_anggaran" class="form-control"
-                            value="{{ old('estimasi_anggaran', $rencana_kegiatan->estimasi_anggaran) }}">
+                        <label class="form-label">Rincian Kebutuhan</label>
+                        <textarea type="text" name="rincian_kebutuhan" class="form-control" id="summernote">{!! old('rincian_kebutuhan', $rencana_kegiatan->rincian_kebutuhan ?? '') !!}</textarea>
                     </div>
 
                     <div class="mb-3">

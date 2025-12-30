@@ -56,7 +56,7 @@ class RencanaKegiatanController extends Controller
             'penanggung_jawab' => 'nullable|string',
             'kelompok' => 'nullable|string',
             'estimasi_peserta' => 'nullable|integer',
-            'estimasi_anggaran' => 'nullable|numeric',
+            'rincian_kebutuhan' => 'nullable|string',
             'foto' => 'nullable|image|max:4096',
             'dokumen' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
         ];
@@ -111,7 +111,7 @@ class RencanaKegiatanController extends Controller
             'penanggung_jawab' => $validated['penanggung_jawab'] ?? null,
             'kelompok' => $validated['kelompok'] ?? null,
             'estimasi_peserta' => $validated['estimasi_peserta'] ?? null,
-            'estimasi_anggaran' => $validated['estimasi_anggaran'] ?? null,
+            'rincian_kebutuhan' => $validated['rincian_kebutuhan'] ?? null,
             'foto' => $validated['foto'] ?? null,
             'dokumen' => $validated['dokumen'] ?? null,
             'status' => 'diajukan',
@@ -163,7 +163,7 @@ class RencanaKegiatanController extends Controller
             'penanggung_jawab' => 'nullable|string',
             'kelompok' => 'nullable|string',
             'estimasi_peserta' => 'nullable|integer',
-            'estimasi_anggaran' => 'nullable|numeric',
+            'rincian_kebutuhan' => 'nullable|string',
             'status' => 'required|string',
             'foto' => 'nullable|image|max:4096',
             'dokumen' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
@@ -224,7 +224,7 @@ class RencanaKegiatanController extends Controller
             'penanggung_jawab' => $validated['penanggung_jawab'] ?? null,
             'kelompok' => $validated['kelompok'] ?? null,
             'estimasi_peserta' => $validated['estimasi_peserta'] ?? null,
-            'estimasi_anggaran' => $validated['estimasi_anggaran'] ?? null,
+            'rincian_kebutuhan' => $validated['rincian_kebutuhan'] ?? null,
             'status' => $validated['status'],
         ];
 

@@ -91,8 +91,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Estimasi Anggaran (opsional)</label>
-                        <input type="number" step="0.01" name="estimasi_anggaran" class="form-control">
+                        <label class="form-label">Rincian Kebutuhan</label>
+                        <textarea type="text" name="rincian_kebutuhan" class="form-control" id="summernote"></textarea>
                     </div>
 
                     <div class="mb-3">
@@ -117,6 +117,23 @@
         </form>
     </div>
 
+    @push('js')
+        <script src="{{ asset('adminlte') }}/plugins/summernote/summernote-bs4.min.js"></script>
+
+        <script>
+            $(function() {
+                // Summernote
+                $('#summernote').summernote()
+
+                // CodeMirror
+                CodeMirror.fromTextArea(document.getElementById("codeMirrorDemo"), {
+                    mode: "htmlmixed",
+                    theme: "monokai"
+                });
+            })
+        </script>
+    @endpush
+
     @push('styles')
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
         <style>
@@ -124,6 +141,10 @@
                 background: #f7fafc;
             }
         </style>
+    @endpush
+
+    @push('css')
+        <link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/summernote/summernote-bs4.min.css">
     @endpush
 
     @push('scripts')
