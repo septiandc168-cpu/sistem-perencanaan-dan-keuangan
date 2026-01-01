@@ -7,7 +7,8 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h3 class="mb-0">{{ $rencana_kegiatan->nama_kegiatan }}</h3>
             <div>
-                <a href="{{ route('rencana_kegiatan.index') }}">Kembali</a>
+                <a href="{{ route('rencana_kegiatan.index') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left mx-1"></i>Kembali</a>
             </div>
         </div>
 

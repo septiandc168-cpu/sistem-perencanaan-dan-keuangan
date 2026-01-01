@@ -6,8 +6,10 @@
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h3 class="mb-0">Pilih Lokasi pada Peta</h3>
-            <div>
-                <a href="{{ route('rencana_kegiatan.index') }}">Kembali</a>
+            <div class="text-end">
+                <a href="{{ route('rencana_kegiatan.index') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left mx-1"></i> Kembali
+                </a>
             </div>
         </div>
 
@@ -106,7 +108,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <button type="submit" class="btn btn-primary">Simpan Rencana Kegiatan</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save mx-1"></i> Simpan Rencana Kegiatan</button>
                     </div>
                 </div>
 

@@ -8,6 +8,7 @@
             <h4 class="h5">Daftar Rencana Kegiatan</h4>
             <div>
                 <a href="{{ route('rencana_kegiatan.create') }}" class="btn btn-primary">
+                    <i class="fas fa-plus mx-1"></i>
                     Buat Rencana Kegiatan
                 </a>
             </div>
@@ -17,18 +18,35 @@
                 <thead>
                     <tr>
                         <th>No</th>
+                        <th>Opsi</th>
                         <th>Nama Kegiatan</th>
                         <th>Desa</th>
                         <th>Tanggal Rencana</th>
                         <th>Jenis Kegiatan</th>
                         <th>Status</th>
-                        <th>Opsi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse ($rencanaKegiatans as $i => $rencanaKegiatan)
                         <tr>
                             <td>{{ $i + 1 }}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <a class="btn btn-primary mx-1" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;"
+                                            href="{{ route('rencana_kegiatan.show', $rencanaKegiatan) }}">
+                                            <i class="fas fa-info"></i>
+                                        </a>
+                                        <a class="btn btn-warning mx-1" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;"
+                                            href="{{ route('rencana_kegiatan.edit', $rencanaKegiatan) }}">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    <a class="btn btn-danger mx-1" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;"
+                                            href="{{ route('rencana_kegiatan.destroy', $rencanaKegiatan) }}"
+                                            data-confirm-delete="true">
+                                            <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
                             <td>{{ $rencanaKegiatan->nama_kegiatan ?? ($rencanaKegiatan->judul ?? '-') }}</td>
                             <td>{{ $rencanaKegiatan->desa ?? '-' }}</td>
                             <td>
@@ -53,7 +71,7 @@
         {{ ucfirst($rencanaKegiatan->status) }}
     </span>
                             </td>
-                            <td>
+                            <!-- <td>
                                 <div class="dropdown">
                                     <a class="btn dropdown-toggle" href="#" role="button" data-toggle="dropdown"
                                         aria-expanded="false">
@@ -70,7 +88,7 @@
                                             data-confirm-delete="true">Hapus Data</a>
                                     </div>
                                 </div>
-                            </td>
+                            </td> -->
                         </tr>
                     @empty
                         <tr>
