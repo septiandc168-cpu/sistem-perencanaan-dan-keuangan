@@ -46,7 +46,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Koordinat Lokasi</label>
+                        <label class="form-label">Koordinat Lokasi <small class="text-muted">(Klik pada peta untuk memilih lokasi)</small></label>
                         <div class="input-group">
                             <input type="text" id="location_lat" name="lat" class="form-control"
                                 placeholder="Latitude" readonly required>
@@ -55,7 +55,7 @@
                             <button type="button" id="use-location" class="btn btn-outline-secondary">Gunakan Lokasi
                                 Saya</button>
                         </div>
-                        <div class="form-text">Klik peta untuk memilih lokasi atau gunakan tombol geolocation.</div>
+                        <small class="form-text text-muted">Pilih lokasi dengan mengklik pada peta atau gunakan lokasi Anda saat ini.</small>
                     </div>
 
                     <div class="mb-3">
@@ -207,7 +207,21 @@
             document.addEventListener('DOMContentLoaded', function() {
                 const form = document.getElementById('rencana-kegiatan-form');
                 if (!form) return;
+                
                 form.addEventListener('submit', function(e) {
+                    // Check if coordinates are filled
+                    const latEl = document.querySelector('input[name="lat"]');
+                    const lngEl = document.querySelector('input[name="lng"]');
+                    const lat = latEl ? latEl.value : '';
+                    const lng = lngEl ? lngEl.value : '';
+                    
+                    if (!lat || !lng) {
+                        e.preventDefault();
+                        alert('Silakan pilih lokasi pada peta terlebih dahulu dengan mengklik pada peta atau menggunakan tombol "Gunakan Lokasi Saya".');
+                        return false;
+                    }
+                    
+                    // Date validation
                     const startEl = document.querySelector('input[name="tanggal_mulai"]');
                     const endEl = document.querySelector('input[name="tanggal_selesai"]');
                     const s = startEl ? startEl.value : '';

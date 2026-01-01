@@ -11,7 +11,7 @@
             </div>
         </div>
 
-        <form id="rencana-kegiatan-form" action="{{ route('rencana_kegiatan.update', $rencana_kegiatan->id) }}" method="POST"
+        <form id="rencana-kegiatan-form" action="{{ route('rencana_kegiatan.update', $rencana_kegiatan) }}" method="POST"
             enctype="multipart/form-data">
             @csrf
             @method('PUT')

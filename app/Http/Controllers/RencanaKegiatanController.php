@@ -133,22 +133,19 @@ class RencanaKegiatanController extends Controller
         return view('rencana_kegiatan.front_index', compact('rencanaKegiatans'));
     }
 
-    public function show(String $id)
+    public function show(RencanaKegiatan $rencana_kegiatan)
     {
-        $rencana_kegiatan = RencanaKegiatan::find($id);
         return view('rencana_kegiatan.show', compact('rencana_kegiatan'));
     }
 
-    public function edit(String $id)
+    public function edit(RencanaKegiatan $rencana_kegiatan)
     {
-        $rencana_kegiatan = RencanaKegiatan::find($id);
         return view('rencana_kegiatan.edit', compact('rencana_kegiatan'));
     }
 
-    public function update(Request $request, String $id)
+    public function update(Request $request, RencanaKegiatan $rencana_kegiatan)
     {
-        $map = RencanaKegiatan::findOrFail($id);
-        Log::info('RencanaKegiatanController@update called', ['id' => $map->id, 'input' => $request->all()]);
+        Log::info('RencanaKegiatanController@update called', ['id' => $rencana_kegiatan->id, 'input' => $request->all()]);
 
         $rules = [
             'nama_kegiatan' => 'required|string',
@@ -182,14 +179,14 @@ class RencanaKegiatanController extends Controller
 
         if ($request->hasFile('foto')) {
             // remove old photo
-            if ($map->foto) {
-                Storage::disk('public')->delete($map->foto);
+            if ($rencana_kegiatan->foto) {
+                Storage::disk('public')->delete($rencana_kegiatan->foto);
             }
             $validated['foto'] = $request->file('foto')->store('rencana_kegiatans', 'public');
         }
         if ($request->hasFile('dokumen')) {
-            if ($map->dokumen) {
-                Storage::disk('public')->delete($map->dokumen);
+            if ($rencana_kegiatan->dokumen) {
+                Storage::disk('public')->delete($rencana_kegiatan->dokumen);
             }
             $validated['dokumen'] = $request->file('dokumen')->store('rencana_kegiatans/docs', 'public');
         }
@@ -210,7 +207,7 @@ class RencanaKegiatanController extends Controller
         }
 
         $data = [
-            'judul' => $validated['nama_kegiatan'] ?? ($validated['judul'] ?? $map->judul),
+            'judul' => $validated['nama_kegiatan'] ?? ($validated['judul'] ?? $rencana_kegiatan->judul),
             'nama_kegiatan' => $validated['nama_kegiatan'],
             'jenis_kegiatan' => $validated['jenis_kegiatan'],
             'kategori' => $validated['jenis_kegiatan'],
@@ -231,17 +228,15 @@ class RencanaKegiatanController extends Controller
         if (isset($validated['foto'])) $data['foto'] = $validated['foto'];
         if (isset($validated['dokumen'])) $data['dokumen'] = $validated['dokumen'];
 
-        $map->update($data);
+        $rencana_kegiatan->update($data);
 
         // Alert::success('Berhasil', 'Rencana kegiatan berhasil diperbarui!');
         toast('Rencana kegiatan berhasil diperbarui!', 'success');
         return redirect()->route('rencana_kegiatan.index');
     }
 
-    public function destroy(String $id)
+    public function destroy(RencanaKegiatan $rencana_kegiatan)
     {
-        $rencana_kegiatan = RencanaKegiatan::find($id);
-
         // remove files
         if ($rencana_kegiatan->foto) {
             Storage::disk('public')->delete($rencana_kegiatan->foto);
