@@ -44,8 +44,14 @@
                             </td>
                             <td>{{ $rencanaKegiatan->jenis_kegiatan ?? ($rencanaKegiatan->kategori ?? '-') }}</td>
                             <td>
-                                <span
-                                    class="badge bg-{{ $rencanaKegiatan->status == 'diajukan' ? 'secondary' : ($rencanaKegiatan->status == 'disetujui dan sedang berlangsung' ? 'warning text-dark' : ($rencanaKegiatan->status == 'selesai' ? 'success' : 'danger')) }}">{{ ucfirst($rencanaKegiatan->status) }}</span>
+                                <span class="badge bg-{{
+        $rencanaKegiatan->status == 'diajukan' ? 'secondary' :
+        ($rencanaKegiatan->status == 'disetujui dan akan dilaksanakan' ? 'warning text-dark' :
+        ($rencanaKegiatan->status == 'selesai' ? 'success' :
+        ($rencanaKegiatan->status == 'ditolak' ? 'danger' : 'secondary')))
+    }}">
+        {{ ucfirst($rencanaKegiatan->status) }}
+    </span>
                             </td>
                             <td>
                                 <div class="dropdown">

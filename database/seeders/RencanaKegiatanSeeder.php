@@ -29,10 +29,24 @@ class RencanaKegiatanSeeder extends Seeder
                 'penanggung_jawab' => $faker->name(),
                 'kelompok' => $faker->randomElement(['Masyarakat', 'Pelajar', 'Pemerintah Desa']),
                 'estimasi_peserta' => $faker->numberBetween(10, 200),
-                'estimasi_anggaran' => $faker->numberBetween(1000000, 50000000),
+                'rincian_kebutuhan' =>
+"• Konsumsi kegiatan (" . $faker->numberBetween(40, 80) . " paket) = Rp" .
+number_format($faker->numberBetween(800000, 2000000), 0, ',', '.') . "<br>" .
+
+"• ATK (kertas, pulpen, map) = Rp" .
+number_format($faker->numberBetween(300000, 600000), 0, ',', '.') . "<br>" .
+
+"• Spanduk kegiatan = Rp" .
+number_format($faker->numberBetween(150000, 300000), 0, ',', '.') . "<br>" .
+
+"• Sewa perlengkapan = Rp" .
+number_format($faker->numberBetween(700000, 1500000), 0, ',', '.') . "<br><br>" .
+
+"<strong>Total perkiraan anggaran:</strong> Rp" .
+number_format($faker->numberBetween(2000000, 4000000), 0, ',', '.'),
                 'lat' => $faker->latitude(-8.9, -6.5),
                 'lng' => $faker->longitude(107.0, 110.0),
-                'status' => $faker->randomElement(['diajukan', 'disetujui dan sedang berlangsung', 'selesai']),
+                'status' => $faker->randomElement(['diajukan', 'disetujui dan akan dilaksanakan', 'ditolak', 'selesai']),
             ]);
         }
     }

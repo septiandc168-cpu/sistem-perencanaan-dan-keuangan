@@ -131,9 +131,12 @@
                             <option value="diajukan" {{ $currentStatus == 'diajukan' ? 'selected' : '' }}>
                                 Diajukan
                             </option>
-                            <option value="disetujui dan sedang berlangsung"
-                                {{ $currentStatus == 'disetujui dan sedang berlangsung' ? 'selected' : '' }}>
-                                Disetujui dan Sedang Berlangsung
+                            <option value="disetujui dan akan dilaksanakan"
+                                {{ $currentStatus == 'disetujui dan akan dilaksanakan' ? 'selected' : '' }}>
+                                Disetujui dan Akan Dilaksanakan
+                            </option>
+                            <option value="ditolak" {{ $currentStatus == 'ditolak' ? 'selected' : '' }}>
+                                Ditolak
                             </option>
                             <option value="selesai" {{ $currentStatus == 'selesai' ? 'selected' : '' }}>
                                 Selesai
