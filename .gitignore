@@ -67,3 +67,10 @@ $RECYCLE.BIN/
 Homestead.yaml
 Homestead.json
 /.vagrant
+
+# File testing & debugging
+test_*.php
+debug_*.php
+final_*.php
+force_*.php
+fix_*.php
