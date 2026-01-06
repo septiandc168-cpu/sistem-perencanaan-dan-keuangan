@@ -17,22 +17,42 @@
     <link rel="stylesheet" href="{{ asset('adminlte') }}/dist/css/adminlte.min.css">
 
     <style>
-        body.login-page {
-            background: url('{{ asset('adminlte/dist/img/background_login2.jpg') }}') no-repeat center center fixed;
-            background-size: cover;
-        }
+    body.login-page {
+        background: url('{{ asset('adminlte/dist/img/background_login2.jpg') }}') no-repeat center center fixed;
+        background-size: cover;
+    }
 
-        /* Supaya card lebih jelas */
-        .login-box {
-            background: rgba(255, 255, 255, 0.85);
-            padding: 0;
-            border-radius: 10px;
+    /* Container pengganti flex AdminLTE */
+    .login-wrapper {
+        width: 100%;
+        height: 100vh;
+
+        display: flex;
+        align-items: center;
+        justify-content: flex-start; /* KE KIRI */
+        padding-left: 80px;
+    }
+
+    /* Card login */
+    .login-box {
+        margin: 0;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 10px;
+    }
+
+    /* Mobile tetap center */
+    @media (max-width: 768px) {
+        .login-wrapper {
+            justify-content: center;
+            padding-left: 0;
         }
-    </style>
+    }
+</style>
 
 </head>
 
 <body class="hold-transition login-page">
+    <div class="login-wrapper">
     <div class="login-box">
         <!-- /.login-logo -->
         <div class="card card-outline card-primary">
@@ -83,6 +103,7 @@
         <!-- /.card -->
     </div>
     <!-- /.login-box -->
+    </div>
 
     <script>
         document.getElementById('togglePassword').addEventListener('click', function() {
