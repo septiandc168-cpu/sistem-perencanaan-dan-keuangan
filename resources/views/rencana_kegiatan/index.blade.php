@@ -32,18 +32,21 @@
                             <td>{{ $i + 1 }}</td>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <a class="btn btn-primary mx-1" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;"
-                                            href="{{ route('rencana_kegiatan.show', $rencanaKegiatan) }}">
-                                            <i class="fas fa-info"></i>
-                                        </a>
-                                        <a class="btn btn-warning mx-1" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;"
-                                            href="{{ route('rencana_kegiatan.edit', $rencanaKegiatan) }}">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                    <a class="btn btn-danger mx-1" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;"
-                                            href="{{ route('rencana_kegiatan.destroy', $rencanaKegiatan) }}"
-                                            data-confirm-delete="true">
-                                            <i class="fas fa-trash"></i>
+                                    <a class="btn btn-primary mx-1"
+                                        style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;"
+                                        href="{{ route('rencana_kegiatan.show', $rencanaKegiatan) }}">
+                                        <i class="fas fa-info"></i>
+                                    </a>
+                                    <a class="btn btn-warning mx-1"
+                                        style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;"
+                                        href="{{ route('rencana_kegiatan.edit', $rencanaKegiatan) }}">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a class="btn btn-danger mx-1"
+                                        style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;"
+                                        href="{{ route('rencana_kegiatan.destroy', $rencanaKegiatan) }}"
+                                        data-confirm-delete="true">
+                                        <i class="fas fa-trash"></i>
                                     </a>
                                 </div>
                             </td>
@@ -62,33 +65,37 @@
                             </td>
                             <td>{{ $rencanaKegiatan->jenis_kegiatan ?? ($rencanaKegiatan->kategori ?? '-') }}</td>
                             <td>
-                                <span class="badge bg-{{
-        $rencanaKegiatan->status == 'diajukan' ? 'secondary' :
-        ($rencanaKegiatan->status == 'disetujui dan akan dilaksanakan' ? 'warning text-dark' :
-        ($rencanaKegiatan->status == 'selesai' ? 'success' :
-        ($rencanaKegiatan->status == 'ditolak' ? 'danger' : 'secondary')))
-    }}">
-        {{ ucfirst($rencanaKegiatan->status) }}
-    </span>
+                                <span
+                                    class="badge bg-{{ $rencanaKegiatan->status == 'diajukan'
+                                        ? 'secondary'
+                                        : ($rencanaKegiatan->status == 'disetujui dan akan dilaksanakan'
+                                            ? 'warning text-dark'
+                                            : ($rencanaKegiatan->status == 'selesai'
+                                                ? 'success'
+                                                : ($rencanaKegiatan->status == 'ditolak'
+                                                    ? 'danger'
+                                                    : 'secondary'))) }}">
+                                    {{ ucfirst($rencanaKegiatan->status) }}
+                                </span>
                             </td>
                             <!-- <td>
-                                <div class="dropdown">
-                                    <a class="btn dropdown-toggle" href="#" role="button" data-toggle="dropdown"
-                                        aria-expanded="false">
-                                        Aksi
-                                    </a>
+                                    <div class="dropdown">
+                                        <a class="btn dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+                                            aria-expanded="false">
+                                            Aksi
+                                        </a>
 
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item"
-                                            href="{{ route('rencana_kegiatan.show', $rencanaKegiatan) }}">Detail</a>
-                                        <a class="dropdown-item"
-                                            href="{{ route('rencana_kegiatan.edit', $rencanaKegiatan) }}">Edit</a>
-                                        <a class="dropdown-item text-danger"
-                                            href="{{ route('rencana_kegiatan.destroy', $rencanaKegiatan) }}"
-                                            data-confirm-delete="true">Hapus Data</a>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item"
+                                                href="{{ route('rencana_kegiatan.show', $rencanaKegiatan) }}">Detail</a>
+                                            <a class="dropdown-item"
+                                                href="{{ route('rencana_kegiatan.edit', $rencanaKegiatan) }}">Edit</a>
+                                            <a class="dropdown-item text-danger"
+                                                href="{{ route('rencana_kegiatan.destroy', $rencanaKegiatan) }}"
+                                                data-confirm-delete="true">Hapus Data</a>
+                                        </div>
                                     </div>
-                                </div>
-                            </td> -->
+                                </td> -->
                         </tr>
                     @empty
                         <tr>

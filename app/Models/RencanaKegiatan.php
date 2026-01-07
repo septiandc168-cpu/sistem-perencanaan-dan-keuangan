@@ -20,6 +20,10 @@ class RencanaKegiatan extends Model
 
     protected $keyType = 'string';
 
+    protected $casts = [
+        'foto' => 'array',
+    ];
+
     public function getRouteKeyName()
     {
         return 'uuid';

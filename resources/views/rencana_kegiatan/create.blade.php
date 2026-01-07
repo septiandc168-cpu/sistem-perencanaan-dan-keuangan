@@ -48,7 +48,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Koordinat Lokasi <small class="text-muted">(Klik pada peta untuk memilih lokasi)</small></label>
+                        <label class="form-label">Koordinat Lokasi <small class="text-muted">(Klik pada peta untuk memilih
+                                lokasi)</small></label>
                         <div class="input-group">
                             <input type="text" id="location_lat" name="lat" class="form-control"
                                 placeholder="Latitude" readonly required>
@@ -57,7 +58,8 @@
                             <button type="button" id="use-location" class="btn btn-outline-secondary">Gunakan Lokasi
                                 Saya</button>
                         </div>
-                        <small class="form-text text-muted">Pilih lokasi dengan mengklik pada peta atau gunakan lokasi Anda saat ini.</small>
+                        <small class="form-text text-muted">Pilih lokasi dengan mengklik pada peta atau gunakan lokasi Anda
+                            saat ini.</small>
                     </div>
 
                     <div class="mb-3">
@@ -98,9 +100,18 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Unggah Foto</label>
-                        <input type="file" name="foto" class="form-control mb-1">
+                        <label class="form-label fw-bold">Unggah Foto</label>
+
+                        <input type="file" id="fotoInput" name="foto[]" class="form-control" accept="image/*"
+                            multiple>
+
+                        <small class="text-muted">
+                            Bisa pilih satu foto atau beberapa sekaligus
+                        </small>
                     </div>
+
+                    {{-- PREVIEW --}}
+                    <div id="preview-foto" class="d-flex flex-wrap gap-2"></div>
 
                     <div class="mb-3">
                         <label class="form-label">Unggah Dokumen</label>
@@ -119,6 +130,68 @@
             </div>
         </form>
     </div>
+
+    <script>
+        const fotoInput = document.getElementById('fotoInput');
+        const preview = document.getElementById('preview-foto');
+
+        let filesBuffer = [];
+
+        fotoInput.addEventListener('change', function() {
+            for (let file of this.files) {
+                if (!file.type.startsWith('image/')) continue;
+
+                // hindari duplikasi
+                if (!filesBuffer.some(f => f.name === file.name && f.size === file.size)) {
+                    filesBuffer.push(file);
+                }
+            }
+
+            renderPreview();
+            syncInputFiles();
+        });
+
+        function renderPreview() {
+            preview.innerHTML = '';
+
+            filesBuffer.forEach((file, index) => {
+                const reader = new FileReader();
+
+                reader.onload = e => {
+                    const div = document.createElement('div');
+                    div.className = 'position-relative';
+
+                    div.innerHTML = `
+                    <img src="${e.target.result}"
+                         style="width:100px;height:100px;object-fit:cover"
+                         class="rounded border">
+
+                    <button type="button"
+                            class="btn btn-sm btn-danger position-absolute top-0 end-0"
+                            onclick="removeFoto(${index})">
+                        ×
+                    </button>
+                `;
+
+                    preview.appendChild(div);
+                };
+
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function removeFoto(index) {
+            filesBuffer.splice(index, 1);
+            renderPreview();
+            syncInputFiles();
+        }
+
+        function syncInputFiles() {
+            const dataTransfer = new DataTransfer();
+            filesBuffer.forEach(file => dataTransfer.items.add(file));
+            fotoInput.files = dataTransfer.files;
+        }
+    </script>
 
     @push('js')
         <script src="{{ asset('adminlte') }}/plugins/summernote/summernote-bs4.min.js"></script>
@@ -210,20 +283,22 @@
             document.addEventListener('DOMContentLoaded', function() {
                 const form = document.getElementById('rencana-kegiatan-form');
                 if (!form) return;
-                
+
                 form.addEventListener('submit', function(e) {
                     // Check if coordinates are filled
                     const latEl = document.querySelector('input[name="lat"]');
                     const lngEl = document.querySelector('input[name="lng"]');
                     const lat = latEl ? latEl.value : '';
                     const lng = lngEl ? lngEl.value : '';
-                    
+
                     if (!lat || !lng) {
                         e.preventDefault();
-                        alert('Silakan pilih lokasi pada peta terlebih dahulu dengan mengklik pada peta atau menggunakan tombol "Gunakan Lokasi Saya".');
+                        alert(
+                            'Silakan pilih lokasi pada peta terlebih dahulu dengan mengklik pada peta atau menggunakan tombol "Gunakan Lokasi Saya".'
+                        );
                         return false;
                     }
-                    
+
                     // Date validation
                     const startEl = document.querySelector('input[name="tanggal_mulai"]');
                     const endEl = document.querySelector('input[name="tanggal_selesai"]');

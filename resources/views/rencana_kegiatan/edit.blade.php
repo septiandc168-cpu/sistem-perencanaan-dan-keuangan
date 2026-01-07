@@ -146,14 +146,22 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Unggah Foto (opsional)</label>
-                        <input type="file" name="foto" class="form-control mb-1">
-                        @if ($rencana_kegiatan->foto)
-                            <div class="mt-1"><a href="{{ asset('storage/' . $rencana_kegiatan->foto) }}"
-                                    target="_blank">Lihat
-                                    foto saat ini</a></div>
-                        @endif
+                        <label class="form-label fw-bold">Unggah Foto</label>
+
+                        {{-- INPUT FOTO BARU --}}
+                        <input type="file" id="fotoInput" name="foto[]" class="form-control" accept="image/*"
+                            multiple>
+
+                        <small class="text-muted">
+                            Bisa pilih satu atau beberapa foto sekaligus
+                        </small>
                     </div>
+
+                    {{-- HIDDEN FOTO LAMA (YANG DIPERTAHANKAN) --}}
+                    <div id="foto-lama-hidden"></div>
+
+                    {{-- PREVIEW FOTO --}}
+                    <div id="preview-foto" class="d-flex flex-wrap gap-2 mb-3"></div>
 
                     <div class="mb-3">
                         <label class="form-label">Unggah Dokumen (opsional)</label>
@@ -177,6 +185,161 @@
             </div>
         </form>
     </div>
+
+    <script>
+        const fotoInput = document.getElementById('fotoInput');
+        const preview = document.getElementById('preview-foto');
+        const fotoLamaHidden = document.getElementById('foto-lama-hidden');
+
+        /* =======================
+           FOTO LAMA (DATABASE)
+        ======================= */
+        let oldPhotos = @json($rencana_kegiatan->foto ?? []);
+        if (!Array.isArray(oldPhotos)) {
+            oldPhotos = oldPhotos ? [oldPhotos] : [];
+        }
+
+        /* =======================
+           FOTO BARU
+        ======================= */
+        let filesBuffer = [];
+
+        renderAll();
+
+        /* =======================
+           INPUT FOTO BARU
+        ======================= */
+        fotoInput.addEventListener('change', function() {
+            const selectedFiles = Array.from(this.files);
+
+            selectedFiles.forEach(file => {
+                if (!file.type.startsWith('image/')) return;
+
+                const exists = filesBuffer.some(
+                    f => f.name === file.name && f.size === file.size
+                );
+
+                if (!exists) {
+                    filesBuffer.push(file);
+                }
+            });
+
+            syncInputFiles();
+            renderAll();
+
+            // reset AFTER sync
+            fotoInput.value = '';
+        });
+
+        /* =======================
+           RENDER SEMUA FOTO
+        ======================= */
+        function renderAll() {
+            preview.innerHTML = '';
+
+            // FOTO LAMA
+            oldPhotos.forEach((path, index) => {
+                preview.appendChild(createOldPreview(path, index));
+            });
+
+            // FOTO BARU
+            filesBuffer.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    preview.appendChild(createNewPreview(e.target.result, index));
+                };
+                reader.readAsDataURL(file);
+            });
+
+            syncOldHidden();
+        }
+
+        /* =======================
+           PREVIEW COMPONENT
+        ======================= */
+        function createOldPreview(path, index) {
+            const div = document.createElement('div');
+            div.className = 'position-relative';
+
+            div.innerHTML = `
+            <img src="/storage/${path}"
+                 class="rounded border"
+                 style="width:100px;height:100px;object-fit:cover">
+
+            <button type="button"
+                    class="btn btn-sm btn-danger position-absolute top-0 end-0"
+                    onclick="removeOld(${index})">×</button>
+        `;
+            return div;
+        }
+
+        function createNewPreview(src, index) {
+            const div = document.createElement('div');
+            div.className = 'position-relative';
+
+            div.innerHTML = `
+            <img src="${src}"
+                 class="rounded border"
+                 style="width:100px;height:100px;object-fit:cover">
+
+            <button type="button"
+                    class="btn btn-sm btn-danger position-absolute top-0 end-0"
+                    onclick="removeNew(${index})">×</button>
+        `;
+            return div;
+        }
+
+        /* =======================
+           REMOVE FOTO
+        ======================= */
+        function removeOld(index) {
+            oldPhotos.splice(index, 1);
+            renderAll();
+        }
+
+        function removeNew(index) {
+            filesBuffer.splice(index, 1);
+            syncInputFiles();
+            renderAll();
+        }
+
+        /* =======================
+           SYNC FILE INPUT
+        ======================= */
+        function syncInputFiles() {
+            const dt = new DataTransfer();
+            filesBuffer.forEach(file => dt.items.add(file));
+            fotoInput.files = dt.files;
+        }
+
+        /* =======================
+           FOTO LAMA → HIDDEN INPUT
+        ======================= */
+        function syncOldHidden() {
+            fotoLamaHidden.innerHTML = '';
+            oldPhotos.forEach(path => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'foto_lama[]';
+                input.value = path;
+                fotoLamaHidden.appendChild(input);
+            });
+        }
+    </script>
+
+    <script>
+        const form = fotoInput.closest('form');
+
+        form.addEventListener('submit', function() {
+            const dt = new DataTransfer();
+
+            filesBuffer.forEach(file => {
+                dt.items.add(file);
+            });
+
+            fotoInput.files = dt.files;
+        });
+    </script>
 
     @push('styles')
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />

@@ -60,10 +60,18 @@
                     </tr>
                 </table>
 
-                @if ($rencana_kegiatan->foto)
+                @if (!empty($rencana_kegiatan->foto) && is_array($rencana_kegiatan->foto))
                     <div class="mb-3">
                         <h5>Foto</h5>
-                        <img src="{{ asset('storage/' . $rencana_kegiatan->foto) }}" alt="foto" class="img-fluid">
+
+                        <div class="d-flex flex-wrap gap-2">
+                            @foreach ($rencana_kegiatan->foto as $foto)
+                                @if ($foto)
+                                    <img src="{{ asset('storage/' . $foto) }}" alt="foto kegiatan" class="img-thumbnail"
+                                        style="width:150px;height:150px;object-fit:cover;">
+                                @endif
+                            @endforeach
+                        </div>
                     </div>
                 @endif
 

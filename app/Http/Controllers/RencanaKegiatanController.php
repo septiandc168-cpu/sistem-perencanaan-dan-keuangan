@@ -57,7 +57,8 @@ class RencanaKegiatanController extends Controller
             'kelompok' => 'nullable|string',
             'estimasi_peserta' => 'nullable|integer',
             'rincian_kebutuhan' => 'nullable|string',
-            'foto' => 'nullable|image|max:4096',
+            'foto' => 'nullable|array',
+            'foto.*' => 'image|mimes:jpg,jpeg,png|max:4096',
             'dokumen' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
         ];
 
@@ -72,9 +73,14 @@ class RencanaKegiatanController extends Controller
 
         $validated = $request->validate($rules, $messages);
 
+        $fotoPaths = [];
+
         if ($request->hasFile('foto')) {
-            $validated['foto'] = $request->file('foto')->store('rencana_kegiatans', 'public');
+            foreach ($request->file('foto') as $file) {
+                $fotoPaths[] = $file->store('rencana_kegiatans', 'public');
+            }
         }
+
         if ($request->hasFile('dokumen')) {
             $validated['dokumen'] = $request->file('dokumen')->store('rencana_kegiatans/docs', 'public');
         }
@@ -112,7 +118,7 @@ class RencanaKegiatanController extends Controller
             'kelompok' => $validated['kelompok'] ?? null,
             'estimasi_peserta' => $validated['estimasi_peserta'] ?? null,
             'rincian_kebutuhan' => $validated['rincian_kebutuhan'] ?? null,
-            'foto' => $validated['foto'] ?? null,
+            'foto' => !empty($fotoPaths) ? $fotoPaths : null,
             'dokumen' => $validated['dokumen'] ?? null,
             'status' => 'diajukan',
         ];
@@ -162,7 +168,8 @@ class RencanaKegiatanController extends Controller
             'estimasi_peserta' => 'nullable|integer',
             'rincian_kebutuhan' => 'nullable|string',
             'status' => 'required|string',
-            'foto' => 'nullable|image|max:4096',
+            'foto' => 'nullable|array',
+            'foto.*' => 'image|mimes:jpg,jpeg,png|max:4096',
             'dokumen' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
         ];
 
@@ -177,12 +184,32 @@ class RencanaKegiatanController extends Controller
 
         $validated = $request->validate($rules, $messages);
 
+        // Ambil foto lama (karena casts array)
+        $fotoLama = $request->input('foto_lama', []);
+
+        $fotoLama = is_array($fotoLama) ? $fotoLama : [];
+
+        // Upload foto baru
+        $fotoBaru = [];
         if ($request->hasFile('foto')) {
-            // remove old photo
-            if ($rencana_kegiatan->foto) {
-                Storage::disk('public')->delete($rencana_kegiatan->foto);
+            foreach ($request->file('foto') as $file) {
+                $fotoBaru[] = $file->store('rencana_kegiatans', 'public');
             }
-            $validated['foto'] = $request->file('foto')->store('rencana_kegiatans', 'public');
+        }
+
+        $fotoSebelumnya = $rencana_kegiatan->foto ?? [];
+        $fotoDihapus = array_diff($fotoSebelumnya, $fotoLama);
+
+        foreach ($fotoDihapus as $path) {
+            Storage::disk('public')->delete($path);
+        }
+
+        // Gabungkan foto lama + baru
+        $semuaFoto = array_merge($fotoLama, $fotoBaru);
+
+        // Simpan ke validated
+        if (!empty($semuaFoto)) {
+            $validated['foto'] = json_encode($semuaFoto);
         }
         if ($request->hasFile('dokumen')) {
             if ($rencana_kegiatan->dokumen) {
@@ -223,9 +250,10 @@ class RencanaKegiatanController extends Controller
             'estimasi_peserta' => $validated['estimasi_peserta'] ?? null,
             'rincian_kebutuhan' => $validated['rincian_kebutuhan'] ?? null,
             'status' => $validated['status'],
+            'foto' => !empty($semuaFoto) ? $semuaFoto : null,
         ];
 
-        if (isset($validated['foto'])) $data['foto'] = $validated['foto'];
+        // if (isset($validated['foto'])) $data['foto'] = $validated['foto'];
         if (isset($validated['dokumen'])) $data['dokumen'] = $validated['dokumen'];
 
         $rencana_kegiatan->update($data);
@@ -238,8 +266,12 @@ class RencanaKegiatanController extends Controller
     public function destroy(RencanaKegiatan $rencana_kegiatan)
     {
         // remove files
-        if ($rencana_kegiatan->foto) {
-            Storage::disk('public')->delete($rencana_kegiatan->foto);
+        if (!empty($rencana_kegiatan->foto) && is_array($rencana_kegiatan->foto)) {
+            foreach ($rencana_kegiatan->foto as $path) {
+                if ($path && Storage::disk('public')->exists($path)) {
+                    Storage::disk('public')->delete($path);
+                }
+            }
         }
         if ($rencana_kegiatan->dokumen) {
             Storage::disk('public')->delete($rencana_kegiatan->dokumen);
