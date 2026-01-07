@@ -105,18 +105,27 @@
                         <input type="file" id="fotoInput" name="foto[]" class="form-control" accept="image/*"
                             multiple>
 
-                        <small class="text-muted">
+                        {{-- <small class="text-muted">
                             Bisa pilih satu foto atau beberapa sekaligus
-                        </small>
+                        </small> --}}
                     </div>
 
                     {{-- PREVIEW --}}
-                    <div id="preview-foto" class="d-flex flex-wrap gap-2"></div>
+                    <div id="preview-foto" class="d-flex flex-column"></div>
 
                     <div class="mb-3">
-                        <label class="form-label">Unggah Dokumen</label>
-                        <input type="file" name="dokumen" class="form-control mb-1">
+                        <label class="form-label fw-bold">Dokumen Kegiatan</label>
+
+                        <input type="file" id="dokumenInput" name="dokumen[]" class="form-control" multiple
+                            accept=".pdf,.doc,.docx">
+
+                        {{-- <small class="text-muted">
+                            Bisa pilih satu atau beberapa dokumen (PDF / Word)
+                        </small> --}}
                     </div>
+
+                    {{-- PREVIEW DOKUMEN --}}
+                    <div id="preview-dokumen" class="d-flex flex-column gap-2 mb-3"></div>
 
                     <div class="mb-3">
                         <button type="submit" class="btn btn-primary">
@@ -159,7 +168,7 @@
 
                 reader.onload = e => {
                     const div = document.createElement('div');
-                    div.className = 'position-relative';
+                    div.className = 'position-relative d-flex align-items-center gap-2 mb-2';
 
                     div.innerHTML = `
                     <img src="${e.target.result}"
@@ -167,9 +176,9 @@
                          class="rounded border">
 
                     <button type="button"
-                            class="btn btn-sm btn-danger position-absolute top-0 end-0"
+                            class="btn btn-sm btn-danger ms-auto"
                             onclick="removeFoto(${index})">
-                        ×
+                        <i class="fas fa-times"></i>
                     </button>
                 `;
 
@@ -190,6 +199,66 @@
             const dataTransfer = new DataTransfer();
             filesBuffer.forEach(file => dataTransfer.items.add(file));
             fotoInput.files = dataTransfer.files;
+        }
+    </script>
+
+    <script>
+        const dokumenInput = document.getElementById('dokumenInput');
+        const previewDokumen = document.getElementById('preview-dokumen');
+
+        let dokumenBuffer = [];
+
+        dokumenInput.addEventListener('change', function() {
+            Array.from(this.files).forEach(file => {
+                if (!file.type.match(/pdf|word|officedocument/)) return;
+
+                const exists = dokumenBuffer.some(
+                    f => f.name === file.name && f.size === file.size
+                );
+
+                if (!exists) {
+                    dokumenBuffer.push(file);
+                }
+            });
+
+            syncDokumenInput();
+            renderDokumenPreview();
+
+            // ❌ JANGAN reset input
+        });
+
+        function renderDokumenPreview() {
+            previewDokumen.innerHTML = '';
+
+            dokumenBuffer.forEach((file, index) => {
+                const div = document.createElement('div');
+                div.className = 'd-flex align-items-center border rounded p-2';
+
+                div.innerHTML = `
+            <i class="fas fa-file-alt text-primary me-2"></i>
+            <div class="flex-grow-1">
+                <div class="fw-semibold">${file.name}</div>
+                <small class="text-muted">${(file.size/1024).toFixed(1)} KB</small>
+            </div>
+            <button type="button"
+                    class="btn btn-sm btn-danger"
+                    onclick="removeDokumen(${index})"><i class="fas fa-times"></i></button>
+        `;
+
+                previewDokumen.appendChild(div);
+            });
+        }
+
+        function removeDokumen(index) {
+            dokumenBuffer.splice(index, 1);
+            syncDokumenInput();
+            renderDokumenPreview();
+        }
+
+        function syncDokumenInput() {
+            const dt = new DataTransfer();
+            dokumenBuffer.forEach(file => dt.items.add(file));
+            dokumenInput.files = dt.files;
         }
     </script>
 

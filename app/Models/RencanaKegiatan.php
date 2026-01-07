@@ -22,6 +22,7 @@ class RencanaKegiatan extends Model
 
     protected $casts = [
         'foto' => 'array',
+        'dokumen' => 'array',
     ];
 
     public function getRouteKeyName()
@@ -40,4 +41,3 @@ class RencanaKegiatan extends Model
         });
     }
 }
-

@@ -75,11 +75,38 @@
                     </div>
                 @endif
 
-                @if ($rencana_kegiatan->dokumen)
-                    <div class="mb-3">
-                        <h5>Dokumen</h5>
-                        <a href="{{ asset('storage/' . $rencana_kegiatan->dokumen) }}" target="_blank">Download dokumen</a>
-                    </div>
+                @if (!empty($rencana_kegiatan->dokumen))
+                    @php
+                        // Pastikan selalu array
+                        $dokumens = $rencana_kegiatan->dokumen;
+
+                        if (is_string($dokumens)) {
+                            $dokumens = json_decode($dokumens, true);
+                        }
+
+                        $dokumens = is_array($dokumens) ? $dokumens : [];
+                    @endphp
+
+                    @if (count($dokumens))
+                        <div class="mb-3">
+                            <h5>Dokumen</h5>
+
+                            <ul class="list-group">
+                                @foreach ($dokumens as $file)
+                                    @if ($file)
+                                        <li class="list-group-item d-flex align-items-center">
+                                            <i class="fas fa-file-alt text-primary me-2"></i>
+
+                                            <a href="{{ asset('storage/' . $file) }}" target="_blank"
+                                                class="text-decoration-none">
+                                                {{ basename($file) }}
+                                            </a>
+                                        </li>
+                                    @endif
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                 @endif
             </div>
             <div class="col-md-6">

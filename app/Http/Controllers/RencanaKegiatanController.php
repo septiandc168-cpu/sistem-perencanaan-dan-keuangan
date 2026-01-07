@@ -59,7 +59,8 @@ class RencanaKegiatanController extends Controller
             'rincian_kebutuhan' => 'nullable|string',
             'foto' => 'nullable|array',
             'foto.*' => 'image|mimes:jpg,jpeg,png|max:4096',
-            'dokumen' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
+            'dokumen' => 'nullable|array',
+            'dokumen.*' => 'file|mimes:pdf,doc,docx|max:5120',
         ];
 
         $messages = [
@@ -81,8 +82,11 @@ class RencanaKegiatanController extends Controller
             }
         }
 
+        $dokumenPaths = [];
         if ($request->hasFile('dokumen')) {
-            $validated['dokumen'] = $request->file('dokumen')->store('rencana_kegiatans/docs', 'public');
+            foreach ($request->file('dokumen') as $file) {
+                $dokumenPaths[] = $file->store('rencana_kegiatans/dokumen', 'public');
+            }
         }
 
         // if both dates present and end before start, swap them automatically
@@ -119,7 +123,7 @@ class RencanaKegiatanController extends Controller
             'estimasi_peserta' => $validated['estimasi_peserta'] ?? null,
             'rincian_kebutuhan' => $validated['rincian_kebutuhan'] ?? null,
             'foto' => !empty($fotoPaths) ? $fotoPaths : null,
-            'dokumen' => $validated['dokumen'] ?? null,
+            'dokumen' => !empty($dokumenPaths) ? $dokumenPaths : null,
             'status' => 'diajukan',
         ];
 
@@ -170,7 +174,8 @@ class RencanaKegiatanController extends Controller
             'status' => 'required|string',
             'foto' => 'nullable|array',
             'foto.*' => 'image|mimes:jpg,jpeg,png|max:4096',
-            'dokumen' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
+            'dokumen' => 'nullable|array',
+            'dokumen.*' => 'file|mimes:pdf,doc,docx|max:5120',
         ];
 
         $messages = [
@@ -211,12 +216,23 @@ class RencanaKegiatanController extends Controller
         if (!empty($semuaFoto)) {
             $validated['foto'] = json_encode($semuaFoto);
         }
+
+        $dokumenLama = $request->input('dokumen_lama', []);
+        $dokumenLama = is_array($dokumenLama) ? $dokumenLama : [];
+
+        $dokumenBaru = [];
         if ($request->hasFile('dokumen')) {
-            if ($rencana_kegiatan->dokumen) {
-                Storage::disk('public')->delete($rencana_kegiatan->dokumen);
+            foreach ($request->file('dokumen') as $file) {
+                $dokumenBaru[] = $file->store('rencana_kegiatans/docs', 'public');
             }
-            $validated['dokumen'] = $request->file('dokumen')->store('rencana_kegiatans/docs', 'public');
         }
+
+        $dokumenDihapus = array_diff($rencana_kegiatan->dokumen ?? [], $dokumenLama);
+        foreach ($dokumenDihapus as $path) {
+            Storage::disk('public')->delete($path);
+        }
+
+        $semuaDokumen = array_merge($dokumenLama, $dokumenBaru);
 
         // if both dates present and end before start, swap them automatically
         if (!empty($validated['tanggal_mulai']) && !empty($validated['tanggal_selesai'])) {
@@ -251,10 +267,8 @@ class RencanaKegiatanController extends Controller
             'rincian_kebutuhan' => $validated['rincian_kebutuhan'] ?? null,
             'status' => $validated['status'],
             'foto' => !empty($semuaFoto) ? $semuaFoto : null,
+            'dokumen' => !empty($semuaDokumen) ? $semuaDokumen : null,
         ];
-
-        // if (isset($validated['foto'])) $data['foto'] = $validated['foto'];
-        if (isset($validated['dokumen'])) $data['dokumen'] = $validated['dokumen'];
 
         $rencana_kegiatan->update($data);
 
@@ -273,8 +287,12 @@ class RencanaKegiatanController extends Controller
                 }
             }
         }
-        if ($rencana_kegiatan->dokumen) {
-            Storage::disk('public')->delete($rencana_kegiatan->dokumen);
+        if (!empty($rencana_kegiatan->dokumen) && is_array($rencana_kegiatan->dokumen)) {
+            foreach ($rencana_kegiatan->dokumen as $path) {
+                if ($path && Storage::disk('public')->exists($path)) {
+                    Storage::disk('public')->delete($path);
+                }
+            }
         }
 
         $rencana_kegiatan->delete();

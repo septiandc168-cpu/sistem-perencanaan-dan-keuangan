@@ -152,26 +152,52 @@
                         <input type="file" id="fotoInput" name="foto[]" class="form-control" accept="image/*"
                             multiple>
 
-                        <small class="text-muted">
+                        {{-- <small class="text-muted">
                             Bisa pilih satu atau beberapa foto sekaligus
-                        </small>
+                        </small> --}}
                     </div>
 
                     {{-- HIDDEN FOTO LAMA (YANG DIPERTAHANKAN) --}}
                     <div id="foto-lama-hidden"></div>
 
                     {{-- PREVIEW FOTO --}}
-                    <div id="preview-foto" class="d-flex flex-wrap gap-2 mb-3"></div>
+                    <div id="preview-foto" class="d-flex flex-column"></div>
 
                     <div class="mb-3">
-                        <label class="form-label">Unggah Dokumen (opsional)</label>
-                        <input type="file" name="dokumen" class="form-control mb-1">
-                        @if ($rencana_kegiatan->dokumen)
-                            <div class="mt-1"><a href="{{ asset('storage/' . $rencana_kegiatan->dokumen) }}"
-                                    target="_blank">Lihat
-                                    dokumen saat ini</a></div>
-                        @endif
+                        <label class="form-label fw-bold">Dokumen Kegiatan</label>
+
+                        <input type="file" id="dokumenInput" name="dokumen[]" class="form-control" multiple
+                            accept=".pdf,.doc,.docx">
+
+                        {{-- <small class="text-muted">
+                            Bisa menambahkan dokumen baru (PDF / Word). Dokumen lama tetap tersimpan jika tidak dihapus.
+                        </small> --}}
                     </div>
+
+                    {{-- DOKUMEN LAMA --}}
+                    @if (!empty($rencana_kegiatan->dokumen))
+                        @foreach ($rencana_kegiatan->dokumen as $index => $file)
+                            <div class="d-flex align-items-center border rounded p-2 mb-2">
+                                <i class="fas fa-file-alt text-secondary me-2"></i>
+
+                                <div class="w-100">
+                                    <a href="{{ asset('storage/' . $file) }}" target="_blank">
+                                        {{ basename($file) }}
+                                    </a>
+                                </div>
+
+                                {{-- kirim ke controller --}}
+                                <input type="hidden" name="dokumen_lama[]" value="{{ $file }}">
+
+                                <button type="button" class="btn btn-sm btn-danger" onclick="hapusDokumenLama(this)">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        @endforeach
+                    @endif
+
+                    {{-- PREVIEW DOKUMEN BARU --}}
+                    <div id="preview-dokumen" class="d-flex flex-column gap-2 mt-2"></div>
 
                     <div class="mb-3">
                         <button type="submit" class="btn btn-primary">
@@ -259,7 +285,7 @@
         ======================= */
         function createOldPreview(path, index) {
             const div = document.createElement('div');
-            div.className = 'position-relative';
+            div.className = 'position-relative d-flex align-items-center gap-2 mb-2';
 
             div.innerHTML = `
             <img src="/storage/${path}"
@@ -267,15 +293,15 @@
                  style="width:100px;height:100px;object-fit:cover">
 
             <button type="button"
-                    class="btn btn-sm btn-danger position-absolute top-0 end-0"
-                    onclick="removeOld(${index})">×</button>
+                    class="btn btn-sm btn-danger ms-auto"
+                    onclick="removeOld(${index})"><i class="fas fa-times"></i></button>
         `;
             return div;
         }
 
         function createNewPreview(src, index) {
             const div = document.createElement('div');
-            div.className = 'position-relative';
+            div.className = 'position-relative d-flex align-items-center gap-2 mb-2';
 
             div.innerHTML = `
             <img src="${src}"
@@ -283,8 +309,8 @@
                  style="width:100px;height:100px;object-fit:cover">
 
             <button type="button"
-                    class="btn btn-sm btn-danger position-absolute top-0 end-0"
-                    onclick="removeNew(${index})">×</button>
+                    class="btn btn-sm btn-danger ms-auto"
+                    onclick="removeNew(${index})"><i class="fas fa-times"></i></button>
         `;
             return div;
         }
@@ -339,6 +365,69 @@
 
             fotoInput.files = dt.files;
         });
+    </script>
+
+    <script>
+        const dokumenInput = document.getElementById('dokumenInput');
+        const previewDokumen = document.getElementById('preview-dokumen');
+
+        let dokumenBuffer = [];
+
+        dokumenInput.addEventListener('change', function() {
+            Array.from(this.files).forEach(file => {
+                if (!file.type.match(/pdf|word|officedocument/)) return;
+
+                const exists = dokumenBuffer.some(
+                    f => f.name === file.name && f.size === file.size
+                );
+
+                if (!exists) {
+                    dokumenBuffer.push(file);
+                }
+            });
+
+            syncDokumenInput();
+            renderDokumenPreview();
+        });
+
+        function renderDokumenPreview() {
+            previewDokumen.innerHTML = '';
+
+            dokumenBuffer.forEach((file, index) => {
+                const div = document.createElement('div');
+                div.className = 'd-flex align-items-center border rounded p-2';
+
+                div.innerHTML = `
+            <i class="fas fa-file-alt text-primary me-2"></i>
+            <div class="flex-grow-1">
+                <div class="fw-semibold">${file.name}</div>
+                <small class="text-muted">${(file.size / 1024).toFixed(1)} KB</small>
+            </div>
+            <button type="button"
+                    class="btn btn-sm btn-danger"
+                    onclick="removeDokumenBaru(${index})"><i class="fas fa-times"></i></button>
+        `;
+
+                previewDokumen.appendChild(div);
+            });
+        }
+
+        function removeDokumenBaru(index) {
+            dokumenBuffer.splice(index, 1);
+            syncDokumenInput();
+            renderDokumenPreview();
+        }
+
+        function syncDokumenInput() {
+            const dt = new DataTransfer();
+            dokumenBuffer.forEach(file => dt.items.add(file));
+            dokumenInput.files = dt.files;
+        }
+
+        // hapus dokumen lama dari form (bukan langsung dari storage)
+        function hapusDokumenLama(button) {
+            button.closest('.d-flex').remove();
+        }
     </script>
 
     @push('styles')
