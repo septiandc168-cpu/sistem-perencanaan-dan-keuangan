@@ -16,7 +16,7 @@ class RencanaKegiatanController extends Controller
 {
     public function index(Request $request)
     {
-        $rencanaKegiatans = RencanaKegiatan::all();
+        $rencanaKegiatans = RencanaKegiatan::with('laporanKegiatan')->get();
         // Provide SweetAlert delete configuration so the frontend can
         // show a confirmation dialog when links with
         // `data-confirm-delete` are clicked.
@@ -190,6 +190,7 @@ class RencanaKegiatanController extends Controller
 
     public function show(RencanaKegiatan $rencana_kegiatan)
     {
+        $rencana_kegiatan->load('laporanKegiatan');
         return view('rencana_kegiatan.show', compact('rencana_kegiatan'));
     }
 

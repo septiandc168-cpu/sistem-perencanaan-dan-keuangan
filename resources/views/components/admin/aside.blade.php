@@ -74,6 +74,17 @@
                         </p>
                     </a>
                 </li>
+                @if(in_array(Auth::user()->role->role_name, ['admin', 'supervisor']))
+                <li class="nav-item">
+                    <a href="{{ route('laporan_kegiatan.index') }}"
+                        class="nav-link {{ request()->routeIs('laporan_kegiatan.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-file-alt"></i>
+                        <p>
+                            Laporan Kegiatan
+                        </p>
+                    </a>
+                </li>
+                @endif
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

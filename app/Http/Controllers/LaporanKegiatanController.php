@@ -31,7 +31,7 @@ class LaporanKegiatanController extends Controller
                 ->with('error', 'Rencana kegiatan tidak ditemukan');
         }
 
-        $rencanaKegiatan = RencanaKegiatan::findOrFail($rencanaKegiatanId);
+        $rencanaKegiatan = RencanaKegiatan::where('uuid', $rencanaKegiatanId)->firstOrFail();
 
         // Check if rencana kegiatan is completed
         if ($rencanaKegiatan->status !== RencanaKegiatan::STATUS_SELESAI) {

@@ -46,9 +46,13 @@ Route::get('/front_rencana_kegiatan', [App\Http\Controllers\RencanaKegiatanContr
 
 // Laporan Kegiatan Routes
 Route::middleware('auth')->group(function () {
-    // Admin only routes (create, store, edit, update, destroy)
+    // Create route (admin only but needs to be outside to accept query parameter)
+    Route::get('/laporan_kegiatan/create', [App\Http\Controllers\LaporanKegiatanController::class, 'create'])
+        ->middleware('isAdmin')
+        ->name('laporan_kegiatan.create');
+    
+    // Admin only routes (store, edit, update, destroy)
     Route::middleware('isAdmin')->group(function () {
-        Route::get('/laporan_kegiatan/create', [App\Http\Controllers\LaporanKegiatanController::class, 'create'])->name('laporan_kegiatan.create');
         Route::post('/laporan_kegiatan', [App\Http\Controllers\LaporanKegiatanController::class, 'store'])->name('laporan_kegiatan.store');
         Route::get('/laporan_kegiatan/{laporanKegiatan}/edit', [App\Http\Controllers\LaporanKegiatanController::class, 'edit'])->name('laporan_kegiatan.edit');
         Route::put('/laporan_kegiatan/{laporanKegiatan}', [App\Http\Controllers\LaporanKegiatanController::class, 'update'])->name('laporan_kegiatan.update');

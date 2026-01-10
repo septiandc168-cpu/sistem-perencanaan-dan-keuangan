@@ -8,9 +8,32 @@
             <h3 class="mb-0">{{ $rencana_kegiatan->nama_kegiatan }}</h3>
             <div>
                 <a href="{{ route('rencana_kegiatan.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left mx-1"></i>Kembali</a>
+                    <i class="fas fa-arrow-left mx-1"></i>Kembali
+                </a>
+                
+                {{-- Tombol Laporan Kegiatan --}}
+                @if($rencana_kegiatan->status === \App\Models\RencanaKegiatan::STATUS_SELESAI)
+                    @if($rencana_kegiatan->hasLaporan())
+                        <a href="{{ route('laporan_kegiatan.show', $rencana_kegiatan->laporanKegiatan) }}" class="btn btn-info">
+                            <i class="fas fa-file-alt mx-1"></i>Lihat Laporan
+                        </a>
+                    @else
+                        @can('create', \App\Models\LaporanKegiatan::class)
+                            <a href="{{ route('laporan_kegiatan.create', ['rencana_kegiatan_id' => $rencana_kegiatan->uuid]) }}" class="btn btn-success">
+                                <i class="fas fa-plus mx-1"></i>Buat Laporan
+                            </a>
+                        @else
+                            <button class="btn btn-success" disabled title="Hubungi admin untuk membuat laporan">
+                                <i class="fas fa-plus mx-1"></i>Buat Laporan
+                            </button>
+                        @endcan
+                    @endif
+                @else
+                    <button class="btn btn-secondary" disabled title="Laporan hanya bisa dibuat untuk rencana kegiatan yang selesai">
+                        <i class="fas fa-file-alt mx-1"></i>Laporan Tidak Tersedia
+                    </button>
+                @endif
             </div>
-        </div>
 
         <div class="row">
             <div class="col-md-6">
