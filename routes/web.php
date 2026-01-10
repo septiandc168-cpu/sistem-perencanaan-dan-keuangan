@@ -18,54 +18,24 @@ Route::get('/pegawai', function () {
     return view('pegawai');
 });
 
-// Route::get('/pegawai/detail/{nama}', function (string $nama) {
-//     return "nama pegawai ini adalah : $nama";
-// });
-
-Route::get('/pegawai/detail/{nama?}', function (?string $nama = "septian") {
-    return "nama pegawai ini adalah : $nama";
-});
-
-Route::get('/pegawai/cek_absensi/maret', function () {
-    return "absensi pegawai pada bulan maret";
-})->name('cek_absensi');
-
-// Route::get('/test', function () {
-//     return redirect()->route('cek_absensi');
-//     // return redirect()->to('/pegawai/cek_absensi/januari');
-// });
-
-Route::get('/coba_query', function () {
-    // $pegawai = Pegawai::all();
-    // dd($pegawai->toArray());
-
-    // $pegawai = Pegawai::find(28);
-
-    // $pegawai = Pegawai::where('nama_pegawai', "Viman Saragih")->first();
-
-    // Pegawai::where('nama_pegawai', 'Viman Saragih')->delete();
-
-    // Pegawai::destroy(28);
-
-    // $pegawai = Pegawai::where('umur', '>', 35)->get();
-    Pegawai::where('id', 31)->update([
-        'nama_pegawai' => 'Dinda Farida'
-    ]);
-    // dd($pegawai->toArray());
-});
-
 Route::fallback(function () {
     return view('404');
 });
 
-Route::get('/webe', function () {
-    return redirect()->away('https://www.yayasanwebe.org/');
+Route::resource('pegawai', PegawaiController::class);
+
+Route::middleware('isSupervisor')->group(function () {
+    Route::get('users', [UserController::class, 'index'])->name('users.index');
+    Route::post('users', [UserController::class, 'store'])->name('users.store');
+    Route::delete('users/{id}/destroy', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::post('users/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
 });
 
-Route::resource('pegawai', PegawaiController::class);
+Route::post('users/ganti-password', [UserController::class, 'gantiPassword'])->name('users.ganti-password');
 Route::resource('users', UserController::class)->middleware('isSupervisor');
 Route::post('user-update-role', [UserController::class, 'updateRole'])->name('users.update-role');
 Route::resource('bagian', BagianController::class);
+
 Route::get('/rencana_kegiatan', [App\Http\Controllers\RencanaKegiatanController::class, 'index'])->name('rencana_kegiatan.index');
 Route::get('/rencana_kegiatan/create', [App\Http\Controllers\RencanaKegiatanController::class, 'create'])->name('rencana_kegiatan.create');
 Route::post('/rencana_kegiatan', [App\Http\Controllers\RencanaKegiatanController::class, 'store'])->name('rencana_kegiatan.store');

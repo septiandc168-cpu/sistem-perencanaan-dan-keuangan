@@ -5,15 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
     public function index()
     {
+        $users = User::all();
         $users = User::with('role')->get();
         $roles = Role::all();
+        confirmDelete('Hapus User', 'Apakah Anda yakin ingin menghapus user ini?');
         return view('users.index', compact('users', 'roles'));
     }
 
@@ -32,6 +37,96 @@ class UserController extends Controller
         $user->save();
 
         Alert::success('Berhasil', 'Role berhasil diubah');
+        return redirect()->route('users.index');
+    }
+
+    public function create()
+    {
+        $roles = Role::all();
+        return view('users.create', compact('roles'));
+    }
+
+    public function store(Request $request)
+    {
+        $id = $request->id;
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,' . $id,
+        ], [
+            'name.required' => 'Nama wajib diisi',
+            'email.required' => 'Email wajib diisi',
+            'email.email' => 'Format email tidak valid',
+            'email.unique' => 'Email sudah digunakan',
+        ]);
+
+        $newRequest = $request->all();
+
+        if (!$id) {
+            $newRequest['password'] = Hash::make('12345678');
+        }
+
+        User::updateOrCreate(['id' => $id], $newRequest);
+        toast()->success('Berhasil', 'Data user berhasil disimpan');
+        return Redirect::route('users.index');
+    }
+
+    public function gantiPassword(Request $request)
+    {
+        $request->validate([
+            'old_password' => 'required',
+            'password' => 'required|min:8|confirmed',
+            // 'password' => [Password::min(8)->
+            //     mixedCase()->
+            //     numbers()->
+            //     symbols(), 'confirmed'],
+        ], [
+            'old_password.required' => 'Password saat ini wajib diisi',
+            'password.required' => 'Password baru wajib diisi',
+            'password.min' => 'Password baru minimal 8 karakter',
+            'password.confirmed' => 'Konfirmasi password tidak sesuai',
+        ]);
+
+        $user = User::find(Auth::id());
+
+        if (!Hash::check($request->old_password, $user->password)) {
+            toast()->error('Gagal', 'Password saat ini tidak sesuai');
+            return redirect()->route('home');
+        }
+
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        toast()->success('Berhasil', 'Password berhasil diubah');
+        return redirect()->route('home');
+    }
+
+    public function destroy(String $id)
+    {
+        $user = User::find($id);
+
+        if (Auth::id() == $id) {
+            toast()->error('Gagal', 'Anda tidak dapat menghapus akun yang sedang login');
+            return Redirect::route('users.index');
+        }
+
+        $user->delete();
+        toast()->success('Berhasil', 'Data user berhasil dihapus');
+        return Redirect::route('users.index');
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'id' => 'required',
+        ]);
+
+        $user = User::find($request->id);
+        $user->update([
+            'password' => Hash::make('12345678'),
+        ]);
+
+        toast()->success('Berhasil', 'Password berhasil direset');
         return redirect()->route('users.index');
     }
 }

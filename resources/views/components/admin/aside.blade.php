@@ -54,6 +54,17 @@
                         </p>
                     </a>
                 </li>
+                @if (Auth::user()->role_id == 1)
+                    <li class="nav-item">
+                        <a href="{{ route('users.index') }}"
+                            class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-users"></i>
+                            <p>
+                                Data User
+                            </p>
+                        </a>
+                    </li>
+                @endif
                 <li class="nav-item">
                     <a href="{{ route('rencana_kegiatan.index') }}"
                         class="nav-link {{ request()->routeIs('rencana_kegiatan.*') ? 'active' : '' }}">

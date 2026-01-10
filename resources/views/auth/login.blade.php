@@ -18,7 +18,7 @@
 
     <style>
     body.login-page {
-        background: url('{{ asset('adminlte/dist/img/background_login2.jpg') }}') no-repeat center center fixed;
+        background: url('{{ asset('adminlte/dist/img/background_login3.jpg') }}') no-repeat center center fixed;
         background-size: cover;
     }
 

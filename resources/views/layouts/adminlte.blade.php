@@ -54,6 +54,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         {{ ucwords(auth()->user()->name) }}
                     </button>
                     <div class="dropdown-menu">
+                        <button type="button" class="btn" data-toggle="modal" data-target="#formGantiPassword">
+                            Ganti Password
+                        </button>
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf
                             <button type="submit" class="btn text-danger btn-sm">Logout</button>
@@ -63,6 +66,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </ul>
         </nav>
         <!-- /.navbar -->
+
+        <x-user.form-ganti-password />
 
         <!-- Main Sidebar Container -->
         <x-admin.aside />

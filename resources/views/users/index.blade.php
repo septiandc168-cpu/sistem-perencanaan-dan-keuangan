@@ -1,38 +1,50 @@
-@extends('layouts.mantis')
+@extends('layouts.adminlte')
+
+@section('content_title', 'Daftar User')
+
 @section('content')
     <div class="card">
-        <div class="card-header">
-            <h4 class="card-title"></h4>
+        <div class="p-2 d-flex justify-content-between border">
+            <h4 class="h5">Daftar User</h4>
+            <div>
+                <x-user.form-user />
+            </div>
         </div>
         <div class="card-body">
-            <table class="table table-sm" id="table">
+            <x-alert :errors="$errors" />
+            <table class="table table-sm" id="table2">
                 <thead>
                     <tr>
                         <th>No</th>
+                        <th>Opsi</th>
                         <th>Nama</th>
                         <th>Email</th>
-                        <th>Role</th>
-                        <th>Opsi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($users as $index => $user)
                         <tr>
                             <td>{{ $index + 1 }}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <x-user.form-user :id="$user->id" />
+                                    <a href="{{ route('users.destroy', $user->id) }}" class="btn btn-danger mx-1"
+                                        style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;"
+                                        data-confirm-delete="true">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                    <x-user.reset-password :id="$user->id" />
+                                </div>
+                            </td>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
-                            <td>{{ $user->role?->role_name }}</td>
-                            <td>
-                                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#roleModal{{ $user->id }}">Ganti Role</button>
-                            </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
     </div>
-    @foreach ($users as $user)
+    {{-- @foreach ($users as $user)
         <!-- Modal -->
         <div class="modal fade" id="roleModal{{ $user->id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
@@ -67,5 +79,5 @@
                 </div>
             </div>
         </div>
-    @endforeach
+    @endforeach --}}
 @endsection
