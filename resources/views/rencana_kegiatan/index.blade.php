@@ -37,11 +37,19 @@
                                         href="{{ route('rencana_kegiatan.show', $rencanaKegiatan) }}">
                                         <i class="fas fa-info"></i>
                                     </a>
+                                    @if(auth()->user()->role->role_name === 'admin' && $rencanaKegiatan->status !== \App\Models\RencanaKegiatan::STATUS_DITOLAK)
+                                    <a class="btn btn-secondary mx-1 disabled"
+                                        style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; cursor: not-allowed;"
+                                        title="Admin hanya dapat mengedit rencana kegiatan dengan status 'Ditolak'">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                @else
                                     <a class="btn btn-warning mx-1"
                                         style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;"
                                         href="{{ route('rencana_kegiatan.edit', $rencanaKegiatan) }}">
                                         <i class="fas fa-edit"></i>
                                     </a>
+                                @endif
                                     <a class="btn btn-danger mx-1"
                                         style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;"
                                         href="{{ route('rencana_kegiatan.destroy', $rencanaKegiatan) }}"
@@ -66,13 +74,13 @@
                             <td>{{ $rencanaKegiatan->jenis_kegiatan ?? ($rencanaKegiatan->kategori ?? '-') }}</td>
                             <td>
                                 <span
-                                    class="badge bg-{{ $rencanaKegiatan->status == 'diajukan'
+                                    class="badge bg-{{ $rencanaKegiatan->status == \App\Models\RencanaKegiatan::STATUS_DIAJUKAN
                                         ? 'secondary'
-                                        : ($rencanaKegiatan->status == 'disetujui dan akan dilaksanakan'
+                                        : ($rencanaKegiatan->status == \App\Models\RencanaKegiatan::STATUS_DISETUJUI
                                             ? 'warning text-dark'
-                                            : ($rencanaKegiatan->status == 'selesai'
+                                            : ($rencanaKegiatan->status == \App\Models\RencanaKegiatan::STATUS_SELESAI
                                                 ? 'success'
-                                                : ($rencanaKegiatan->status == 'ditolak'
+                                                : ($rencanaKegiatan->status == \App\Models\RencanaKegiatan::STATUS_DITOLAK
                                                     ? 'danger'
                                                     : 'secondary'))) }}">
                                     {{ ucfirst($rencanaKegiatan->status) }}

@@ -20,10 +20,49 @@ class RencanaKegiatan extends Model
 
     protected $keyType = 'string';
 
+    protected $fillable = [
+        'nama_kegiatan',
+        'jenis_kegiatan',
+        'kategori',
+        'deskripsi',
+        'tujuan',
+        'lat',
+        'lng',
+        'desa',
+        'tanggal_mulai',
+        'tanggal_selesai',
+        'penanggung_jawab',
+        'kelompok',
+        'estimasi_peserta',
+        'rincian_kebutuhan',
+        'foto',
+        'dokumen',
+        'status',
+        'keterangan_status',
+    ];
+
     protected $casts = [
         'foto' => 'array',
         'dokumen' => 'array',
+        'tanggal_mulai' => 'date',
+        'tanggal_selesai' => 'date',
     ];
+
+    // Status constants
+    const STATUS_DIAJUKAN = 'diajukan';
+    const STATUS_DISETUJUI = 'disetujui';
+    const STATUS_DITOLAK = 'ditolak';
+    const STATUS_SELESAI = 'selesai';
+
+    public static function getStatusOptions(): array
+    {
+        return [
+            self::STATUS_DIAJUKAN => 'Diajukan',
+            self::STATUS_DISETUJUI => 'Disetujui',
+            self::STATUS_DITOLAK => 'Ditolak',
+            self::STATUS_SELESAI => 'Selesai',
+        ];
+    }
 
     public function getRouteKeyName()
     {

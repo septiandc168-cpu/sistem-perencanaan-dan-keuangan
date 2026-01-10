@@ -56,8 +56,26 @@
                     </tr>
                     <tr>
                         <th>Status</th>
-                        <td>{{ ucfirst($rencana_kegiatan->status) }}</td>
+                        <td>
+                            <span class="badge bg-{{ $rencana_kegiatan->status == \App\Models\RencanaKegiatan::STATUS_DIAJUKAN
+                                ? 'secondary'
+                                : ($rencana_kegiatan->status == \App\Models\RencanaKegiatan::STATUS_DISETUJUI
+                                    ? 'warning text-dark'
+                                    : ($rencana_kegiatan->status == \App\Models\RencanaKegiatan::STATUS_SELESAI
+                                        ? 'success'
+                                        : ($rencana_kegiatan->status == \App\Models\RencanaKegiatan::STATUS_DITOLAK
+                                            ? 'danger'
+                                            : 'secondary'))) }}">
+                                {{ ucfirst($rencana_kegiatan->status) }}
+                            </span>
+                        </td>
                     </tr>
+                    @if(!empty($rencana_kegiatan->keterangan_status))
+                        <tr>
+                            <th>Keterangan Status</th>
+                            <td>{{ $rencana_kegiatan->keterangan_status }}</td>
+                        </tr>
+                    @endif
                 </table>
 
                 @if (!empty($rencana_kegiatan->foto) && is_array($rencana_kegiatan->foto))

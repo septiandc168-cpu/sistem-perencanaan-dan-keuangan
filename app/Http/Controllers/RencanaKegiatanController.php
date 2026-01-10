@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\RencanaKegiatan;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Auth\Access\AuthorizationException;
 use Carbon\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
 use RealRashid\SweetAlert\Toaster;
@@ -43,34 +45,77 @@ class RencanaKegiatanController extends Controller
 
     public function store(Request $request)
     {
-        $rules = [
-            'nama_kegiatan' => 'required|string',
-            'jenis_kegiatan' => 'required|string',
-            'deskripsi' => 'nullable|string',
-            'tujuan' => 'nullable|string',
-            'lat' => 'required|numeric',
-            'lng' => 'required|numeric',
-            'desa' => 'nullable|string',
-            'tanggal_mulai' => 'nullable|date',
-            'tanggal_selesai' => 'nullable|date',
-            'penanggung_jawab' => 'nullable|string',
-            'kelompok' => 'nullable|string',
-            'estimasi_peserta' => 'nullable|integer',
-            'rincian_kebutuhan' => 'nullable|string',
-            'foto' => 'nullable|array',
-            'foto.*' => 'image|mimes:jpg,jpeg,png|max:4096',
-            'dokumen' => 'nullable|array',
-            'dokumen.*' => 'file|mimes:pdf,doc,docx|max:5120',
-        ];
+        $user = auth()->user();
+        $isSupervisor = $user->role->role_name === 'supervisor';
+        $isAdmin = $user->role->role_name === 'admin';
 
-        $messages = [
-            'nama_kegiatan.required' => 'Nama kegiatan wajib diisi.',
-            'jenis_kegiatan.required' => 'Jenis kegiatan wajib dipilih.',
-            'lat.required' => 'Latitude lokasi wajib diisi.',
-            'lng.required' => 'Longitude lokasi wajib diisi.',
-            'tanggal_mulai.date' => 'Format tanggal mulai tidak valid.',
-            'tanggal_selesai.date' => 'Format tanggal selesai tidak valid.',
-        ];
+        // Different validation rules based on role
+        if ($isSupervisor) {
+            // Supervisor can change status and must provide keterangan for approve/reject
+            $rules = [
+                'nama_kegiatan' => 'required|string',
+                'jenis_kegiatan' => 'required|string',
+                'deskripsi' => 'nullable|string',
+                'tujuan' => 'nullable|string',
+                'lat' => 'required|numeric',
+                'lng' => 'required|numeric',
+                'desa' => 'nullable|string',
+                'tanggal_mulai' => 'nullable|date',
+                'tanggal_selesai' => 'nullable|date',
+                'penanggung_jawab' => 'nullable|string',
+                'kelompok' => 'nullable|string',
+                'estimasi_peserta' => 'nullable|integer',
+                'rincian_kebutuhan' => 'nullable|string',
+                'status' => 'required|in:diajukan,disetujui,ditolak,selesai',
+                'keterangan_status' => 'required_if:status,disetujui,ditolak|string',
+                'foto' => 'nullable|array',
+                'foto.*' => 'image|mimes:jpg,jpeg,png|max:4096',
+                'dokumen' => 'nullable|array',
+                'dokumen.*' => 'file|mimes:pdf,doc,docx|max:5120',
+            ];
+            
+            $messages = [
+                'nama_kegiatan.required' => 'Nama kegiatan wajib diisi.',
+                'jenis_kegiatan.required' => 'Jenis kegiatan wajib dipilih.',
+                'lat.required' => 'Latitude lokasi wajib diisi.',
+                'lng.required' => 'Longitude lokasi wajib diisi.',
+                'status.required' => 'Status wajib dipilih.',
+                'status.in' => 'Status tidak valid.',
+                'keterangan_status.required_if' => 'Keterangan status wajib diisi saat menyetujui atau menolak.',
+                'tanggal_mulai.date' => 'Format tanggal mulai tidak valid.',
+                'tanggal_selesai.date' => 'Format tanggal selesai tidak valid.',
+            ];
+        } else {
+            // Admin cannot change status and no keterangan field
+            $rules = [
+                'nama_kegiatan' => 'required|string',
+                'jenis_kegiatan' => 'required|string',
+                'deskripsi' => 'nullable|string',
+                'tujuan' => 'nullable|string',
+                'lat' => 'required|numeric',
+                'lng' => 'required|numeric',
+                'desa' => 'nullable|string',
+                'tanggal_mulai' => 'nullable|date',
+                'tanggal_selesai' => 'nullable|date',
+                'penanggung_jawab' => 'nullable|string',
+                'kelompok' => 'nullable|string',
+                'estimasi_peserta' => 'nullable|integer',
+                'rincian_kebutuhan' => 'nullable|string',
+                'foto' => 'nullable|array',
+                'foto.*' => 'image|mimes:jpg,jpeg,png|max:4096',
+                'dokumen' => 'nullable|array',
+                'dokumen.*' => 'file|mimes:pdf,doc,docx|max:5120',
+            ];
+            
+            $messages = [
+                'nama_kegiatan.required' => 'Nama kegiatan wajib diisi.',
+                'jenis_kegiatan.required' => 'Jenis kegiatan wajib dipilih.',
+                'lat.required' => 'Latitude lokasi wajib diisi.',
+                'lng.required' => 'Longitude lokasi wajib diisi.',
+                'tanggal_mulai.date' => 'Format tanggal mulai tidak valid.',
+                'tanggal_selesai.date' => 'Format tanggal selesai tidak valid.',
+            ];
+        }
 
         $validated = $request->validate($rules, $messages);
 
@@ -150,42 +195,85 @@ class RencanaKegiatanController extends Controller
 
     public function edit(RencanaKegiatan $rencana_kegiatan)
     {
+        // Check authorization
+        $this->authorize('update', $rencana_kegiatan);
+        
         return view('rencana_kegiatan.edit', compact('rencana_kegiatan'));
     }
 
     public function update(Request $request, RencanaKegiatan $rencana_kegiatan)
     {
+        // Check authorization
+        $this->authorize('update', $rencana_kegiatan);
+        
+        $user = auth()->user();
+        $isSupervisor = $user->role->role_name === 'supervisor';
+        $isAdmin = $user->role->role_name === 'admin';
         Log::info('RencanaKegiatanController@update called', ['id' => $rencana_kegiatan->id, 'input' => $request->all()]);
 
-        $rules = [
-            'nama_kegiatan' => 'required|string',
-            'jenis_kegiatan' => 'required|string',
-            'deskripsi' => 'nullable|string',
-            'tujuan' => 'nullable|string',
-            'lat' => 'required|numeric',
-            'lng' => 'required|numeric',
-            'desa' => 'nullable|string',
-            'tanggal_mulai' => 'nullable|date',
-            'tanggal_selesai' => 'nullable|date',
-            'penanggung_jawab' => 'nullable|string',
-            'kelompok' => 'nullable|string',
-            'estimasi_peserta' => 'nullable|integer',
-            'rincian_kebutuhan' => 'nullable|string',
-            'status' => 'required|string',
-            'foto' => 'nullable|array',
-            'foto.*' => 'image|mimes:jpg,jpeg,png|max:4096',
-            'dokumen' => 'nullable|array',
-            'dokumen.*' => 'file|mimes:pdf,doc,docx|max:5120',
-        ];
-
-        $messages = [
-            'nama_kegiatan.required' => 'Nama kegiatan wajib diisi.',
-            'jenis_kegiatan.required' => 'Jenis kegiatan wajib dipilih.',
-            'lat.required' => 'Latitude lokasi wajib diisi.',
-            'lng.required' => 'Longitude lokasi wajib diisi.',
-            'tanggal_mulai.date' => 'Format tanggal mulai tidak valid.',
-            'tanggal_selesai.date' => 'Format tanggal selesai tidak valid.',
-        ];
+        // Different validation rules based on role
+        if ($isSupervisor) {
+            // Supervisor can change status and must provide keterangan for approve/reject
+            $rules = [
+                'nama_kegiatan' => 'required|string',
+                'jenis_kegiatan' => 'required|string',
+                'deskripsi' => 'nullable|string',
+                'tujuan' => 'nullable|string',
+                'lat' => 'required|numeric',
+                'lng' => 'required|numeric',
+                'desa' => 'nullable|string',
+                'tanggal_mulai' => 'nullable|date',
+                'tanggal_selesai' => 'nullable|date',
+                'penanggung_jawab' => 'nullable|string',
+                'kelompok' => 'nullable|string',
+                'estimasi_peserta' => 'nullable|integer',
+                'rincian_kebutuhan' => 'nullable|string',
+                'status' => 'required|in:diajukan,disetujui,ditolak,selesai',
+                'keterangan_status' => 'required_if:status,disetujui,ditolak|string',
+                'foto' => 'nullable|image|max:4096',
+                'dokumen' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
+            ];
+            
+            $messages = [
+                'nama_kegiatan.required' => 'Nama kegiatan wajib diisi.',
+                'jenis_kegiatan.required' => 'Jenis kegiatan wajib dipilih.',
+                'lat.required' => 'Latitude lokasi wajib diisi.',
+                'lng.required' => 'Longitude lokasi wajib diisi.',
+                'status.required' => 'Status wajib dipilih.',
+                'status.in' => 'Status tidak valid.',
+                'keterangan_status.required_if' => 'Keterangan status wajib diisi saat menyetujui atau menolak.',
+                'tanggal_mulai.date' => 'Format tanggal mulai tidak valid.',
+                'tanggal_selesai.date' => 'Format tanggal selesai tidak valid.',
+            ];
+        } else {
+            // Admin cannot change status and no keterangan field
+            $rules = [
+                'nama_kegiatan' => 'required|string',
+                'jenis_kegiatan' => 'required|string',
+                'deskripsi' => 'nullable|string',
+                'tujuan' => 'nullable|string',
+                'lat' => 'required|numeric',
+                'lng' => 'required|numeric',
+                'desa' => 'nullable|string',
+                'tanggal_mulai' => 'nullable|date',
+                'tanggal_selesai' => 'nullable|date',
+                'penanggung_jawab' => 'nullable|string',
+                'kelompok' => 'nullable|string',
+                'estimasi_peserta' => 'nullable|integer',
+                'rincian_kebutuhan' => 'nullable|string',
+                'foto' => 'nullable|image|max:4096',
+                'dokumen' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
+            ];
+            
+            $messages = [
+                'nama_kegiatan.required' => 'Nama kegiatan wajib diisi.',
+                'jenis_kegiatan.required' => 'Jenis kegiatan wajib dipilih.',
+                'lat.required' => 'Latitude lokasi wajib diisi.',
+                'lng.required' => 'Longitude lokasi wajib diisi.',
+                'tanggal_mulai.date' => 'Format tanggal mulai tidak valid.',
+                'tanggal_selesai.date' => 'Format tanggal selesai tidak valid.',
+            ];
+        }
 
         $validated = $request->validate($rules, $messages);
 
@@ -249,31 +337,85 @@ class RencanaKegiatanController extends Controller
             }
         }
 
-        $data = [
-            'judul' => $validated['nama_kegiatan'] ?? ($validated['judul'] ?? $rencana_kegiatan->judul),
-            'nama_kegiatan' => $validated['nama_kegiatan'],
-            'jenis_kegiatan' => $validated['jenis_kegiatan'],
-            'kategori' => $validated['jenis_kegiatan'],
-            'deskripsi' => $validated['deskripsi'] ?? null,
-            'tujuan' => $validated['tujuan'] ?? null,
-            'lat' => $validated['lat'],
-            'lng' => $validated['lng'],
-            'desa' => $validated['desa'] ?? null,
-            'tanggal_mulai' => $validated['tanggal_mulai'] ?? null,
-            'tanggal_selesai' => $validated['tanggal_selesai'] ?? null,
-            'penanggung_jawab' => $validated['penanggung_jawab'] ?? null,
-            'kelompok' => $validated['kelompok'] ?? null,
-            'estimasi_peserta' => $validated['estimasi_peserta'] ?? null,
-            'rincian_kebutuhan' => $validated['rincian_kebutuhan'] ?? null,
-            'status' => $validated['status'],
-            'foto' => !empty($semuaFoto) ? $semuaFoto : null,
-            'dokumen' => !empty($semuaDokumen) ? $semuaDokumen : null,
-        ];
+        // Handle file uploads
+        if ($request->hasFile('foto')) {
+            $validated['foto'] = $request->file('foto')->store('rencana_kegiatans', 'public');
+        }
+        if ($request->hasFile('dokumen')) {
+            $validated['dokumen'] = $request->file('dokumen')->store('rencana_kegiatans/docs', 'public');
+        }
+
+        // Handle date swapping
+        if (!empty($validated['tanggal_mulai']) && !empty($validated['tanggal_selesai'])) {
+            try {
+                $d1 = Carbon::parse($validated['tanggal_mulai']);
+                $d2 = Carbon::parse($validated['tanggal_selesai']);
+                if ($d2->lt($d1)) {
+                    $tmp = $validated['tanggal_mulai'];
+                    $validated['tanggal_mulai'] = $validated['tanggal_selesai'];
+                    $validated['tanggal_selesai'] = $tmp;
+                }
+            } catch (\Exception $e) {
+                // ignore parse errors
+            }
+        }
+
+        // Prepare update data based on role
+        if ($isSupervisor) {
+            // Supervisor can update all fields including status and keterangan
+            $data = [
+                'judul' => $validated['nama_kegiatan'] ?? $rencana_kegiatan->judul,
+                'nama_kegiatan' => $validated['nama_kegiatan'],
+                'jenis_kegiatan' => $validated['jenis_kegiatan'],
+                'kategori' => $validated['jenis_kegiatan'],
+                'deskripsi' => $validated['deskripsi'] ?? null,
+                'tujuan' => $validated['tujuan'] ?? null,
+                'lat' => $validated['lat'],
+                'lng' => $validated['lng'],
+                'desa' => $validated['desa'] ?? null,
+                'tanggal_mulai' => $validated['tanggal_mulai'] ?? null,
+                'tanggal_selesai' => $validated['tanggal_selesai'] ?? null,
+                'penanggung_jawab' => $validated['penanggung_jawab'] ?? null,
+                'kelompok' => $validated['kelompok'] ?? null,
+                'estimasi_peserta' => $validated['estimasi_peserta'] ?? null,
+                'rincian_kebutuhan' => $validated['rincian_kebutuhan'] ?? null,
+                'status' => $validated['status'],
+                'keterangan_status' => $validated['keterangan_status'] ?? null,
+                'foto' => $validated['foto'] ?? $rencana_kegiatan->foto,
+                'dokumen' => $validated['dokumen'] ?? $rencana_kegiatan->dokumen,
+            ];
+        } else {
+            // Admin revisi: reset status to 'diajukan' and clear keterangan
+            $data = [
+                'judul' => $validated['nama_kegiatan'] ?? $rencana_kegiatan->judul,
+                'nama_kegiatan' => $validated['nama_kegiatan'],
+                'jenis_kegiatan' => $validated['jenis_kegiatan'],
+                'kategori' => $validated['jenis_kegiatan'],
+                'deskripsi' => $validated['deskripsi'] ?? null,
+                'tujuan' => $validated['tujuan'] ?? null,
+                'lat' => $validated['lat'],
+                'lng' => $validated['lng'],
+                'desa' => $validated['desa'] ?? null,
+                'tanggal_mulai' => $validated['tanggal_mulai'] ?? null,
+                'tanggal_selesai' => $validated['tanggal_selesai'] ?? null,
+                'penanggung_jawab' => $validated['penanggung_jawab'] ?? null,
+                'kelompok' => $validated['kelompok'] ?? null,
+                'estimasi_peserta' => $validated['estimasi_peserta'] ?? null,
+                'rincian_kebutuhan' => $validated['rincian_kebutuhan'] ?? null,
+                'status' => RencanaKegiatan::STATUS_DIAJUKAN, // Reset to diajukan for admin revisi
+                'keterangan_status' => null, // Clear keterangan
+                'foto' => $validated['foto'] ?? $rencana_kegiatan->foto,
+                'dokumen' => $validated['dokumen'] ?? $rencana_kegiatan->dokumen,
+            ];
+        }
 
         $rencana_kegiatan->update($data);
 
-        // Alert::success('Berhasil', 'Rencana kegiatan berhasil diperbarui!');
-        toast('Rencana kegiatan berhasil diperbarui!', 'success');
+        $message = $isSupervisor 
+            ? 'Rencana kegiatan berhasil diperbarui!' 
+            : 'Rencana kegiatan berhasil direvisi dan diajukan ulang!';
+        
+        toast($message, 'success');
         return redirect()->route('rencana_kegiatan.index');
     }
 

@@ -123,27 +123,50 @@
 
                     <div class="mb-3">
                         <label class="form-label">Status</label>
-                        <select name="status" class="form-select" required>
-                            <option value="">-- Pilih Status --</option>
-                            @php
-                                $currentStatus = old('status', $rencana_kegiatan->status ?? '');
-                            @endphp
-
-                            <option value="diajukan" {{ $currentStatus == 'diajukan' ? 'selected' : '' }}>
-                                Diajukan
-                            </option>
-                            <option value="disetujui dan akan dilaksanakan"
-                                {{ $currentStatus == 'disetujui dan akan dilaksanakan' ? 'selected' : '' }}>
-                                Disetujui dan Akan Dilaksanakan
-                            </option>
-                            <option value="ditolak" {{ $currentStatus == 'ditolak' ? 'selected' : '' }}>
-                                Ditolak
-                            </option>
-                            <option value="selesai" {{ $currentStatus == 'selesai' ? 'selected' : '' }}>
-                                Selesai
-                            </option>
-                        </select>
+                        @if(auth()->user()->role->role_name === 'supervisor')
+                            <select name="status" class="form-select" required>
+                                <option value="">-- Pilih Status --</option>
+                                @php
+                                    $currentStatus = old('status', $rencana_kegiatan->status ?? '');
+                                @endphp
+                                <option value="diajukan" {{ $currentStatus == 'diajukan' ? 'selected' : '' }}>
+                                    Diajukan
+                                </option>
+                                <option value="disetujui" {{ $currentStatus == 'disetujui' ? 'selected' : '' }}>
+                                    Disetujui
+                                </option>
+                                <option value="ditolak" {{ $currentStatus == 'ditolak' ? 'selected' : '' }}>
+                                    Ditolak
+                                </option>
+                                <option value="selesai" {{ $currentStatus == 'selesai' ? 'selected' : '' }}>
+                                    Selesai
+                                </option>
+                            </select>
+                        @else
+                            <input type="hidden" name="status" value="{{ old('status', $rencana_kegiatan->status ?? '') }}">
+                            <div class="form-control bg-light" readonly>
+                                {{ \App\Models\RencanaKegiatan::getStatusOptions()[old('status', $rencana_kegiatan->status ?? 'diajukan')] ?? 'Diajukan' }}
+                            </div>
+                            <small class="form-text text-muted">Status hanya dapat diubah oleh supervisor</small>
+                        @endif
                     </div>
+
+                    @if(auth()->user()->role->role_name === 'supervisor')
+                        @php
+                            $currentStatus = old('status', $rencana_kegiatan->status ?? '');
+                            $showKeterangan = in_array($currentStatus, ['disetujui', 'ditolak']);
+                        @endphp
+                        <div class="keterangan-status-container" style="{{ $showKeterangan ? 'display: block;' : 'display: none;' }}">
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    {{ $currentStatus == 'disetujui' ? 'Catatan Persetujuan' : 'Alasan Penolakan' }}
+                                </label>
+                                <textarea name="keterangan_status" class="form-control" rows="3" 
+                                    placeholder="{{ $currentStatus == 'disetujui' ? 'Tambahkan catatan persetujuan...' : 'Jelaskan alasan penolakan...' }}"
+                                    {{ $showKeterangan ? 'required' : '' }}>{{ old('keterangan_status', $rencana_kegiatan->keterangan_status) }}</textarea>
+                            </div>
+                        </div>
+                    @endif
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Unggah Foto</label>
@@ -228,6 +251,37 @@
         /* =======================
            FOTO BARU
         ======================= */
+        document.addEventListener('DOMContentLoaded', function() {
+        // Handle status change for supervisor
+        const statusSelect = document.querySelector('select[name="status"]');
+        const keteranganContainer = document.querySelector('.keterangan-status-container');
+        
+        if (statusSelect && keteranganContainer) {
+            statusSelect.addEventListener('change', function() {
+                const status = this.value;
+                const showKeterangan = ['disetujui', 'ditolak'].includes(status);
+                
+                if (showKeterangan) {
+                    keteranganContainer.style.display = 'block';
+                    const keteranganLabel = keteranganContainer.querySelector('label');
+                    const keteranganTextarea = keteranganContainer.querySelector('textarea');
+                    
+                    if (keteranganLabel && keteranganTextarea) {
+                        keteranganLabel.textContent = status === 'disetujui' ? 'Catatan Persetujuan' : 'Alasan Penolakan';
+                        keteranganTextarea.placeholder = status === 'disetujui' ? 'Tambahkan catatan persetujuan...' : 'Jelaskan alasan penolakan...';
+                        keteranganTextarea.required = true;
+                    }
+                } else {
+                    keteranganContainer.style.display = 'none';
+                }
+            });
+            
+            // Trigger change event on page load
+            const event = new Event('change');
+            statusSelect.dispatchEvent(event);
+        }
+
+        // Original JavaScript for photo handling
         let filesBuffer = [];
 
         renderAll();
