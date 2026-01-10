@@ -69,6 +69,30 @@ class RencanaKegiatan extends Model
         return 'uuid';
     }
 
+    /**
+     * Get the laporan kegiatan associated with this rencana.
+     */
+    public function laporanKegiatan()
+    {
+        return $this->hasOne(LaporanKegiatan::class, 'rencana_kegiatan_id', 'uuid');
+    }
+
+    /**
+     * Check if this rencana has a laporan.
+     */
+    public function hasLaporan(): bool
+    {
+        return $this->laporanKegiatan()->exists();
+    }
+
+    /**
+     * Check if laporan can be created for this rencana.
+     */
+    public function canCreateLaporan(): bool
+    {
+        return LaporanKegiatan::canCreateFor($this);
+    }
+
     protected static function boot()
     {
         parent::boot();

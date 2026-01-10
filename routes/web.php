@@ -44,6 +44,25 @@ Route::resource('rencana_kegiatan', App\Http\Controllers\RencanaKegiatanControll
 // Public/front map (full-screen map with markers)
 Route::get('/front_rencana_kegiatan', [App\Http\Controllers\RencanaKegiatanController::class, 'frontIndex'])->name('rencana_kegiatan.front');
 
+// Laporan Kegiatan Routes
+Route::middleware('auth')->group(function () {
+    // Admin only routes (create, store, edit, update, destroy)
+    Route::middleware('isAdmin')->group(function () {
+        Route::get('/laporan_kegiatan/create', [App\Http\Controllers\LaporanKegiatanController::class, 'create'])->name('laporan_kegiatan.create');
+        Route::post('/laporan_kegiatan', [App\Http\Controllers\LaporanKegiatanController::class, 'store'])->name('laporan_kegiatan.store');
+        Route::get('/laporan_kegiatan/{laporanKegiatan}/edit', [App\Http\Controllers\LaporanKegiatanController::class, 'edit'])->name('laporan_kegiatan.edit');
+        Route::put('/laporan_kegiatan/{laporanKegiatan}', [App\Http\Controllers\LaporanKegiatanController::class, 'update'])->name('laporan_kegiatan.update');
+        Route::delete('/laporan_kegiatan/{laporanKegiatan}', [App\Http\Controllers\LaporanKegiatanController::class, 'destroy'])->name('laporan_kegiatan.destroy');
+    });
+    
+    // Both admin and supervisor can view
+    Route::get('/laporan_kegiatan', [App\Http\Controllers\LaporanKegiatanController::class, 'index'])->name('laporan_kegiatan.index');
+    Route::get('/laporan_kegiatan/{laporanKegiatan}', [App\Http\Controllers\LaporanKegiatanController::class, 'show'])->name('laporan_kegiatan.show');
+    
+    // Print route (both admin and supervisor)
+    Route::get('/laporan_kegiatan/{laporanKegiatan}/print', [App\Http\Controllers\LaporanKegiatanController::class, 'print'])->name('laporan_kegiatan.print');
+});
+
 
 // Route::get('/truncate', function () {
 //     Pegawai::truncate();
