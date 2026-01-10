@@ -74,3 +74,5 @@ debug_*.php
 final_*.php
 force_*.php
 fix_*.php
+check_*.php
+update_*.php
