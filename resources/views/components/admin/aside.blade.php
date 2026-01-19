@@ -3,7 +3,7 @@
     <a href="/home" class="brand-link text-center">
         {{-- <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
             style="opacity: .8"> --}}
-        <span class="brand-text font-weight-light"><b>Perencanaan Kegiatan</b></span>
+        <span class="brand-text font-weight-light"><b>Rekam WeBe</b></span>
     </a>
 
     <!-- Sidebar -->
@@ -74,16 +74,16 @@
                         </p>
                     </a>
                 </li>
-                @if(in_array(Auth::user()->role->role_name, ['admin', 'supervisor']))
-                <li class="nav-item">
-                    <a href="{{ route('laporan_kegiatan.index') }}"
-                        class="nav-link {{ request()->routeIs('laporan_kegiatan.*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-file-alt"></i>
-                        <p>
-                            Laporan Kegiatan
-                        </p>
-                    </a>
-                </li>
+                @if (in_array(Auth::user()->role->role_name, ['admin', 'supervisor']))
+                    <li class="nav-item">
+                        <a href="{{ route('laporan_kegiatan.index') }}"
+                            class="nav-link {{ request()->routeIs('laporan_kegiatan.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-file-alt"></i>
+                            <p>
+                                Laporan Kegiatan
+                            </p>
+                        </a>
+                    </li>
                 @endif
             </ul>
         </nav>

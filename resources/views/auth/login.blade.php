@@ -17,92 +17,95 @@
     <link rel="stylesheet" href="{{ asset('adminlte') }}/dist/css/adminlte.min.css">
 
     <style>
-    body.login-page {
-        background: url('{{ asset('adminlte/dist/img/background_login3.jpg') }}') no-repeat center center fixed;
-        background-size: cover;
-    }
-
-    /* Container pengganti flex AdminLTE */
-    .login-wrapper {
-        width: 100%;
-        height: 100vh;
-
-        display: flex;
-        align-items: center;
-        justify-content: flex-start; /* KE KIRI */
-        padding-left: 80px;
-    }
-
-    /* Card login */
-    .login-box {
-        margin: 0;
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 10px;
-    }
-
-    /* Mobile tetap center */
-    @media (max-width: 768px) {
-        .login-wrapper {
-            justify-content: center;
-            padding-left: 0;
+        body.login-page {
+            background: url('{{ asset('adminlte/dist/img/background_login3.jpg') }}') no-repeat center center fixed;
+            background-size: cover;
         }
-    }
-</style>
+
+        /* Container pengganti flex AdminLTE */
+        .login-wrapper {
+            width: 100%;
+            height: 100vh;
+
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            /* KE KIRI */
+            padding-left: 80px;
+        }
+
+        /* Card login */
+        .login-box {
+            margin: 0;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+        }
+
+        /* Mobile tetap center */
+        @media (max-width: 768px) {
+            .login-wrapper {
+                justify-content: center;
+                padding-left: 0;
+            }
+        }
+    </style>
 
 </head>
 
 <body class="hold-transition login-page">
     <div class="login-wrapper">
-    <div class="login-box">
-        <!-- /.login-logo -->
-        <div class="card card-outline card-primary">
-            <div class="card-header text-center">
-                <a href="{{ asset('adminlte') }}/index2.html" class="h1"><b>Perencanaan Kegiatan</b></a>
-            </div>
-            <div class="card-body">
-                {{-- <p class="login-box-msg">Sign in to start your session</p> --}}
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-                <form action="{{ route('login') }}" method="post">
-                    @csrf
-                    <div class="mb-3">
-                        <label class="form-label">Email</label>
-
-                        <div class="input-group">
-                            <input type="email" name="email" class="form-control" placeholder="Masukkan Email"
-                                autocomplete="off">
+        <div class="login-box">
+            <!-- /.login-logo -->
+            <div class="card card-outline card-primary">
+                <div class="card-header text-center">
+                    <a href="{{ asset('adminlte') }}/index2.html" class="h1"><b>Rekam WeBe</b><br><small
+                            class="text-muted d-block" style="font-size: 15px;">(One System for Activity Planning &
+                            Reporting)</small></a>
+                </div>
+                <div class="card-body">
+                    {{-- <p class="login-box-msg">Sign in to start your session</p> --}}
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
                         </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Password</label>
+                    @endif
+                    <form action="{{ route('login') }}" method="post">
+                        @csrf
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
 
-                        <div class="input-group">
-                            <input type="password" name="password" id="password" class="form-control"
-                                placeholder="Masukkan Password">
-                            <div class="input-group-append">
-                                <span class="input-group-text" id="togglePassword" style="cursor:pointer">
-                                    <i class="fas fa-eye"></i>
-                                </span>
+                            <div class="input-group">
+                                <input type="email" name="email" class="form-control" placeholder="Masukkan Email"
+                                    autocomplete="off">
                             </div>
                         </div>
-                    </div>
-                    <div class="d-grid text-center mt-2 mb-3">
-                        <button type="submit" class="btn btn-primary btn-block">Login</button>
-                    </div>
-                </form>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+
+                            <div class="input-group">
+                                <input type="password" name="password" id="password" class="form-control"
+                                    placeholder="Masukkan Password">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="togglePassword" style="cursor:pointer">
+                                        <i class="fas fa-eye"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-grid text-center mt-2 mb-3">
+                            <button type="submit" class="btn btn-primary btn-block">Login</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.card-body -->
             </div>
-            <!-- /.card-body -->
+            <!-- /.card -->
         </div>
-        <!-- /.card -->
-    </div>
-    <!-- /.login-box -->
+        <!-- /.login-box -->
     </div>
 
     <script>

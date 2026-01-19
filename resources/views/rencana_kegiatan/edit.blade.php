@@ -123,7 +123,7 @@
 
                     <div class="mb-3">
                         <label class="form-label">Status</label>
-                        @if(auth()->user()->role->role_name === 'supervisor')
+                        @if (auth()->user()->role->role_name === 'supervisor')
                             <select name="status" class="form-select" required>
                                 <option value="">-- Pilih Status --</option>
                                 @php
@@ -143,25 +143,27 @@
                                 </option>
                             </select>
                         @else
-                            <input type="hidden" name="status" value="{{ old('status', $rencana_kegiatan->status ?? '') }}">
+                            <input type="hidden" name="status"
+                                value="{{ old('status', $rencana_kegiatan->status ?? '') }}">
                             <div class="form-control bg-light" readonly>
                                 {{ \App\Models\RencanaKegiatan::getStatusOptions()[old('status', $rencana_kegiatan->status ?? 'diajukan')] ?? 'Diajukan' }}
                             </div>
-                            <small class="form-text text-muted">Status hanya dapat diubah oleh supervisor</small>
+                            {{-- <small class="form-text text-muted">Status hanya dapat diubah oleh supervisor</small> --}}
                         @endif
                     </div>
 
-                    @if(auth()->user()->role->role_name === 'supervisor')
+                    @if (auth()->user()->role->role_name === 'supervisor')
                         @php
                             $currentStatus = old('status', $rencana_kegiatan->status ?? '');
                             $showKeterangan = in_array($currentStatus, ['disetujui', 'ditolak']);
                         @endphp
-                        <div class="keterangan-status-container" style="{{ $showKeterangan ? 'display: block;' : 'display: none;' }}">
+                        <div class="keterangan-status-container"
+                            style="{{ $showKeterangan ? 'display: block;' : 'display: none;' }}">
                             <div class="mb-3">
                                 <label class="form-label">
                                     {{ $currentStatus == 'disetujui' ? 'Catatan Persetujuan' : 'Alasan Penolakan' }}
                                 </label>
-                                <textarea name="keterangan_status" class="form-control" rows="3" 
+                                <textarea name="keterangan_status" class="form-control" rows="3"
                                     placeholder="{{ $currentStatus == 'disetujui' ? 'Tambahkan catatan persetujuan...' : 'Jelaskan alasan penolakan...' }}"
                                     {{ $showKeterangan ? 'required' : '' }}>{{ old('keterangan_status', $rencana_kegiatan->keterangan_status) }}</textarea>
                             </div>
@@ -252,96 +254,98 @@
            FOTO BARU
         ======================= */
         document.addEventListener('DOMContentLoaded', function() {
-        // Handle status change for supervisor
-        const statusSelect = document.querySelector('select[name="status"]');
-        const keteranganContainer = document.querySelector('.keterangan-status-container');
-        
-        if (statusSelect && keteranganContainer) {
-            statusSelect.addEventListener('change', function() {
-                const status = this.value;
-                const showKeterangan = ['disetujui', 'ditolak'].includes(status);
-                
-                if (showKeterangan) {
-                    keteranganContainer.style.display = 'block';
-                    const keteranganLabel = keteranganContainer.querySelector('label');
-                    const keteranganTextarea = keteranganContainer.querySelector('textarea');
-                    
-                    if (keteranganLabel && keteranganTextarea) {
-                        keteranganLabel.textContent = status === 'disetujui' ? 'Catatan Persetujuan' : 'Alasan Penolakan';
-                        keteranganTextarea.placeholder = status === 'disetujui' ? 'Tambahkan catatan persetujuan...' : 'Jelaskan alasan penolakan...';
-                        keteranganTextarea.required = true;
+                    // Handle status change for supervisor
+                    const statusSelect = document.querySelector('select[name="status"]');
+                    const keteranganContainer = document.querySelector('.keterangan-status-container');
+
+                    if (statusSelect && keteranganContainer) {
+                        statusSelect.addEventListener('change', function() {
+                            const status = this.value;
+                            const showKeterangan = ['disetujui', 'ditolak'].includes(status);
+
+                            if (showKeterangan) {
+                                keteranganContainer.style.display = 'block';
+                                const keteranganLabel = keteranganContainer.querySelector('label');
+                                const keteranganTextarea = keteranganContainer.querySelector('textarea');
+
+                                if (keteranganLabel && keteranganTextarea) {
+                                    keteranganLabel.textContent = status === 'disetujui' ? 'Catatan Persetujuan' :
+                                        'Alasan Penolakan';
+                                    keteranganTextarea.placeholder = status === 'disetujui' ?
+                                        'Tambahkan catatan persetujuan...' : 'Jelaskan alasan penolakan...';
+                                    keteranganTextarea.required = true;
+                                }
+                            } else {
+                                keteranganContainer.style.display = 'none';
+                            }
+                        });
+
+                        // Trigger change event on page load
+                        const event = new Event('change');
+                        statusSelect.dispatchEvent(event);
                     }
-                } else {
-                    keteranganContainer.style.display = 'none';
-                }
-            });
-            
-            // Trigger change event on page load
-            const event = new Event('change');
-            statusSelect.dispatchEvent(event);
-        }
 
-        // Original JavaScript for photo handling
-        let filesBuffer = [];
+                    // Original JavaScript for photo handling
+                    let filesBuffer = [];
 
-        renderAll();
+                    renderAll();
 
-        /* =======================
-           INPUT FOTO BARU
-        ======================= */
-        fotoInput.addEventListener('change', function() {
-            const selectedFiles = Array.from(this.files);
+                    /* =======================
+                       INPUT FOTO BARU
+                    ======================= */
+                    fotoInput.addEventListener('change', function() {
+                        const selectedFiles = Array.from(this.files);
 
-            selectedFiles.forEach(file => {
-                if (!file.type.startsWith('image/')) return;
+                        selectedFiles.forEach(file => {
+                            if (!file.type.startsWith('image/')) return;
 
-                const exists = filesBuffer.some(
-                    f => f.name === file.name && f.size === file.size
-                );
+                            const exists = filesBuffer.some(
+                                f => f.name === file.name && f.size === file.size
+                            );
 
-                if (!exists) {
-                    filesBuffer.push(file);
-                }
-            });
+                            if (!exists) {
+                                filesBuffer.push(file);
+                            }
+                        });
 
-            syncInputFiles();
-            renderAll();
+                        syncInputFiles();
+                        renderAll();
 
-            // reset AFTER sync
-            fotoInput.value = '';
-        });
+                        // reset AFTER sync
+                        fotoInput.value = '';
+                    });
 
-        /* =======================
-           RENDER SEMUA FOTO
-        ======================= */
-        function renderAll() {
-            preview.innerHTML = '';
+                    /* =======================
+                       RENDER SEMUA FOTO
+                    ======================= */
+                    function renderAll() {
+                        preview.innerHTML = '';
 
-            // FOTO LAMA
-            oldPhotos.forEach((path, index) => {
-                preview.appendChild(createOldPreview(path, index));
-            });
+                        // FOTO LAMA
+                        oldPhotos.forEach((path, index) => {
+                            preview.appendChild(createOldPreview(path, index));
+                        });
 
-            // FOTO BARU
-            filesBuffer.forEach((file, index) => {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    preview.appendChild(createNewPreview(e.target.result, index));
-                };
-                reader.readAsDataURL(file);
-            });
+                        // FOTO BARU
+                        filesBuffer.forEach((file, index) => {
+                            const reader = new FileReader();
+                            reader.onload = e => {
+                                preview.appendChild(createNewPreview(e.target.result, index));
+                            };
+                            reader.readAsDataURL(file);
+                        });
 
-            syncOldHidden();
-        }
+                        syncOldHidden();
+                    }
 
-        /* =======================
-           PREVIEW COMPONENT
-        ======================= */
-        function createOldPreview(path, index) {
-            const div = document.createElement('div');
-            div.className = 'position-relative d-flex align-items-center gap-2 mb-2';
+                    /* =======================
+                       PREVIEW COMPONENT
+                    ======================= */
+                    function createOldPreview(path, index) {
+                        const div = document.createElement('div');
+                        div.className = 'position-relative d-flex align-items-center gap-2 mb-2';
 
-            div.innerHTML = `
+                        div.innerHTML = `
             <img src="/storage/${path}"
                  class="rounded border"
                  style="width:100px;height:100px;object-fit:cover">
@@ -350,14 +354,14 @@
                     class="btn btn-sm btn-danger ms-auto"
                     onclick="removeOld(${index})"><i class="fas fa-times"></i></button>
         `;
-            return div;
-        }
+                        return div;
+                    }
 
-        function createNewPreview(src, index) {
-            const div = document.createElement('div');
-            div.className = 'position-relative d-flex align-items-center gap-2 mb-2';
+                    function createNewPreview(src, index) {
+                        const div = document.createElement('div');
+                        div.className = 'position-relative d-flex align-items-center gap-2 mb-2';
 
-            div.innerHTML = `
+                        div.innerHTML = `
             <img src="${src}"
                  class="rounded border"
                  style="width:100px;height:100px;object-fit:cover">
@@ -366,45 +370,45 @@
                     class="btn btn-sm btn-danger ms-auto"
                     onclick="removeNew(${index})"><i class="fas fa-times"></i></button>
         `;
-            return div;
-        }
+                        return div;
+                    }
 
-        /* =======================
-           REMOVE FOTO
-        ======================= */
-        function removeOld(index) {
-            oldPhotos.splice(index, 1);
-            renderAll();
-        }
+                    /* =======================
+                       REMOVE FOTO
+                    ======================= */
+                    function removeOld(index) {
+                        oldPhotos.splice(index, 1);
+                        renderAll();
+                    }
 
-        function removeNew(index) {
-            filesBuffer.splice(index, 1);
-            syncInputFiles();
-            renderAll();
-        }
+                    function removeNew(index) {
+                        filesBuffer.splice(index, 1);
+                        syncInputFiles();
+                        renderAll();
+                    }
 
-        /* =======================
-           SYNC FILE INPUT
-        ======================= */
-        function syncInputFiles() {
-            const dt = new DataTransfer();
-            filesBuffer.forEach(file => dt.items.add(file));
-            fotoInput.files = dt.files;
-        }
+                    /* =======================
+                       SYNC FILE INPUT
+                    ======================= */
+                    function syncInputFiles() {
+                        const dt = new DataTransfer();
+                        filesBuffer.forEach(file => dt.items.add(file));
+                        fotoInput.files = dt.files;
+                    }
 
-        /* =======================
-           FOTO LAMA → HIDDEN INPUT
-        ======================= */
-        function syncOldHidden() {
-            fotoLamaHidden.innerHTML = '';
-            oldPhotos.forEach(path => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'foto_lama[]';
-                input.value = path;
-                fotoLamaHidden.appendChild(input);
-            });
-        }
+                    /* =======================
+                       FOTO LAMA → HIDDEN INPUT
+                    ======================= */
+                    function syncOldHidden() {
+                        fotoLamaHidden.innerHTML = '';
+                        oldPhotos.forEach(path => {
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = 'foto_lama[]';
+                            input.value = path;
+                            fotoLamaHidden.appendChild(input);
+                        });
+                    }
     </script>
 
     <script>

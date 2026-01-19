@@ -14,8 +14,7 @@
                                 {{ session('status') }}
                             </div>
                         @endif
-                        Welcome to Aplikasi Perencanaan Kegiatan, <strong
-                            class="capitalize">{{ ucwords(auth()->user()->name) }}</strong>
+                        Selamat Datang di Rekam WeBe, <strong class="capitalize">{{ ucwords(auth()->user()->name) }}</strong>
                     </div>
                 </div>
             </div>

@@ -4,16 +4,19 @@
 
 @section('content')
     <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="mb-0">{{ $rencana_kegiatan->nama_kegiatan }}</h3>
+        <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <a href="{{ route('rencana_kegiatan.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left mx-1"></i>Kembali
-                </a>
-                
-                {{-- Tombol Laporan Kegiatan --}}
-                @if($rencana_kegiatan->status === \App\Models\RencanaKegiatan::STATUS_SELESAI)
-                    @if($rencana_kegiatan->hasLaporan())
+                <h3 class="mb-0 font-weight-bold">
+                    {{ $rencana_kegiatan->nama_kegiatan }}
+                </h3>
+            </div>
+
+            <a href="{{ route('rencana_kegiatan.index') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left mr-1"></i> Kembali
+            </a>
+            {{-- Tombol Laporan Kegiatan --}}
+            {{-- @if ($rencana_kegiatan->status === \App\Models\RencanaKegiatan::STATUS_SELESAI)
+                    @if ($rencana_kegiatan->hasLaporan())
                         <a href="{{ route('laporan_kegiatan.show', $rencana_kegiatan->laporanKegiatan) }}" class="btn btn-info">
                             <i class="fas fa-file-alt mx-1"></i>Lihat Laporan
                         </a>
@@ -32,8 +35,8 @@
                     <button class="btn btn-secondary" disabled title="Laporan hanya bisa dibuat untuk rencana kegiatan yang selesai">
                         <i class="fas fa-file-alt mx-1"></i>Laporan Tidak Tersedia
                     </button>
-                @endif
-            </div>
+                @endif --}}
+        </div>
 
         <div class="row">
             <div class="col-md-6">
@@ -80,20 +83,21 @@
                     <tr>
                         <th>Status</th>
                         <td>
-                            <span class="badge bg-{{ $rencana_kegiatan->status == \App\Models\RencanaKegiatan::STATUS_DIAJUKAN
-                                ? 'secondary'
-                                : ($rencana_kegiatan->status == \App\Models\RencanaKegiatan::STATUS_DISETUJUI
-                                    ? 'warning text-dark'
-                                    : ($rencana_kegiatan->status == \App\Models\RencanaKegiatan::STATUS_SELESAI
-                                        ? 'success'
-                                        : ($rencana_kegiatan->status == \App\Models\RencanaKegiatan::STATUS_DITOLAK
-                                            ? 'danger'
-                                            : 'secondary'))) }}">
+                            <span
+                                class="badge bg-{{ $rencana_kegiatan->status == \App\Models\RencanaKegiatan::STATUS_DIAJUKAN
+                                    ? 'secondary'
+                                    : ($rencana_kegiatan->status == \App\Models\RencanaKegiatan::STATUS_DISETUJUI
+                                        ? 'warning text-dark'
+                                        : ($rencana_kegiatan->status == \App\Models\RencanaKegiatan::STATUS_SELESAI
+                                            ? 'success'
+                                            : ($rencana_kegiatan->status == \App\Models\RencanaKegiatan::STATUS_DITOLAK
+                                                ? 'danger'
+                                                : 'secondary'))) }}">
                                 {{ ucfirst($rencana_kegiatan->status) }}
                             </span>
                         </td>
                     </tr>
-                    @if(!empty($rencana_kegiatan->keterangan_status))
+                    @if (!empty($rencana_kegiatan->keterangan_status))
                         <tr>
                             <th>Keterangan Status</th>
                             <td>{{ $rencana_kegiatan->keterangan_status }}</td>
