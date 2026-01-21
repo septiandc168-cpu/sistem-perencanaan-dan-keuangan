@@ -1,10 +1,7 @@
 <?php
 
-use App\Http\Controllers\BagianController;
-use App\Models\Pegawai;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
@@ -14,15 +11,9 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('/pegawai', function () {
-    return view('pegawai');
-});
-
 Route::fallback(function () {
     return view('404');
 });
-
-Route::resource('pegawai', PegawaiController::class);
 
 Route::middleware('isSupervisor')->group(function () {
     Route::get('users', [UserController::class, 'index'])->name('users.index');
@@ -34,7 +25,6 @@ Route::middleware('isSupervisor')->group(function () {
 Route::post('users/ganti-password', [UserController::class, 'gantiPassword'])->name('users.ganti-password');
 Route::resource('users', UserController::class)->middleware('isSupervisor');
 Route::post('user-update-role', [UserController::class, 'updateRole'])->name('users.update-role');
-Route::resource('bagian', BagianController::class);
 
 Route::get('/rencana_kegiatan', [App\Http\Controllers\RencanaKegiatanController::class, 'index'])->name('rencana_kegiatan.index');
 Route::get('/rencana_kegiatan/create', [App\Http\Controllers\RencanaKegiatanController::class, 'create'])->name('rencana_kegiatan.create');
@@ -50,7 +40,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/laporan_kegiatan/create', [App\Http\Controllers\LaporanKegiatanController::class, 'create'])
         ->middleware('isAdmin')
         ->name('laporan_kegiatan.create');
-    
+
     // Admin only routes (store, edit, update, destroy)
     Route::middleware('isAdmin')->group(function () {
         Route::post('/laporan_kegiatan', [App\Http\Controllers\LaporanKegiatanController::class, 'store'])->name('laporan_kegiatan.store');
@@ -58,16 +48,11 @@ Route::middleware('auth')->group(function () {
         Route::put('/laporan_kegiatan/{laporanKegiatan}', [App\Http\Controllers\LaporanKegiatanController::class, 'update'])->name('laporan_kegiatan.update');
         Route::delete('/laporan_kegiatan/{laporanKegiatan}', [App\Http\Controllers\LaporanKegiatanController::class, 'destroy'])->name('laporan_kegiatan.destroy');
     });
-    
+
     // Both admin and supervisor can view
     Route::get('/laporan_kegiatan', [App\Http\Controllers\LaporanKegiatanController::class, 'index'])->name('laporan_kegiatan.index');
     Route::get('/laporan_kegiatan/{laporanKegiatan}', [App\Http\Controllers\LaporanKegiatanController::class, 'show'])->name('laporan_kegiatan.show');
-    
+
     // Print route (both admin and supervisor)
     Route::get('/laporan_kegiatan/{laporanKegiatan}/print', [App\Http\Controllers\LaporanKegiatanController::class, 'print'])->name('laporan_kegiatan.print');
 });
-
-
-// Route::get('/truncate', function () {
-//     Pegawai::truncate();
-// });
