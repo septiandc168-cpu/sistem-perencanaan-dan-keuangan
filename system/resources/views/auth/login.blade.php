@@ -10,15 +10,15 @@
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="{{ url('public/adminlte') }}/plugins/fontawesome-free/css/all.min.css">
     <!-- icheck bootstrap -->
-    <link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url('public/adminlte') }}/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
     <!-- Theme style -->
-    <link rel="stylesheet" href="{{ asset('adminlte') }}/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="{{ url('public/adminlte') }}/dist/css/adminlte.min.css">
 
     <style>
         body.login-page {
-            background: url('{{ asset('adminlte/dist/img/background_login3.jpg') }}') no-repeat center center fixed;
+            background: url('{{ asset('public/adminlte/dist/img/background_login3.jpg') }}') no-repeat center center fixed;
             background-size: cover;
         }
 
@@ -58,7 +58,7 @@
             <!-- /.login-logo -->
             <div class="card card-outline card-primary">
                 <div class="card-header text-center">
-                    <a href="{{ asset('adminlte') }}/index2.html" class="h1"><b>Rekam WeBe</b><br><small
+                    <a href="{{ url('public/adminlte') }}/index2.html" class="h1"><b>Rekam WeBe</b><br><small
                             class="text-muted d-block" style="font-size: 15px;">(One System for Activity Planning &
                             Reporting)</small></a>
                 </div>
@@ -125,11 +125,11 @@
         });
     </script>
     <!-- jQuery -->
-    <script src="{{ asset('adminlte') }}/plugins/jquery/jquery.min.js"></script>
+    <script src="{{ url('public/adminlte') }}/plugins/jquery/jquery.min.js"></script>
     <!-- Bootstrap 4 -->
-    <script src="{{ asset('adminlte') }}/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url('public/adminlte') }}/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
-    <script src="{{ asset('adminlte') }}/dist/js/adminlte.min.js"></script>
+    <script src="{{ url('public/adminlte') }}/dist/js/adminlte.min.js"></script>
 </body>
 
 </html>

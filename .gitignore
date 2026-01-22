@@ -2,25 +2,32 @@
 # Environment
 # ======================
 .env
-.env.backup
-.env.production
-.env.local
-.env.testing
+.env.*
+/system/.env
+/system/.env.*
 
 # ======================
-# Laravel
+# Laravel (SYSTEM FOLDER)
 # ======================
-/vendor
-/node_modules
+/system/vendor/
+/system/node_modules/
+
+/system/storage/*.key
+/system/storage/logs/*
+/system/storage/framework/*
+!/system/storage/framework/.gitignore
+
+# ======================
+# Public build files
+# ======================
 /public/build
 /public/hot
 /public/storage
-/storage/*.key
-/storage/pail
-/storage/logs/*
-/storage/framework/cache/*
-/storage/framework/sessions/*
-/storage/framework/views/*
+
+# ======================
+# Database
+# ======================
+*.sql
 
 # ======================
 # Testing & Cache
@@ -39,7 +46,7 @@ yarn-error.log
 # ======================
 # IDE / Editor
 # ======================
-.vscode/*
+.vscode/
 .idea/
 .fleet/
 .zed/
@@ -68,7 +75,9 @@ Homestead.yaml
 Homestead.json
 /.vagrant
 
-# File testing & debugging
+# ======================
+# Local testing & debug scripts
+# ======================
 test_*.php
 debug_*.php
 final_*.php
