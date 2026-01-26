@@ -50,7 +50,7 @@
                         </a>
                     @else
                         <a href="#" class="small-box-footer">
-                            Info <i class="fas fa-arrow-circle-right"></i>
+                            ...
                         </a>
                     @endif
                 </div>
@@ -142,27 +142,24 @@
                                             <td>{{ \Carbon\Carbon::parse($rencana->tanggal_kegiatan)->format('d/m/Y') }}
                                             </td>
                                             <td>
-                                                <a href="{{ route('rencana_kegiatan.show', $rencana->id) }}"
-                                                    class="text-decoration-none">
-                                                    {{ Str::limit($rencana->nama_kegiatan, 30) }}
-                                                </a>
+                                                {{ Str::limit($rencana->nama_kegiatan, 30) }}
                                             </td>
                                             <td>
                                                 @switch($rencana->status)
-                                                    @case('pending')
-                                                        <span class="badge badge-warning">Pending</span>
+                                                    @case('diajukan')
+                                                        <span class="badge badge-secondary">Diajukan</span>
                                                     @break
 
                                                     @case('disetujui')
-                                                        <span class="badge badge-success">Disetujui</span>
+                                                        <span class="badge badge-warning text-dark">Disetujui</span>
                                                     @break
 
-                                                    @case('rejected')
+                                                    @case('ditolak')
                                                         <span class="badge badge-danger">Ditolak</span>
                                                     @break
 
                                                     @case('selesai')
-                                                        <span class="badge badge-info">Selesai</span>
+                                                        <span class="badge badge-success">Selesai</span>
                                                     @break
 
                                                     @default
@@ -202,10 +199,9 @@
                                 <table class="table table-striped table-hover">
                                     <thead>
                                         <tr>
-                                            <th width="5%">No</th>
-                                            <th width="15%">Tanggal</th>
+                                            <th>Tanggal</th>
                                             <th>Nama Kegiatan</th>
-                                            <th width="15%">Pelaksana</th>
+                                            <th>Penanggung Jawab</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -218,23 +214,15 @@
                                                 ->take(10)
                                                 ->get();
                                         @endphp
-                                        @forelse($rencanaDisetujui as $index => $rencana)
+                                        @forelse($rencanaDisetujui as $rencana)
                                             <tr>
-                                                <td>{{ $index + 1 }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($rencana->tanggal_kegiatan)->format('d/m/Y') }}
                                                 </td>
                                                 <td>
-                                                    <a href="{{ route('rencana_kegiatan.show', $rencana->id) }}"
-                                                        class="text-decoration-none">
-                                                        {{ $rencana->nama_kegiatan }}
-                                                    </a>
+                                                    {{ Str::limit($rencana->nama_kegiatan, 30) }}
                                                 </td>
                                                 <td>
-                                                    @if ($rencana->user)
-                                                        {{ ucwords($rencana->user->name) }}
-                                                    @else
-                                                        <span class="text-muted">-</span>
-                                                    @endif
+                                                    {{ Str::limit($rencana->penanggung_jawab, 30) }}
                                                 </td>
                                             </tr>
                                         @empty
@@ -275,7 +263,7 @@
                                         <tr>
                                             <th>Tanggal</th>
                                             <th>Kegiatan</th>
-                                            <th>Pelaksana</th>
+                                            <th>Penanggung Jawab</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -290,17 +278,10 @@
                                                 <td>{{ \Carbon\Carbon::parse($kegiatan->tanggal_kegiatan)->format('d/m/Y') }}
                                                 </td>
                                                 <td>
-                                                    <a href="{{ route('rencana_kegiatan.show', $kegiatan->id) }}"
-                                                        class="text-decoration-none">
-                                                        {{ Str::limit($kegiatan->nama_kegiatan, 30) }}
-                                                    </a>
+                                                    {{ Str::limit($kegiatan->nama_kegiatan, 30) }}
                                                 </td>
                                                 <td>
-                                                    @if ($kegiatan->user)
-                                                        {{ ucwords($kegiatan->user->name) }}
-                                                    @else
-                                                        <span class="text-muted">-</span>
-                                                    @endif
+                                                    {{ Str::limit($kegiatan->penanggung_jawab, 30) }}
                                                 </td>
                                             </tr>
                                         @empty

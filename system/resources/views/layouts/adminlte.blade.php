@@ -21,9 +21,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="{{ url('public/adminlte') }}/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet"
         href="{{ url('public/adminlte') }}/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
-    <link rel="stylesheet" href="{{ url('public/adminlte') }}/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <link rel="stylesheet"
+        href="{{ url('public/adminlte') }}/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
     <!-- summernote -->
     <link rel="stylesheet" href="{{ url('public/adminlte') }}/plugins/summernote/summernote-bs4.min.css">
+    @stack('styles')
+    @stack('css')
+    @stack('js')
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -164,6 +168,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             });
         });
     </script>
+    @stack('scripts')
 </body>
 
 </html>
