@@ -31,7 +31,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
 </head>
 
 <body class="hold-transition sidebar-mini">
-    @include('sweetalert::alert')
     <div class="wrapper">
 
         <!-- Navbar -->
@@ -105,7 +104,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- Main Footer -->
         <footer class="main-footer">
             <!-- To the right -->
-            <div class="float-right d-none d-sm-inline">
+            <div class="float-right d-none d-sm-inline d-flex">
                 Septian
             </div>
             <!-- Default to the left -->
@@ -143,10 +142,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
             $('#summernote').summernote()
 
             // CodeMirror
-            CodeMirror.fromTextArea(document.getElementById("codeMirrorDemo"), {
-                mode: "htmlmixed",
-                theme: "monokai"
-            });
+            // CodeMirror.fromTextArea(document.getElementById("codeMirrorDemo"), {
+            //     mode: "htmlmixed",
+            //     theme: "monokai"
+            // });
         })
     </script>
     <script>
@@ -169,6 +168,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
         });
     </script>
     @stack('scripts')
+    <script src="{{ url('public/adminlte') }}/plugins/sweetalert2/sweetalert2.all.js"></script>
+    @include('sweetalert::alert')
 </body>
 
 </html>

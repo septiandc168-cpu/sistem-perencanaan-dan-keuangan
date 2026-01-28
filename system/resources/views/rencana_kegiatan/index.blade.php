@@ -6,14 +6,14 @@
     <div class="card">
         <div class="p-2 d-flex align-items-center justify-content-between border">
             <h4 class="h5 mb-0 d-flex align-items-center">
-                <i class="fas fa-list mx-1"></i>
                 Data Rencana Kegiatan
             </h4>
 
             <div>
-                <a href="{{ route('rencana_kegiatan.create') }}" class="btn btn-primary">
-                    <i class="fas fa-plus me-1"></i>
-                    Buat Rencana Kegiatan
+                <a href="{{ route('rencana_kegiatan.create') }}" class="btn btn-primary btn-sm"
+                    style="height: 35px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-plus mr-1"></i>
+                    Tambah
                 </a>
             </div>
         </div>
@@ -126,24 +126,6 @@
                                         {{ ucfirst($rencanaKegiatan->status) }}
                                     </span>
                                 </td>
-                                <!-- <td>
-                                                                                                                                                        <div class="dropdown">
-                                                                                                                                                            <a class="btn dropdown-toggle" href="#" role="button" data-toggle="dropdown"
-                                                                                                                                                                aria-expanded="false">
-                                                                                                                                                                Aksi
-                                                                                                                                                            </a>
-
-                                                                                                                                                            <div class="dropdown-menu">
-                                                                                                                                                                <a class="dropdown-item"
-                                                                                                                                                                    href="{{ route('rencana_kegiatan.show', $rencanaKegiatan) }}">Detail</a>
-                                                                                                                                                                <a class="dropdown-item"
-                                                                                                                                                                    href="{{ route('rencana_kegiatan.edit', $rencanaKegiatan) }}">Edit</a>
-                                                                                                                                                                <a class="dropdown-item text-danger"
-                                                                                                                                                                    href="{{ route('rencana_kegiatan.destroy', $rencanaKegiatan) }}"
-                                                                                                                                                                    data-confirm-delete="true">Hapus Data</a>
-                                                                                                                                                            </div>
-                                                                                                                                                        </div>
-                                                                                                                                                    </td> -->
                             </tr>
                         @empty
                             <tr>

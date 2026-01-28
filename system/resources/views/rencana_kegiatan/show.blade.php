@@ -4,16 +4,18 @@
 
 @section('content')
     <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h3 class="mb-0 font-weight-bold">
-                    {{ $rencana_kegiatan->nama_kegiatan }}
-                </h3>
-            </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
 
-            <a href="{{ route('rencana_kegiatan.index') }}" class="btn btn-secondary">
-                <i class="fas fa-arrow-left mr-1"></i> Kembali
-            </a>
+            <h5 class="mb-0">
+                Rencana Kegiatan
+            </h5>
+
+            <div class="text-end">
+                <a href="{{ route('rencana_kegiatan.index') }}" class="btn btn-secondary btn-sm"
+                    style="height: 35px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-arrow-left mr-1"></i> Kembali
+                </a>
+            </div>
             {{-- Tombol Laporan Kegiatan --}}
             {{-- @if ($rencana_kegiatan->status === \App\Models\RencanaKegiatan::STATUS_SELESAI)
                     @if ($rencana_kegiatan->hasLaporan())
@@ -39,6 +41,9 @@
         </div>
 
         <div class="row">
+            <div class="col-md-6 mb-3">
+                <div id="map-show" style="width:100%; height:70vh; border:1px solid #ddd; border-radius:4px;"></div>
+            </div>
             <div class="col-md-6">
                 <table class="table">
                     <tr>
@@ -104,7 +109,8 @@
                         </tr>
                     @endif
                 </table>
-
+            </div>
+            <div>
                 @if (!empty($rencana_kegiatan->foto) && is_array($rencana_kegiatan->foto))
                     <div class="mb-3">
                         <h5>Foto</h5>
@@ -153,9 +159,6 @@
                         </div>
                     @endif
                 @endif
-            </div>
-            <div class="col-md-6">
-                <div id="map-show" style="width:100%; height:70vh; border:1px solid #ddd; border-radius:4px;"></div>
             </div>
         </div>
     </div>

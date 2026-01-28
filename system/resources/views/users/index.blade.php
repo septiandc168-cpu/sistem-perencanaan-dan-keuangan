@@ -6,7 +6,6 @@
     <div class="card">
         <div class="p-2 d-flex align-items-center justify-content-between border">
             <h4 class="h5 mb-0 d-flex align-items-center">
-                <i class="fas fa-list mx-1"></i>
                 Daftar User
             </h4>
             <div>

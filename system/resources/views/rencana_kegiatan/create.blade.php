@@ -5,20 +5,32 @@
 @section('content')
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="mb-0">Pilih Lokasi pada Peta</h3>
-            <div class="text-end">
-                <a href="{{ route('rencana_kegiatan.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left mx-1"></i> Kembali
-                </a>
-            </div>
+            <h5 class="mb-0">Form Rencana Kegiatan</h5>
         </div>
 
         <form id="rencana-kegiatan-form" action="{{ route('rencana_kegiatan.store') }}" method="POST"
             enctype="multipart/form-data">
             @csrf
             <div class="row">
-                <div class="col-md-5">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Koordinat Lokasi</label>
+                        <div class="input-group">
+                            <input type="text" id="location_lat" name="lat" class="form-control"
+                                placeholder="Latitude" readonly required>
+                            <input type="text" id="location_lng" name="lng" class="form-control"
+                                placeholder="Longitude" readonly required>
+                            <button type="button" id="use-location" class="btn btn-outline-secondary">Gunakan Lokasi
+                                Saya</button>
+                        </div>
+                        <small class="form-text text-muted">Pilih lokasi dengan mengklik pada peta atau gunakan lokasi
+                            Anda
+                            saat ini.</small>
+                    </div>
 
+                    <div class="mb-3" id="map-create"
+                        style="width:100%; height:70vh; border:1px solid #ddd; border-radius:4px;">
+                    </div>
 
                     <div class="mb-3">
                         <label class="form-label">Nama Kegiatan</label>
@@ -48,21 +60,6 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Koordinat Lokasi <small class="text-muted">(Klik pada peta untuk memilih
-                                lokasi)</small></label>
-                        <div class="input-group">
-                            <input type="text" id="location_lat" name="lat" class="form-control"
-                                placeholder="Latitude" readonly required>
-                            <input type="text" id="location_lng" name="lng" class="form-control"
-                                placeholder="Longitude" readonly required>
-                            <button type="button" id="use-location" class="btn btn-outline-secondary">Gunakan Lokasi
-                                Saya</button>
-                        </div>
-                        <small class="form-text text-muted">Pilih lokasi dengan mengklik pada peta atau gunakan lokasi Anda
-                            saat ini.</small>
-                    </div>
-
-                    <div class="mb-3">
                         <label class="form-label">Desa / Wilayah</label>
                         <input type="text" name="desa" class="form-control" placeholder="Nama desa atau wilayah">
                     </div>
@@ -77,6 +74,8 @@
                             <input type="date" name="tanggal_selesai" class="form-control">
                         </div>
                     </div>
+                </div>
+                <div class="col-md-6">
 
                     <div class="mb-3">
                         <label class="form-label">Penanggung Jawab</label>
@@ -126,15 +125,17 @@
 
                     {{-- PREVIEW DOKUMEN --}}
                     <div id="preview-dokumen" class="d-flex flex-column gap-2 mb-3"></div>
-
-                    <div class="mb-3">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save mx-1"></i> Simpan Rencana Kegiatan</button>
-                    </div>
                 </div>
-
-                <div class="col-md-7">
-                    <div id="map-create" style="width:100%; height:70vh; border:1px solid #ddd; border-radius:4px;"></div>
+                <div class="col-md-12">
+                    <div class="d-flex justify-content-between mb-3">
+                        <a href="{{ route('rencana_kegiatan.index') }}" class="btn btn-secondary btn-sm"
+                            style="height: 35px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-arrow-left mr-1"></i> Kembali
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-sm"
+                            style="height: 35px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-save mr-1"></i> Simpan</button>
+                    </div>
                 </div>
             </div>
         </form>

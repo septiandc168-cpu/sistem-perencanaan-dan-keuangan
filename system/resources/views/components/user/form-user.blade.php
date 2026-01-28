@@ -5,7 +5,7 @@
         @if ($id)
             <i class="fas fa-edit"></i>
         @else
-            <i class="fas fa-plus mx-1"></i>User Baru
+            <i class="fas fa-plus mx-1"></i>Tambah
         @endif
     </button>
     <div class="modal fade" id="formUser{{ $id ?? '' }}">

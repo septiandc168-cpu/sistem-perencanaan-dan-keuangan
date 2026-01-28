@@ -119,7 +119,7 @@
                         </h3>
                         <div class="card-tools">
                             <a href="{{ route('rencana_kegiatan.index') }}" class="btn btn-tool btn-sm">
-                                <i class="fas fa-list"></i> Lihat Semua
+                                Lihat Semua
                             </a>
                         </div>
                     </div>
@@ -129,7 +129,7 @@
                                 <thead>
                                     <tr>
                                         <th>Tanggal</th>
-                                        <th>Kegiatan</th>
+                                        <th>Nama Kegiatan</th>
                                         <th>Status</th>
                                     </tr>
                                 </thead>
@@ -190,7 +190,7 @@
                             </h3>
                             <div class="card-tools">
                                 <a href="{{ route('rencana_kegiatan.index') }}?status=disetujui" class="btn btn-tool btn-sm">
-                                    <i class="fas fa-list"></i> Lihat Semua
+                                    Lihat Semua
                                 </a>
                             </div>
                         </div>
@@ -242,57 +242,55 @@
             </div>
 
             <!-- Kegiatan Selesai Terbaru -->
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-check-double mr-2"></i>
-                                Kegiatan Selesai Terbaru
-                            </h3>
-                            <div class="card-tools">
-                                <a href="{{ route('rencana_kegiatan.index') }}?status=selesai" class="btn btn-tool btn-sm">
-                                    <i class="fas fa-list"></i> Lihat Semua
-                                </a>
-                            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-check-double mr-2"></i>
+                            Kegiatan Selesai Terbaru
+                        </h3>
+                        <div class="card-tools">
+                            <a href="{{ route('rencana_kegiatan.index') }}?status=selesai" class="btn btn-tool btn-sm">
+                                Lihat Semua
+                            </a>
                         </div>
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-striped table-hover">
-                                    <thead>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Nama Kegiatan</th>
+                                        <th>Penanggung Jawab</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $kegiatanSelesai = \App\Models\RencanaKegiatan::where('status', 'selesai')
+                                            ->latest()
+                                            ->take(5)
+                                            ->get();
+                                    @endphp
+                                    @forelse($kegiatanSelesai as $kegiatan)
                                         <tr>
-                                            <th>Tanggal</th>
-                                            <th>Kegiatan</th>
-                                            <th>Penanggung Jawab</th>
+                                            <td>{{ \Carbon\Carbon::parse($kegiatan->tanggal_kegiatan)->format('d/m/Y') }}
+                                            </td>
+                                            <td>
+                                                {{ Str::limit($kegiatan->nama_kegiatan, 30) }}
+                                            </td>
+                                            <td>
+                                                {{ Str::limit($kegiatan->penanggung_jawab, 30) }}
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        @php
-                                            $kegiatanSelesai = \App\Models\RencanaKegiatan::where('status', 'selesai')
-                                                ->latest()
-                                                ->take(5)
-                                                ->get();
-                                        @endphp
-                                        @forelse($kegiatanSelesai as $kegiatan)
-                                            <tr>
-                                                <td>{{ \Carbon\Carbon::parse($kegiatan->tanggal_kegiatan)->format('d/m/Y') }}
-                                                </td>
-                                                <td>
-                                                    {{ Str::limit($kegiatan->nama_kegiatan, 30) }}
-                                                </td>
-                                                <td>
-                                                    {{ Str::limit($kegiatan->penanggung_jawab, 30) }}
-                                                </td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="3" class="text-center text-muted">Belum ada kegiatan yang
-                                                    selesai</td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                            </div>
+                                    @empty
+                                        <tr>
+                                            <td colspan="3" class="text-center text-muted">Belum ada kegiatan yang
+                                                selesai</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

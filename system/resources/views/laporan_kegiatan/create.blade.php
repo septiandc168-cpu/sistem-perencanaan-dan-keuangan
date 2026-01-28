@@ -5,12 +5,7 @@
 @section('content')
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="mb-0">Buat Laporan Kegiatan</h3>
-            <div>
-                <a href="{{ route('laporan_kegiatan.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left mx-1"></i>Kembali
-                </a>
-            </div>
+            <h5 class="mb-0">Form Laporan Kegiatan</h5>
         </div>
 
         @if ($errors->any())
@@ -159,12 +154,14 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-end">
-                <a href="{{ route('laporan_kegiatan.index') }}" class="btn btn-secondary me-2">
-                    <i class="fas fa-times mr-1"></i>Batal
+            <div class="d-flex justify-content-between mb-3">
+                <a href="{{ route('rencana_kegiatan.index') }}" class="btn btn-secondary btn-sm"
+                    style="height: 35px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-arrow-left mr-1"></i>Kembali
                 </a>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save mr-1"></i>Simpan Laporan
+                <button type="submit" class="btn btn-primary btn-sm"
+                    style="height: 35px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-save mr-1"></i>Simpan
                 </button>
             </div>
         </form>

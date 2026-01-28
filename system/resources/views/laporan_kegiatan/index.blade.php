@@ -32,7 +32,6 @@
 
         <div class="card-header">
             <h3 class="card-title">
-                <i class="fas fa-list mr-1"></i>
                 Data Laporan Kegiatan
             </h3>
         </div>
@@ -82,12 +81,12 @@
                                             @endcan
 
                                             @can('delete', $laporan)
-                                                <button type="button" class="btn btn-danger btn-sm"
+                                                <a class="btn btn-danger btn-sm"
                                                     style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;"
-                                                    title="Hapus Laporan" data-bs-toggle="modal"
-                                                    data-bs-target="#deleteModal{{ $laporan->id }}">
+                                                    href="{{ route('laporan_kegiatan.destroy', $laporan) }}"
+                                                    title="Hapus Laporan" data-confirm-delete="true">
                                                     <i class="fas fa-trash"></i>
-                                                </button>
+                                                </a>
                                             @endcan
                                         </div>
                                     </td>
@@ -137,49 +136,6 @@
         </div>
 
     </div>
-
-    <!-- Modal Konfirmasi Hapus -->
-    @foreach ($laporans as $laporan)
-        @can('delete', $laporan)
-            <div class="modal fade" id="deleteModal{{ $laporan->id }}" tabindex="-1">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">
-                                <i class="fas fa-exclamation-triangle text-warning mr-1"></i>
-                                Konfirmasi Hapus
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p>Apakah Anda yakin ingin menghapus laporan kegiatan ini?</p>
-                            <div class="alert alert-warning">
-                                <strong>Data yang akan dihapus:</strong>
-                                <br>Nama Kegiatan: <strong>{{ $laporan->rencanaKegiatan->nama_kegiatan }}</strong>
-                                <br>Tanggal Laporan: <strong>{{ $laporan->created_at->format('d/m/Y H:i') }}</strong>
-                            </div>
-                            <p class="text-danger">
-                                <small><i class="fas fa-info-circle"></i> Tindakan ini tidak dapat dibatalkan.</small>
-                            </p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                <i class="fas fa-times mr-1"></i>Batal
-                            </button>
-                            <form action="{{ route('laporan_kegiatan.destroy', $laporan) }}" method="POST"
-                                style="display: inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger">
-                                    <i class="fas fa-trash mr-1"></i>Hapus
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endcan
-    @endforeach
 
     <style>
         .table th {
