@@ -16,6 +16,24 @@ class LaporanKegiatanController extends Controller
     public function index()
     {
         $laporans = LaporanKegiatan::with('rencanaKegiatan')->get();
+        // Provide SweetAlert delete configuration so the frontend can
+        // show a confirmation dialog when links with
+        // `data-confirm-delete` are clicked.
+        $confirm = [
+            'title' => 'Konfirmasi Hapus',
+            'text' => 'Data akan terhapus secara permanen. Lanjutkan?',
+            'icon' => config('sweetalert.confirm_delete_icon', 'warning'),
+            'showCancelButton' => config('sweetalert.confirm_delete_show_cancel_button', true),
+            'confirmButtonText' => config('sweetalert.confirm_delete_confirm_button_text', 'Yes, delete it!'),
+            'cancelButtonText' => config('sweetalert.confirm_delete_cancel_button_text', 'Cancel'),
+            'confirmButtonColor' => config('sweetalert.confirm_delete_confirm_button_color', null),
+            'cancelButtonColor' => config('sweetalert.confirm_delete_cancel_button_color', '#d33'),
+            'showCloseButton' => config('sweetalert.confirm_delete_show_close_button', false),
+            'showLoaderOnConfirm' => config('sweetalert.confirm_delete_show_loader_on_confirm', true),
+        ];
+
+        session()->flash('alert.delete', json_encode($confirm, JSON_UNESCAPED_SLASHES));
+
         return view('laporan_kegiatan.index', compact('laporans'));
     }
 
@@ -25,7 +43,7 @@ class LaporanKegiatanController extends Controller
     public function create(Request $request)
     {
         $rencanaKegiatanId = $request->get('rencana_kegiatan_id');
-        
+
         if (!$rencanaKegiatanId) {
             return redirect()->route('rencana_kegiatan.index')
                 ->with('error', 'Rencana kegiatan tidak ditemukan');
@@ -80,7 +98,7 @@ class LaporanKegiatanController extends Controller
         if (!LaporanKegiatan::canCreateFor($rencanaKegiatan)) {
             throw ValidationException::withMessages([
                 'rencana_kegiatan_id' => 'Laporan tidak dapat dibuat untuk rencana kegiatan ini. ' .
-                    ($rencanaKegiatan->status !== RencanaKegiatan::STATUS_SELESAI 
+                    ($rencanaKegiatan->status !== RencanaKegiatan::STATUS_SELESAI
                         ? 'Status rencana kegiatan harus "Selesai".'
                         : 'Laporan sudah ada.')
             ]);
@@ -103,8 +121,8 @@ class LaporanKegiatanController extends Controller
             'dokumentasi' => !empty($dokumentasiPaths) ? $dokumentasiPaths : null,
         ]);
 
-        return redirect()->route('laporan_kegiatan.show', $laporan)
-            ->with('success', 'Laporan kegiatan berhasil dibuat.');
+        toast('Laporan kegiatan berhasil disimpan!', 'success');
+        return redirect()->route('laporan_kegiatan.index', $laporan);
     }
 
     /**
@@ -153,7 +171,7 @@ class LaporanKegiatanController extends Controller
         // Handle file removals
         $currentDokumentasi = $laporanKegiatan->dokumentasi ?? [];
         $removeDokumentasi = $request->input('remove_dokumentasi', []);
-        
+
         if (!empty($removeDokumentasi)) {
             foreach ($removeDokumentasi as $path) {
                 if (in_array($path, $currentDokumentasi)) {
@@ -182,8 +200,8 @@ class LaporanKegiatanController extends Controller
             'dokumentasi' => !empty($finalDokumentasi) ? array_values($finalDokumentasi) : null,
         ]);
 
-        return redirect()->route('laporan_kegiatan.show', $laporanKegiatan)
-            ->with('success', 'Laporan kegiatan berhasil diperbarui.');
+        toast('Laporan kegiatan berhasil diperbarui!', 'success');
+        return redirect()->route('laporan_kegiatan.index', $laporanKegiatan);
     }
 
     /**
@@ -200,8 +218,8 @@ class LaporanKegiatanController extends Controller
 
         $laporanKegiatan->delete();
 
-        return redirect()->route('laporan_kegiatan.index')
-            ->with('success', 'Laporan kegiatan berhasil dihapus.');
+        toast('Laporan kegiatan berhasil dihapus.', 'success');
+        return redirect()->route('laporan_kegiatan.index');
     }
 
     /**
@@ -210,9 +228,9 @@ class LaporanKegiatanController extends Controller
     public function print(LaporanKegiatan $laporanKegiatan)
     {
         $this->authorize('print', $laporanKegiatan);
-        
+
         $laporanKegiatan->load('rencanaKegiatan');
-        
+
         return view('laporan_kegiatan.print', compact('laporanKegiatan'));
     }
 }

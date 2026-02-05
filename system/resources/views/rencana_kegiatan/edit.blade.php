@@ -95,8 +95,8 @@
                                 value="{{ old('tanggal_selesai', $rencana_kegiatan->tanggal_selesai ? \Carbon\Carbon::parse($rencana_kegiatan->tanggal_selesai)->format('Y-m-d') : null) }}">
                         </div>
                     </div>
-                </div>
-                <div class="col-md-6">
+
+
 
                     <div class="mb-3">
                         <label class="form-label">Penanggung Jawab</label>
@@ -110,6 +110,10 @@
                         <input type="text" name="kelompok" class="form-control" placeholder="Nama kelompok"
                             value="{{ old('kelompok', $rencana_kegiatan->kelompok) }}">
                     </div>
+
+                </div>
+
+                <div class="col-md-6">
 
                     <div class="mb-3">
                         <label class="form-label">Estimasi Jumlah Peserta</label>
@@ -173,57 +177,135 @@
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Unggah Foto</label>
-
                         {{-- INPUT FOTO BARU --}}
-                        <input type="file" id="fotoInput" name="foto[]" class="form-control" accept="image/*"
-                            multiple>
-
-                        {{-- <small class="text-muted">
-                            Bisa pilih satu atau beberapa foto sekaligus
-                        </small> --}}
+                        <input type="file" name="foto[]" class="form-control" accept="image/*" multiple>
+                        @error('foto')
+                            <div class="text-danger small">{{ $message }}</div>
+                        @enderror
+                        <small class="form-text text-muted">Pilih satu atau lebih file foto baru</small>
                     </div>
 
-                    {{-- HIDDEN FOTO LAMA (YANG DIPERTAHANKAN) --}}
-                    <div id="foto-lama-hidden"></div>
+                    {{-- FOTO LAMA --}}
+                    @if (!empty($rencana_kegiatan->foto))
+                        @php
+                            // Decode JSON string to array if it's a string
+$fotos = is_string($rencana_kegiatan->foto)
+    ? json_decode($rencana_kegiatan->foto, true)
+    : $rencana_kegiatan->foto;
+// Ensure it's an array
+                            if (!is_array($fotos)) {
+                                $fotos = [];
+                            }
+                        @endphp
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Foto Saat Ini</label>
+                            <div class="row">
+                                @foreach ($fotos as $index => $foto)
+                                    @if ($foto)
+                                        @php
+                                            // Handle format baru (array dengan path dan original_name)
+                                            if (is_array($foto)) {
+                                                $fotoPath = $foto['path'];
+                                                $fotoName = $foto['original_name'];
+                                            } else {
+                                                // Handle format lama (string path)
+                                                $fotoPath = $foto;
+                                                $fotoName = 'Foto ' . ($index + 1);
+                                            }
+                                        @endphp
+                                        <div class="col-md-3 mb-3">
+                                            <div class="card">
+                                                <img src="{{ asset('public/storage/app/' . $fotoPath) }}"
+                                                    class="card-img-top"
+                                                    style="height: 150px; object-fit: cover; width: 100%;"
+                                                    alt="{{ $fotoName }}">
 
-                    {{-- PREVIEW FOTO --}}
-                    <div id="preview-foto" class="d-flex flex-column"></div>
+                                                <div class="card-body p-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            name="remove_foto[]" value="{{ $fotoPath }}"
+                                                            id="remove_foto_{{ $index }}">
+                                                        <label class="form-check-label"
+                                                            for="remove_foto_{{ $index }}">
+                                                            <small>Hapus</small>
+                                                        </label>
+                                                    </div>
+                                                    <small class="text-muted">{{ $fotoName }}</small>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                            <small class="form-text text-muted">Centang gambar yang ingin dihapus</small>
+                        </div>
+                    @endif
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Dokumen Kegiatan</label>
-
-                        <input type="file" id="dokumenInput" name="dokumen[]" class="form-control" multiple
-                            accept=".pdf,.doc,.docx">
-
-                        {{-- <small class="text-muted">
-                            Bisa menambahkan dokumen baru (PDF / Word). Dokumen lama tetap tersimpan jika tidak dihapus.
-                        </small> --}}
+                        <label class="form-label fw-bold">Unggah Dokumen</label>
+                        <input type="file" name="dokumen[]" class="form-control" accept=".pdf,.doc,.docx" multiple>
+                        @error('dokumen')
+                            <div class="text-danger small">{{ $message }}</div>
+                        @enderror
+                        <small class="form-text text-muted">Pilih satu atau lebih file dokumen baru (PDF/Word)</small>
                     </div>
 
                     {{-- DOKUMEN LAMA --}}
                     @if (!empty($rencana_kegiatan->dokumen))
-                        @foreach ($rencana_kegiatan->dokumen as $index => $file)
-                            <div class="d-flex align-items-center border rounded p-2 mb-2">
-                                <i class="fas fa-file-alt text-secondary me-2"></i>
+                        @php
+                            // Decode JSON string to array if it's a string
+$dokumens = is_string($rencana_kegiatan->dokumen)
+    ? json_decode($rencana_kegiatan->dokumen, true)
+    : $rencana_kegiatan->dokumen;
+// Ensure it's an array
+                            if (!is_array($dokumens)) {
+                                $dokumens = [];
+                            }
+                        @endphp
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Dokumen Saat Ini</label>
+                            <div class="row">
+                                @foreach ($dokumens as $index => $file)
+                                    @if ($file)
+                                        @php
+                                            // Handle format baru (array dengan path dan original_name)
+                                            if (is_array($file)) {
+                                                $filePath = $file['path'];
+                                                $fileName = $file['original_name'];
+                                            } else {
+                                                // Handle format lama (string path)
+                                                $filePath = $file;
+                                                $fileName = basename($file);
+                                            }
+                                        @endphp
+                                        <div class="col-md-4 mb-3">
+                                            <div class="card">
+                                                <div class="card-body p-3">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <i class="fas fa-file-alt text-secondary me-2"></i>
 
-                                <div class="w-100">
-                                    <a href="{{ asset('storage/' . $file) }}" target="_blank">
-                                        {{ basename($file) }}
-                                    </a>
-                                </div>
-
-                                {{-- kirim ke controller --}}
-                                <input type="hidden" name="dokumen_lama[]" value="{{ $file }}">
-
-                                <button type="button" class="btn btn-sm btn-danger" onclick="hapusDokumenLama(this)">
-                                    <i class="fas fa-times"></i>
-                                </button>
+                                                        <small class="text-truncate">{{ $fileName }}</small>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            name="remove_dokumen[]" value="{{ $filePath }}"
+                                                            id="remove_dokumen_{{ $index }}">
+                                                        <label class="form-check-label"
+                                                            for="remove_dokumen_{{ $index }}">
+                                                            <small>Hapus</small>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endforeach
                             </div>
-                        @endforeach
+                            <small class="form-text text-muted">Centang dokumen yang ingin dihapus</small>
+                        </div>
                     @endif
 
-                    {{-- PREVIEW DOKUMEN BARU --}}
-                    <div id="preview-dokumen" class="d-flex flex-column gap-2 mt-2"></div>
                 </div>
                 <div class="col-md-12">
                     <div class="d-flex justify-content-between mb-3">
@@ -238,259 +320,8 @@
                     </div>
                 </div>
             </div>
-        </form>
     </div>
-
-    <script>
-        const fotoInput = document.getElementById('fotoInput');
-        const preview = document.getElementById('preview-foto');
-        const fotoLamaHidden = document.getElementById('foto-lama-hidden');
-
-        /* =======================
-           FOTO LAMA (DATABASE)
-        ======================= */
-        let oldPhotos = @json($rencana_kegiatan->foto ?? []);
-        if (!Array.isArray(oldPhotos)) {
-            oldPhotos = oldPhotos ? [oldPhotos] : [];
-        }
-
-        /* =======================
-           FOTO BARU
-        ======================= */
-        document.addEventListener('DOMContentLoaded', function() {
-                    // Handle status change for supervisor
-                    const statusSelect = document.querySelector('select[name="status"]');
-                    const keteranganContainer = document.querySelector('.keterangan-status-container');
-
-                    if (statusSelect && keteranganContainer) {
-                        statusSelect.addEventListener('change', function() {
-                            const status = this.value;
-                            const showKeterangan = ['disetujui', 'ditolak'].includes(status);
-
-                            if (showKeterangan) {
-                                keteranganContainer.style.display = 'block';
-                                const keteranganLabel = keteranganContainer.querySelector('label');
-                                const keteranganTextarea = keteranganContainer.querySelector('textarea');
-
-                                if (keteranganLabel && keteranganTextarea) {
-                                    keteranganLabel.textContent = status === 'disetujui' ? 'Catatan Persetujuan' :
-                                        'Alasan Penolakan';
-                                    keteranganTextarea.placeholder = status === 'disetujui' ?
-                                        'Tambahkan catatan persetujuan...' : 'Jelaskan alasan penolakan...';
-                                    keteranganTextarea.required = true;
-                                }
-                            } else {
-                                keteranganContainer.style.display = 'none';
-                            }
-                        });
-
-                        // Trigger change event on page load
-                        const event = new Event('change');
-                        statusSelect.dispatchEvent(event);
-                    }
-
-                    // Original JavaScript for photo handling
-                    let filesBuffer = [];
-
-                    renderAll();
-
-                    /* =======================
-                       INPUT FOTO BARU
-                    ======================= */
-                    fotoInput.addEventListener('change', function() {
-                        const selectedFiles = Array.from(this.files);
-
-                        selectedFiles.forEach(file => {
-                            if (!file.type.startsWith('image/')) return;
-
-                            const exists = filesBuffer.some(
-                                f => f.name === file.name && f.size === file.size
-                            );
-
-                            if (!exists) {
-                                filesBuffer.push(file);
-                            }
-                        });
-
-                        syncInputFiles();
-                        renderAll();
-
-                        // reset AFTER sync
-                        fotoInput.value = '';
-                    });
-
-                    /* =======================
-                       RENDER SEMUA FOTO
-                    ======================= */
-                    function renderAll() {
-                        preview.innerHTML = '';
-
-                        // FOTO LAMA
-                        oldPhotos.forEach((path, index) => {
-                            preview.appendChild(createOldPreview(path, index));
-                        });
-
-                        // FOTO BARU
-                        filesBuffer.forEach((file, index) => {
-                            const reader = new FileReader();
-                            reader.onload = e => {
-                                preview.appendChild(createNewPreview(e.target.result, index));
-                            };
-                            reader.readAsDataURL(file);
-                        });
-
-                        syncOldHidden();
-                    }
-
-                    /* =======================
-                       PREVIEW COMPONENT
-                    ======================= */
-                    function createOldPreview(path, index) {
-                        const div = document.createElement('div');
-                        div.className = 'position-relative d-flex align-items-center gap-2 mb-2';
-
-                        div.innerHTML = `
-            <img src="/storage/${path}"
-                 class="rounded border"
-                 style="width:100px;height:100px;object-fit:cover">
-
-            <button type="button"
-                    class="btn btn-sm btn-danger ms-auto"
-                    onclick="removeOld(${index})"><i class="fas fa-times"></i></button>
-        `;
-                        return div;
-                    }
-
-                    function createNewPreview(src, index) {
-                        const div = document.createElement('div');
-                        div.className = 'position-relative d-flex align-items-center gap-2 mb-2';
-
-                        div.innerHTML = `
-            <img src="${src}"
-                 class="rounded border"
-                 style="width:100px;height:100px;object-fit:cover">
-
-            <button type="button"
-                    class="btn btn-sm btn-danger ms-auto"
-                    onclick="removeNew(${index})"><i class="fas fa-times"></i></button>
-        `;
-                        return div;
-                    }
-
-                    /* =======================
-                       REMOVE FOTO
-                    ======================= */
-                    function removeOld(index) {
-                        oldPhotos.splice(index, 1);
-                        renderAll();
-                    }
-
-                    function removeNew(index) {
-                        filesBuffer.splice(index, 1);
-                        syncInputFiles();
-                        renderAll();
-                    }
-
-                    /* =======================
-                       SYNC FILE INPUT
-                    ======================= */
-                    function syncInputFiles() {
-                        const dt = new DataTransfer();
-                        filesBuffer.forEach(file => dt.items.add(file));
-                        fotoInput.files = dt.files;
-                    }
-
-                    /* =======================
-                       FOTO LAMA → HIDDEN INPUT
-                    ======================= */
-                    function syncOldHidden() {
-                        fotoLamaHidden.innerHTML = '';
-                        oldPhotos.forEach(path => {
-                            const input = document.createElement('input');
-                            input.type = 'hidden';
-                            input.name = 'foto_lama[]';
-                            input.value = path;
-                            fotoLamaHidden.appendChild(input);
-                        });
-                    }
-    </script>
-
-    <script>
-        const form = fotoInput.closest('form');
-
-        form.addEventListener('submit', function() {
-            const dt = new DataTransfer();
-
-            filesBuffer.forEach(file => {
-                dt.items.add(file);
-            });
-
-            fotoInput.files = dt.files;
-        });
-    </script>
-
-    <script>
-        const dokumenInput = document.getElementById('dokumenInput');
-        const previewDokumen = document.getElementById('preview-dokumen');
-
-        let dokumenBuffer = [];
-
-        dokumenInput.addEventListener('change', function() {
-            Array.from(this.files).forEach(file => {
-                if (!file.type.match(/pdf|word|officedocument/)) return;
-
-                const exists = dokumenBuffer.some(
-                    f => f.name === file.name && f.size === file.size
-                );
-
-                if (!exists) {
-                    dokumenBuffer.push(file);
-                }
-            });
-
-            syncDokumenInput();
-            renderDokumenPreview();
-        });
-
-        function renderDokumenPreview() {
-            previewDokumen.innerHTML = '';
-
-            dokumenBuffer.forEach((file, index) => {
-                const div = document.createElement('div');
-                div.className = 'd-flex align-items-center border rounded p-2';
-
-                div.innerHTML = `
-            <i class="fas fa-file-alt text-primary me-2"></i>
-            <div class="flex-grow-1">
-                <div class="fw-semibold">${file.name}</div>
-                <small class="text-muted">${(file.size / 1024).toFixed(1)} KB</small>
-            </div>
-            <button type="button"
-                    class="btn btn-sm btn-danger"
-                    onclick="removeDokumenBaru(${index})"><i class="fas fa-times"></i></button>
-        `;
-
-                previewDokumen.appendChild(div);
-            });
-        }
-
-        function removeDokumenBaru(index) {
-            dokumenBuffer.splice(index, 1);
-            syncDokumenInput();
-            renderDokumenPreview();
-        }
-
-        function syncDokumenInput() {
-            const dt = new DataTransfer();
-            dokumenBuffer.forEach(file => dt.items.add(file));
-            dokumenInput.files = dt.files;
-        }
-
-        // hapus dokumen lama dari form (bukan langsung dari storage)
-        function hapusDokumenLama(button) {
-            button.closest('.d-flex').remove();
-        }
-    </script>
+    </form>
 
     @push('styles')
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -505,6 +336,115 @@
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
+                // Auto-resize textareas
+                const textareas = document.querySelectorAll('textarea');
+                textareas.forEach(textarea => {
+                    textarea.addEventListener('input', function() {
+                        this.style.height = 'auto';
+                        this.style.height = this.scrollHeight + 'px';
+                    });
+                });
+
+                // File validation untuk foto
+                const fotoInput = document.querySelector('input[name="foto[]"]');
+                const existingFotos = document.querySelectorAll('input[name="remove_foto[]"]');
+
+                if (fotoInput) {
+                    fotoInput.addEventListener('change', function() {
+                        const files = this.files;
+                        const existingCount = existingFotos.length;
+                        const maxFiles = 10;
+                        const maxSize = 4 * 1024 * 1024; // 4MB
+                        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+
+                        if (existingCount + files.length > maxFiles) {
+                            alert(`Maksimal ${maxFiles} file foto. Saat ini ada ${existingCount} file.`);
+                            this.value = '';
+                            return;
+                        }
+
+                        for (let i = 0; i < files.length; i++) {
+                            const file = files[i];
+
+                            if (file.size > maxSize) {
+                                alert(`File ${file.name} terlalu besar. Maksimal 4MB per file.`);
+                                this.value = '';
+                                return;
+                            }
+
+                            if (!allowedTypes.includes(file.type)) {
+                                alert(`File ${file.name} format tidak didukung. Gunakan format JPG atau PNG.`);
+                                this.value = '';
+                                return;
+                            }
+                        }
+                    });
+                }
+
+                // File validation untuk dokumen
+                const dokumenInput = document.querySelector('input[name="dokumen[]"]');
+                const existingDokumens = document.querySelectorAll('input[name="remove_dokumen[]"]');
+
+                if (dokumenInput) {
+                    dokumenInput.addEventListener('change', function() {
+                        const files = this.files;
+                        const existingCount = existingDokumens.length;
+                        const maxFiles = 5;
+                        const maxSize = 5 * 1024 * 1024; // 5MB
+                        const allowedTypes = ['application/pdf', 'application/msword',
+                            'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                        ];
+
+                        if (existingCount + files.length > maxFiles) {
+                            alert(`Maksimal ${maxFiles} file dokumen. Saat ini ada ${existingCount} file.`);
+                            this.value = '';
+                            return;
+                        }
+
+                        for (let i = 0; i < files.length; i++) {
+                            const file = files[i];
+
+                            if (file.size > maxSize) {
+                                alert(`File ${file.name} terlalu besar. Maksimal 5MB per file.`);
+                                this.value = '';
+                                return;
+                            }
+
+                            if (!allowedTypes.includes(file.type)) {
+                                alert(`File ${file.name} format tidak didukung. Gunakan format PDF atau Word.`);
+                                this.value = '';
+                                return;
+                            }
+                        }
+                    });
+                }
+
+                // Confirm delete
+                const deleteBtn = document.querySelector('button[type="submit"]');
+                if (deleteBtn) {
+                    deleteBtn.addEventListener('click', function(e) {
+                        const removeFotos = document.querySelectorAll('input[name="remove_foto[]"]:checked');
+                        const removeDokumens = document.querySelectorAll(
+                            'input[name="remove_dokumen[]"]:checked');
+
+                        let message = '';
+                        if (removeFotos.length > 0) {
+                            message += `${removeFotos.length} foto`;
+                        }
+                        if (removeDokumens.length > 0) {
+                            if (message) message += ' dan ';
+                            message += `${removeDokumens.length} dokumen`;
+                        }
+
+                        if (message) {
+                            if (!confirm(`Anda akan menghapus ${message}. Lanjutkan?`)) {
+                                e.preventDefault();
+                            }
+                        }
+                    });
+                }
+
+                // Initialize map
                 const initialLat = parseFloat('{{ $rencana_kegiatan->lat ?? -6.2 }}');
                 const initialLng = parseFloat('{{ $rencana_kegiatan->lng ?? 106.816666 }}');
                 const map = L.map('map-create').setView([initialLat, initialLng], 12);

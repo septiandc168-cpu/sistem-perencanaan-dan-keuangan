@@ -151,7 +151,8 @@
                                 @foreach ($laporanKegiatan->dokumentasi as $index => $dokumentasi)
                                     <div class="col-md-3 mb-3">
                                         <div class="card">
-                                            <img src="{{ asset('storage/' . $dokumentasi) }}" class="card-img-top"
+                                            <img src="{{ asset('public/storage/app/' . $dokumentasi) }}"
+                                                class="card-img-top"
                                                 style="height: 150px; object-fit: cover; width: 100%;"
                                                 alt="Dokumentasi {{ $index + 1 }}">
                                             <div class="card-body p-2">

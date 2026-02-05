@@ -156,10 +156,10 @@
                             @foreach ($laporanKegiatan->dokumentasi as $index => $dokumentasi)
                                 <div class="col-md-3 mb-3">
                                     <div class="card">
-                                        <img src="{{ asset('storage/' . $dokumentasi) }}" class="card-img-top"
+                                        <img src="{{ asset('public/storage/app/' . $dokumentasi) }}" class="card-img-top"
                                             style="height: 200px; object-fit: cover; width: 100%;"
-                                            alt="Dokumentasi {{ $index + 1 }}" data-bs-toggle="modal"
-                                            data-bs-target="#imageModal{{ $index }}">
+                                            alt="Dokumentasi {{ $index + 1 }}" data-toggle="modal"
+                                            data-target="#imageModal{{ $index }}">
                                         <div class="card-body p-2 text-center">
                                             <small class="text-muted">Dokumentasi {{ $index + 1 }}</small>
                                         </div>
@@ -175,23 +175,25 @@
         <!-- Modal untuk preview gambar -->
         @if (!empty($laporanKegiatan->dokumentasi))
             @foreach ($laporanKegiatan->dokumentasi as $index => $dokumentasi)
-                <div class="modal fade" id="imageModal{{ $index }}" tabindex="-1">
-                    <div class="modal-dialog modal-lg">
+                <div class="modal fade" id="imageModal{{ $index }}">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">Dokumentasi {{ $index + 1 }}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                <h4 class="modal-title">Dokumentasi {{ $index + 1 }}</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                             </div>
-                            <div class="modal-body text-center">
-                                <img src="{{ asset('storage/' . $dokumentasi) }}" class="img-fluid"
-                                    alt="Dokumentasi {{ $index + 1 }}">
+                            <div class="modal-body text-center p-2">
+                                <img src="{{ asset('public/storage/app/' . $dokumentasi) }}" class="img-fluid"
+                                    alt="{{ basename($dokumentasi) }}" style="max-height: 70vh; object-fit: contain;">
                             </div>
-                            <div class="modal-footer">
-                                <a href="{{ asset('storage/' . $dokumentasi) }}"
-                                    download="dokumentasi-{{ $index + 1 }}.jpg" class="btn btn-primary">
+                            <div class="modal-footer justify-content-between">
+                                <a href="{{ asset('public/storage/app/' . $dokumentasi) }}"
+                                    download="{{ basename($dokumentasi) }}" class="btn btn-primary btn-sm">
                                     <i class="fas fa-download mr-1"></i>Download
                                 </a>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Tutup</button>
                             </div>
                         </div>
                     </div>
@@ -199,6 +201,52 @@
             @endforeach
         @endif
     </div>
+
+    {{-- SCRIPT MODAL --}}
+    @push('scripts')
+        <script>
+            // Bootstrap 4 - modal akan otomatis berfungsi dengan data-toggle dan data-target
+            console.log('Modal Bootstrap 4 siap');
+        </script>
+    @endpush
+
+    {{-- RESPONSIVE MODAL CSS --}}
+    @push('styles')
+        <style>
+            /* Responsive modal untuk mobile */
+            @media (max-width: 576px) {
+                .modal-dialog {
+                    margin: 10px;
+                    max-width: calc(100vw - 20px);
+                }
+
+                .modal-body {
+                    padding: 10px !important;
+                }
+
+                .modal-body img {
+                    max-height: 60vh !important;
+                }
+
+                .modal-footer {
+                    padding: 10px !important;
+                    flex-direction: column;
+                    gap: 5px;
+                }
+
+                .modal-footer .btn {
+                    width: 100%;
+                    margin: 0;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .modal-dialog.modal-lg {
+                    max-width: 95%;
+                }
+            }
+        </style>
+    @endpush
 
     <style>
         .card-img-top {

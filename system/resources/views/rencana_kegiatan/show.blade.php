@@ -42,7 +42,92 @@
 
         <div class="row">
             <div class="col-md-6 mb-3">
-                <div id="map-show" style="width:100%; height:70vh; border:1px solid #ddd; border-radius:4px;"></div>
+                <div class="mb-3" id="map-show"
+                    style="width:100%; height:70vh; border:1px solid #ddd; border-radius:4px;"></div>
+                <div>
+                    @php
+                        $fotoData = $rencana_kegiatan->foto;
+                        if (is_string($fotoData)) {
+                            $fotoData = json_decode($fotoData, true);
+                        }
+                        $fotoData = is_array($fotoData) ? $fotoData : [];
+                    @endphp
+
+                    @if (!empty($fotoData))
+                        <div class="mb-3">
+                            <h5>Foto</h5>
+
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach ($fotoData as $index => $foto)
+                                    @if ($foto)
+                                        @php
+                                            // Handle format baru (array dengan path dan original_name)
+                                            if (is_array($foto)) {
+                                                $fotoPath = $foto['path'];
+                                                $fotoName = $foto['original_name'];
+                                            } else {
+                                                // Handle format lama (string path)
+                                                $fotoPath = $foto;
+                                                $fotoName = 'Foto ' . ($index + 1);
+                                            }
+                                        @endphp
+                                        <div class="text-center">
+                                            <img src="{{ asset('public/storage/app/' . $fotoPath) }}" alt="foto kegiatan"
+                                                class="img-thumbnail"
+                                                style="width:150px;height:150px;object-fit:cover;cursor:pointer;"
+                                                data-toggle="modal" data-target="#imageModal{{ $index }}">
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    @if (!empty($rencana_kegiatan->dokumen))
+                        @php
+                            // Pastikan selalu array
+                            $dokumens = $rencana_kegiatan->dokumen;
+
+                            if (is_string($dokumens)) {
+                                $dokumens = json_decode($dokumens, true);
+                            }
+
+                            $dokumens = is_array($dokumens) ? $dokumens : [];
+                        @endphp
+
+                        @if (count($dokumens))
+                            <div class="mb-3">
+                                <h5>Dokumen</h5>
+
+                                <ul class="list-group">
+                                    @foreach ($dokumens as $index => $file)
+                                        @if ($file)
+                                            @php
+                                                // Handle format baru (array dengan path dan original_name)
+                                                if (is_array($file)) {
+                                                    $filePath = $file['path'];
+                                                    $fileName = $file['original_name'];
+                                                } else {
+                                                    // Handle format lama (string path)
+                                                    $filePath = $file;
+                                                    $fileName = basename($file);
+                                                }
+                                            @endphp
+                                            <li class="list-group-item d-flex align-items-center">
+                                                <i class="fas fa-file-alt text-primary me-2"></i>
+
+                                                <a href="{{ asset('public/storage/app/' . $filePath) }}" target="_blank"
+                                                    class="text-decoration-none" download="{{ $fileName }}">
+                                                    {{ $fileName }}
+                                                </a>
+                                            </li>
+                                        @endif
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                    @endif
+                </div>
             </div>
             <div class="col-md-6">
                 <table class="table">
@@ -110,56 +195,6 @@
                     @endif
                 </table>
             </div>
-            <div>
-                @if (!empty($rencana_kegiatan->foto) && is_array($rencana_kegiatan->foto))
-                    <div class="mb-3">
-                        <h5>Foto</h5>
-
-                        <div class="d-flex flex-wrap gap-2">
-                            @foreach ($rencana_kegiatan->foto as $foto)
-                                @if ($foto)
-                                    <img src="{{ asset('storage/' . $foto) }}" alt="foto kegiatan" class="img-thumbnail"
-                                        style="width:150px;height:150px;object-fit:cover;">
-                                @endif
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
-
-                @if (!empty($rencana_kegiatan->dokumen))
-                    @php
-                        // Pastikan selalu array
-                        $dokumens = $rencana_kegiatan->dokumen;
-
-                        if (is_string($dokumens)) {
-                            $dokumens = json_decode($dokumens, true);
-                        }
-
-                        $dokumens = is_array($dokumens) ? $dokumens : [];
-                    @endphp
-
-                    @if (count($dokumens))
-                        <div class="mb-3">
-                            <h5>Dokumen</h5>
-
-                            <ul class="list-group">
-                                @foreach ($dokumens as $file)
-                                    @if ($file)
-                                        <li class="list-group-item d-flex align-items-center">
-                                            <i class="fas fa-file-alt text-primary me-2"></i>
-
-                                            <a href="{{ asset('storage/' . $file) }}" target="_blank"
-                                                class="text-decoration-none">
-                                                {{ basename($file) }}
-                                            </a>
-                                        </li>
-                                    @endif
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-                @endif
-            </div>
         </div>
     </div>
 
@@ -189,5 +224,95 @@
             });
         </script>
     @endpush
+
+    {{-- SCRIPT MODAL --}}
+    @push('scripts')
+        <script>
+            // Bootstrap 4 - modal akan otomatis berfungsi dengan data-toggle dan data-target
+            console.log('Modal Bootstrap 4 siap');
+        </script>
+    @endpush
+
+    {{-- RESPONSIVE MODAL CSS --}}
+    @push('styles')
+        <style>
+            /* Responsive modal untuk mobile */
+            @media (max-width: 576px) {
+                .modal-dialog {
+                    margin: 10px;
+                    max-width: calc(100vw - 20px);
+                }
+
+                .modal-body {
+                    padding: 10px !important;
+                }
+
+                .modal-body img {
+                    max-height: 60vh !important;
+                }
+
+                .modal-footer {
+                    padding: 10px !important;
+                    flex-direction: column;
+                    gap: 5px;
+                }
+
+                .modal-footer .btn {
+                    width: 100%;
+                    margin: 0;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .modal-dialog.modal-lg {
+                    max-width: 95%;
+                }
+            }
+        </style>
+    @endpush
+
+    {{-- MODAL FOTO --}}
+    @if (!empty($fotoData))
+        {{-- Debug: tampilkan info modal --}}
+        {{-- <small class="text-muted d-block mb-2">Membuat {{ count($fotoData) }} modal</small> --}}
+        @foreach ($fotoData as $index => $foto)
+            @if ($foto)
+                @php
+                    // Handle format baru (array dengan path dan original_name)
+                    if (is_array($foto)) {
+                        $fotoPath = $foto['path'];
+                        $fotoName = $foto['original_name'];
+                    } else {
+                        // Handle format lama (string path)
+                        $fotoPath = $foto;
+                        $fotoName = 'Foto ' . ($index + 1);
+                    }
+                @endphp
+                <div class="modal fade" id="imageModal{{ $index }}">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">{{ $fotoName }}</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body text-center p-2">
+                                <img src="{{ asset('public/storage/app/' . $fotoPath) }}" class="img-fluid"
+                                    alt="{{ $fotoName }}" style="max-height: 70vh; object-fit: contain;">
+                            </div>
+                            <div class="modal-footer justify-content-between">
+                                <a href="{{ asset('public/storage/app/' . $fotoPath) }}" download="{{ $fotoName }}"
+                                    class="btn btn-primary btn-sm">
+                                    <i class="fas fa-download mr-1"></i>Download
+                                </a>
+                                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+        @endforeach
+    @endif
 
 @endsection

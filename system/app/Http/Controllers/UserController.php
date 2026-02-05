@@ -66,7 +66,7 @@ class UserController extends Controller
         }
 
         User::updateOrCreate(['id' => $id], $newRequest);
-        toast()->success('Berhasil', 'Data user berhasil disimpan');
+        toast('Data user berhasil disimpan!', 'success');
         return Redirect::route('users.index');
     }
 
@@ -89,7 +89,7 @@ class UserController extends Controller
         $user = User::find(Auth::id());
 
         if (!Hash::check($request->old_password, $user->password)) {
-            toast()->error('Gagal', 'Password saat ini tidak sesuai');
+            toast('Password saat ini tidak sesuai.', 'error');
             return redirect()->route('home');
         }
 
@@ -97,7 +97,7 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        toast()->success('Berhasil', 'Password berhasil diubah');
+        toast('Password berhasil diubah!', 'success');
         return redirect()->route('home');
     }
 
@@ -106,12 +106,12 @@ class UserController extends Controller
         $user = User::find($id);
 
         if (Auth::id() == $id) {
-            toast()->error('Gagal', 'Anda tidak dapat menghapus akun yang sedang login');
+            toast('Anda tidak dapat menghapus akun yang sedang login', 'error');
             return Redirect::route('users.index');
         }
 
         $user->delete();
-        toast()->success('Berhasil', 'Data user berhasil dihapus');
+        toast('Data user berhasil dihapus.', 'success');
         return Redirect::route('users.index');
     }
 
@@ -126,7 +126,7 @@ class UserController extends Controller
             'password' => Hash::make('12345678'),
         ]);
 
-        toast()->success('Berhasil', 'Password berhasil direset');
+        toast('Password berhasil direset!', 'success');
         return redirect()->route('users.index');
     }
 }

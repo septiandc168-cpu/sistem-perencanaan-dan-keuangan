@@ -139,7 +139,7 @@
                                     @endphp
                                     @forelse($rencanaTerbaru as $rencana)
                                         <tr>
-                                            <td>{{ \Carbon\Carbon::parse($rencana->tanggal_kegiatan)->format('d/m/Y') }}
+                                            <td>{{ \Carbon\Carbon::parse($rencana->tanggal_mulai)->format('d/m/Y') }}
                                             </td>
                                             <td>
                                                 {{ Str::limit($rencana->nama_kegiatan, 30) }}
@@ -147,11 +147,11 @@
                                             <td>
                                                 @switch($rencana->status)
                                                     @case('diajukan')
-                                                        <span class="badge badge-secondary">Diajukan</span>
+                                                        <span class="badge badge-warning text-dark">Diajukan</span>
                                                     @break
 
                                                     @case('disetujui')
-                                                        <span class="badge badge-warning text-dark">Disetujui</span>
+                                                        <span class="badge badge-primary">Disetujui</span>
                                                     @break
 
                                                     @case('ditolak')
@@ -216,7 +216,7 @@
                                         @endphp
                                         @forelse($rencanaDisetujui as $rencana)
                                             <tr>
-                                                <td>{{ \Carbon\Carbon::parse($rencana->tanggal_kegiatan)->format('d/m/Y') }}
+                                                <td>{{ \Carbon\Carbon::parse($rencana->tanggal_mulai)->format('d/m/Y') }}
                                                 </td>
                                                 <td>
                                                     {{ Str::limit($rencana->nama_kegiatan, 30) }}
@@ -274,7 +274,7 @@
                                     @endphp
                                     @forelse($kegiatanSelesai as $kegiatan)
                                         <tr>
-                                            <td>{{ \Carbon\Carbon::parse($kegiatan->tanggal_kegiatan)->format('d/m/Y') }}
+                                            <td>{{ \Carbon\Carbon::parse($kegiatan->tanggal_mulai)->format('d/m/Y') }}
                                             </td>
                                             <td>
                                                 {{ Str::limit($kegiatan->nama_kegiatan, 30) }}

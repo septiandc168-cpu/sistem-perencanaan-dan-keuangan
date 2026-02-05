@@ -115,9 +115,9 @@
                                 <td>
                                     <span
                                         class="badge bg-{{ $rencanaKegiatan->status == \App\Models\RencanaKegiatan::STATUS_DIAJUKAN
-                                            ? 'secondary'
+                                            ? 'warning text-dark'
                                             : ($rencanaKegiatan->status == \App\Models\RencanaKegiatan::STATUS_DISETUJUI
-                                                ? 'warning text-dark'
+                                                ? 'primary'
                                                 : ($rencanaKegiatan->status == \App\Models\RencanaKegiatan::STATUS_SELESAI
                                                     ? 'success'
                                                     : ($rencanaKegiatan->status == \App\Models\RencanaKegiatan::STATUS_DITOLAK
