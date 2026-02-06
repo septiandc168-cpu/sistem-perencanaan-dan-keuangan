@@ -16,7 +16,9 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
-        $users = User::with('role')->get();
+        $users = User::with('role')
+            ->orderBy('updated_at', 'desc')
+            ->get();
         $roles = Role::all();
         confirmDelete('Hapus User', 'Apakah Anda yakin ingin menghapus user ini?');
         return view('users.index', compact('users', 'roles'));

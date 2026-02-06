@@ -16,7 +16,9 @@ class RencanaKegiatanController extends Controller
 {
     public function index(Request $request)
     {
-        $rencanaKegiatans = RencanaKegiatan::with('laporanKegiatan')->get();
+        $rencanaKegiatans = RencanaKegiatan::with('laporanKegiatan')
+            ->orderBy('updated_at', 'desc')
+            ->get();
         // Provide SweetAlert delete configuration so the frontend can
         // show a confirmation dialog when links with
         // `data-confirm-delete` are clicked.

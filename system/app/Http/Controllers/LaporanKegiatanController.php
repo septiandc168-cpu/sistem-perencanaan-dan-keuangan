@@ -15,7 +15,9 @@ class LaporanKegiatanController extends Controller
      */
     public function index()
     {
-        $laporans = LaporanKegiatan::with('rencanaKegiatan')->get();
+        $laporans = LaporanKegiatan::with('rencanaKegiatan')
+            ->orderBy('updated_at', 'desc')
+            ->get();
         // Provide SweetAlert delete configuration so the frontend can
         // show a confirmation dialog when links with
         // `data-confirm-delete` are clicked.
