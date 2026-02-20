@@ -22,8 +22,17 @@ class RencanaKegiatanPolicy
      */
     public function view(User $user, RencanaKegiatan $rencanaKegiatan): bool
     {
-        // Both admin and supervisor can view details
-        return in_array($user->role->role_name, ['admin', 'supervisor']);
+        // Supervisor can view any rencana kegiatan
+        if ($user->role->role_name === 'supervisor') {
+            return true;
+        }
+
+        // Admin can only view their own rencana kegiatan
+        if ($user->role->role_name === 'admin') {
+            return $rencanaKegiatan->user_id === $user->id;
+        }
+
+        return false;
     }
 
     /**
@@ -31,8 +40,8 @@ class RencanaKegiatanPolicy
      */
     public function create(User $user): bool
     {
-        // Both admin and supervisor can create
-        return in_array($user->role->role_name, ['admin', 'supervisor']);
+        // Only admin can create rencana kegiatan
+        return $user->role->role_name === 'admin';
     }
 
     /**
@@ -45,9 +54,10 @@ class RencanaKegiatanPolicy
             return true;
         }
 
-        // Admin can only update rencana kegiatan with status 'ditolak'
+        // Admin can only update their own rencana kegiatan with status 'ditolak'
         if ($user->role->role_name === 'admin') {
-            return $rencanaKegiatan->status === RencanaKegiatan::STATUS_DITOLAK;
+            return $rencanaKegiatan->user_id === $user->id && 
+                   $rencanaKegiatan->status === RencanaKegiatan::STATUS_DITOLAK;
         }
 
         return false;
@@ -67,8 +77,12 @@ class RencanaKegiatanPolicy
      */
     public function delete(User $user, RencanaKegiatan $rencanaKegiatan): bool
     {
-        // Only supervisor can delete
-        return $user->role->role_name === 'supervisor';
+        // Only admin can delete rencana kegiatan
+        if ($user->role->role_name === 'admin') {
+            return $rencanaKegiatan->user_id === $user->id;
+        }
+
+        return false;
     }
 
     /**
@@ -76,8 +90,12 @@ class RencanaKegiatanPolicy
      */
     public function restore(User $user, RencanaKegiatan $rencanaKegiatan): bool
     {
-        // Only supervisor can restore
-        return $user->role->role_name === 'supervisor';
+        // Only admin can restore rencana kegiatan
+        if ($user->role->role_name === 'admin') {
+            return $rencanaKegiatan->user_id === $user->id;
+        }
+
+        return false;
     }
 
     /**
@@ -85,7 +103,11 @@ class RencanaKegiatanPolicy
      */
     public function forceDelete(User $user, RencanaKegiatan $rencanaKegiatan): bool
     {
-        // Only supervisor can force delete
-        return $user->role->role_name === 'supervisor';
+        // Only admin can force delete rencana kegiatan
+        if ($user->role->role_name === 'admin') {
+            return $rencanaKegiatan->user_id === $user->id;
+        }
+
+        return false;
     }
 }

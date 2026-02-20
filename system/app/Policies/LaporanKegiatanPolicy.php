@@ -22,8 +22,17 @@ class LaporanKegiatanPolicy
      */
     public function view(User $user, LaporanKegiatan $laporanKegiatan): bool
     {
-        // Both admin and supervisor can view details
-        return in_array($user->role->role_name, ['admin', 'supervisor']);
+        // Supervisor can view any laporan
+        if ($user->role->role_name === 'supervisor') {
+            return true;
+        }
+
+        // Admin can only view their own laporan
+        if ($user->role->role_name === 'admin') {
+            return $laporanKegiatan->user_id === $user->id;
+        }
+
+        return false;
     }
 
     /**
@@ -41,7 +50,11 @@ class LaporanKegiatanPolicy
     public function update(User $user, LaporanKegiatan $laporanKegiatan): bool
     {
         // Only admin can update laporan
-        return $user->role->role_name === 'admin';
+        if ($user->role->role_name === 'admin') {
+            return $laporanKegiatan->user_id === $user->id;
+        }
+
+        return false;
     }
 
     /**
@@ -50,7 +63,11 @@ class LaporanKegiatanPolicy
     public function delete(User $user, LaporanKegiatan $laporanKegiatan): bool
     {
         // Only admin can delete laporan
-        return $user->role->role_name === 'admin';
+        if ($user->role->role_name === 'admin') {
+            return $laporanKegiatan->user_id === $user->id;
+        }
+
+        return false;
     }
 
     /**

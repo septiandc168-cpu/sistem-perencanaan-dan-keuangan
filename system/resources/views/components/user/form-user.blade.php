@@ -23,16 +23,16 @@
                     <div class="modal-body">
                         <div class="form-group my-1">
                             <label for="">Nama</label>
-                            <input type="text" name="name" id="name" class="form-control"
+                            <input type="text" name="name" id="name" class="form-control" placeholder="Masukkan Nama"
                                 value="{{ $id ? $name : old('name') }}">
                         </div>
                         <div class="form-group my-1">
                             <label for="">Email</label>
-                            <input type="email" name="email" id="email" class="form-control"
+                            <input type="email" name="email" id="email" class="form-control" placeholder="Masukkan Email"
                                 value="{{ $id ? $email : old('email') }}">
                         </div>
                         <div class="modal-footer justify-content-between">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
                             <button type="submit" class="btn btn-primary">Simpan</button>
                         </div>
                     </div>

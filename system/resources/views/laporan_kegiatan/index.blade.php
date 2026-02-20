@@ -38,15 +38,15 @@
         <div class="card-body">
             @if ($laporans->count() > 0)
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-sm" id="table2">
-                        <thead>
+                    <table class="table table-bordered table-sm" id="table2">
+                        <thead class="bg-navy">
                             <tr>
-                                <th width="50">No</th>
-                                <th width="120">Opsi</th>
-                                <th>Nama Kegiatan</th>
-                                <th>Penanggung Jawab</th>
-                                <th>Tanggal Laporan</th>
-                                <th>Status Rencana</th>
+                                <th class="align-middle" style=" padding-left: 18px; height: 35px; width: 35px">No</th>
+                                <th class="align-middle" style=" padding-left: 18px; height: 35px; width: 110px">Aksi</th>
+                                <th class="align-middle" style=" padding-left: 18px; height: 35px;">Nama Kegiatan</th>
+                                <th class="align-middle" style=" padding-left: 18px; height: 35px;">Penanggung Jawab</th>
+                                <th class="align-middle" style=" padding-left: 18px; height: 35px;">Tanggal Laporan</th>
+                                <th class="align-middle" style=" padding-left: 18px; height: 35px;">Status Rencana</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -91,7 +91,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <strong>{{ $laporan->rencanaKegiatan->nama_kegiatan }}</strong>
+                                        {{ $laporan->rencanaKegiatan->nama_kegiatan }}
                                         <br>
                                         <small class="text-muted">{{ $laporan->rencanaKegiatan->jenis_kegiatan }}</small>
                                     </td>
@@ -138,10 +138,10 @@
     </div>
 
     <style>
-        .table th {
+        /* .table th {
             background-color: #f8f9fa;
             font-weight: 600;
-        }
+        } */
 
         .btn-group .btn {
             margin-right: 2px;

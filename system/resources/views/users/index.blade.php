@@ -14,13 +14,13 @@
         </div>
         <div class="card-body">
             <x-alert :errors="$errors" />
-            <table class="table table-sm" id="table2">
-                <thead>
+            <table class="table table-bordered table-sm" id="table2">
+                <thead class="bg-navy">
                     <tr>
-                        <th>No</th>
-                        <th>Opsi</th>
-                        <th>Nama</th>
-                        <th>Email</th>
+                        <th class="align-middle" style=" padding-left: 18px; height: 35px; width: 35px">No</th>
+                        <th class="align-middle" style=" padding-left: 18px; height: 35px; width: 85px">Aksi</th>
+                        <th class="align-middle" style=" padding-left: 18px; height: 35px;">Nama</th>
+                        <th class="align-middle" style=" padding-left: 18px; height: 35px;">Email</th>
                     </tr>
                 </thead>
                 <tbody>

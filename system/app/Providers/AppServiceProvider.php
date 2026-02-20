@@ -24,14 +24,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Implicitly grant "Super Admin" all permissions
-        // This can be removed if you don't want super admins to have all permissions automatically
-        Gate::before(function ($user, $ability) {
-            if ($user->role->role_name === 'supervisor') {
-                return true;
-            }
-        });
-
         // Register policies
         Gate::policy(RencanaKegiatan::class, RencanaKegiatanPolicy::class);
         Gate::policy(LaporanKegiatan::class, LaporanKegiatanPolicy::class);

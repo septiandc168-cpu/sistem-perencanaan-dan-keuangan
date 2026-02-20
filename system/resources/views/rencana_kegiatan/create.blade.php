@@ -11,8 +11,16 @@
         <form id="rencana-kegiatan-form" action="{{ route('rencana_kegiatan.store') }}" method="POST"
             enctype="multipart/form-data">
             @csrf
-            <div class="row">
-                <div class="col-md-6">
+            
+            <!-- Lokasi Kegiatan -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-map-marker-alt mr-1"></i>
+                        Lokasi Kegiatan
+                    </h3>
+                </div>
+                <div class="card-body">
                     <div class="mb-3">
                         <label class="form-label">Koordinat Lokasi</label>
                         <div class="input-group">
@@ -25,7 +33,7 @@
                         </div>
                         <small class="form-text text-muted">Pilih lokasi dengan mengklik pada peta atau gunakan lokasi
                             Anda
-                            saat ini.</small>
+                            saat ini</small>
                     </div>
 
                     <div class="mb-3" id="map-create"
@@ -33,109 +41,155 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Nama Kegiatan</label>
-                        <input type="text" name="nama_kegiatan" class="form-control" placeholder="Nama kegiatan"
-                            required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Jenis Kegiatan</label>
-                        <select name="jenis_kegiatan" class="form-select" required>
-                            <option value="">Pilih jenis kegiatan</option>
-                            <option value="konservasi">Konservasi</option>
-                            <option value="usaha masyarakat">Usaha Masyarakat</option>
-                            <option value="edukasi">Edukasi</option>
-                            <option value="lainnya">Lainnya</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Deskripsi</label>
-                        <textarea name="deskripsi" class="form-control" rows="3"></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Tujuan</label>
-                        <textarea name="tujuan" class="form-control" rows="2"></textarea>
-                    </div>
-
-                    <div class="mb-3">
                         <label class="form-label">Desa / Wilayah</label>
                         <input type="text" name="desa" class="form-control" placeholder="Nama desa atau wilayah">
+                        <small class="form-text text-muted">Tuliskan nama desa atau wilayah lokasi kegiatan</small>
                     </div>
+                </div>
+            </div>
 
+            <!-- Informasi Dasar Kegiatan -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Informasi Dasar Kegiatan
+                    </h3>
+                </div>
+                <div class="card-body">
                     <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Tanggal Mulai</label>
-                            <input type="date" name="tanggal_mulai" class="form-control">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Nama Kegiatan</label>
+                                <input type="text" name="nama_kegiatan" class="form-control" placeholder="Nama kegiatan"
+                                    required>
+                                <small class="form-text text-muted">Tuliskan nama kegiatan yang akan dilaksanakan</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Jenis Kegiatan</label>
+                                <select name="jenis_kegiatan" class="form-select" required>
+                                    <option value="">Pilih jenis kegiatan</option>
+                                    <option value="konservasi">Konservasi</option>
+                                    <option value="usaha masyarakat">Usaha Masyarakat</option>
+                                    <option value="edukasi">Edukasi</option>
+                                    <option value="lainnya">Lainnya</option>
+                                </select>
+                                <small class="form-text text-muted">Pilih jenis kegiatan yang sesuai</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Deskripsi</label>
+                                <textarea name="deskripsi" class="form-control" rows="3" placeholder="Deskripsi Kegiatan"></textarea>
+                                <small class="form-text text-muted">Deskripsikan kegiatan yang akan dilaksanakan dalam kalimat yang singkat dan jelas<br>Deskripsi dapat dibuat dalam bentuk satu paragraf, dua paragraf atau maksimal tiga paragraf</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Tujuan</label>
+                                <textarea name="tujuan" class="form-control" rows="2" placeholder="Tujuan Kegiatan"></textarea>
+                                <small class="form-text text-muted">Tuliskan tujuan kegiatan yang akan dilaksanakan<br>Tuliskan dalam kalimat singkat atau cukup menggunakan frasa</small>
+                            </div>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Tanggal Selesai</label>
-                            <input type="date" name="tanggal_selesai" class="form-control">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Tanggal Mulai</label>
+                                    <input type="date" name="tanggal_mulai" class="form-control">
+                                    <small class="form-text text-muted">Pilih tanggal mulai kegiatan</small>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Tanggal Selesai</label>
+                                    <input type="date" name="tanggal_selesai" class="form-control">
+                                    <small class="form-text text-muted">Pilih tanggal selesai kegiatan</small>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Penanggung Jawab</label>
+                                <input type="text" name="penanggung_jawab" class="form-control"
+                                    placeholder="Nama Penanggung Jawab">
+                                <small class="form-text text-muted">Tuliskan nama penanggung jawab kegiatan</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Kelompok / Komunitas Pelaksana</label>
+                                <input type="text" name="kelompok" class="form-control" placeholder="Nama kelompok">
+                                <small class="form-text text-muted">Tuliskan nama kelompok atau komunitas pelaksana</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Estimasi Jumlah Peserta</label>
+                                <input type="number" name="estimasi_peserta" class="form-control" min="0" placeholder="Estimasi Jumlah Peserta">
+                                <small class="form-text text-muted">Perkirakan jumlah peserta yang akan hadir</small>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+            </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Penanggung Jawab</label>
-                        <input type="text" name="penanggung_jawab" class="form-control"
-                            placeholder="Nama Penanggung Jawab">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Kelompok / Komunitas Pelaksana</label>
-                        <input type="text" name="kelompok" class="form-control" placeholder="Nama kelompok">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Estimasi Jumlah Peserta</label>
-                        <input type="number" name="estimasi_peserta" class="form-control" min="0">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Rincian Kebutuhan</label>
-                        <textarea type="text" name="rincian_kebutuhan" class="form-control" id="summernote"></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Unggah Foto</label>
-
-                        <input type="file" id="fotoInput" name="foto[]" class="form-control" accept="image/*"
-                            multiple>
-
-                        {{-- <small class="text-muted">
-                            Bisa pilih satu foto atau beberapa sekaligus
-                        </small> --}}
-                    </div>
-
-                    {{-- PREVIEW --}}
-                    <div id="preview-foto" class="d-flex flex-column"></div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Dokumen Kegiatan</label>
-
-                        <input type="file" id="dokumenInput" name="dokumen[]" class="form-control" multiple
-                            accept=".pdf,.doc,.docx">
-
-                        {{-- <small class="text-muted">
-                            Bisa pilih satu atau beberapa dokumen (PDF / Word)
-                        </small> --}}
-                    </div>
-
-                    {{-- PREVIEW DOKUMEN --}}
-                    <div id="preview-dokumen" class="d-flex flex-column gap-2 mb-3"></div>
+            <!-- Detail Kebutuhan dan Dokumentasi -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-list-alt mr-1"></i>
+                        Detail Kebutuhan Kegiatan
+                    </h3>
                 </div>
-                <div class="col-md-12">
-                    <div class="d-flex justify-content-between mb-3">
-                        <a href="{{ route('rencana_kegiatan.index') }}" class="btn btn-secondary btn-sm"
-                            style="height: 35px; display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-arrow-left mr-1"></i> Kembali
-                        </a>
-                        <button type="submit" class="btn btn-primary btn-sm"
-                            style="height: 35px; display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-save mr-1"></i> Simpan</button>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label class="form-label">Rincian Kebutuhan</label>
+                                <textarea type="text" name="rincian_kebutuhan" class="form-control" id="summernote"></textarea>
+                                <small class="form-text text-muted">Sebutkan kebutuhan-kebutuhan yang diperlukan untuk kegiatan beserta nominal biayanya</small>
+                            </div>
+                        </div>
                     </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Unggah Media Publikasi</label>
+                                <input type="file" id="fotoInput" name="foto[]" class="form-control" accept="image/*"
+                                    multiple>
+                                <small class="text-muted">
+                                    Unggah foto media publikasi kegiatan (banner, poster, flyer dll)<br>
+                                    Maksimal 5 foto dengan ukuran maksimal 2MB per foto<br>
+                                    Format: JPG, JPEG, PNG
+                                </small>
+                            </div>
+                            {{-- PREVIEW --}}
+                            <div id="preview-foto" class="d-flex flex-column"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Dokumen Pendukung Kegiatan</label>
+                                <input type="file" id="dokumenInput" name="dokumen[]" class="form-control" multiple
+                                    accept=".pdf,.doc,.docx">
+                                <small class="text-muted">
+                                    Unggah dokumen pendukung kegiatan (undangan, absensi, dll)<br>
+                                    Maksimal 5 dokumen dengan ukuran maksimal 5MB per dokumen<br>
+                                    Format: PDF, DOC, DOCX
+                                </small>
+                            </div>
+                            {{-- PREVIEW DOKUMEN --}}
+                            <div id="preview-dokumen" class="d-flex flex-column gap-2 mb-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tombol Aksi -->
+            <div class="mb-3">
+                <div class="d-flex justify-content-between">
+                    <a href="{{ route('rencana_kegiatan.index') }}" class="btn btn-secondary btn-sm"
+                        style="height: 35px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-arrow-left mr-1"></i> Kembali
+                    </a>
+                    <button type="submit" class="btn btn-primary btn-sm"
+                        style="height: 35px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-save mr-1"></i> Simpan
+                    </button>
                 </div>
             </div>
         </form>
@@ -148,8 +202,30 @@
         let filesBuffer = [];
 
         fotoInput.addEventListener('change', function() {
+            const maxFiles = 5;
+            const maxSize = 4 * 1024 * 1024; // 4MB
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+            
+            if (filesBuffer.length + this.files.length > maxFiles) {
+                alert(`Maksimal ${maxFiles} file foto. Saat ini ada ${filesBuffer.length} file.`);
+                this.value = '';
+                return;
+            }
+            
             for (let file of this.files) {
                 if (!file.type.startsWith('image/')) continue;
+                
+                // Validasi ukuran file
+                if (file.size > maxSize) {
+                    alert(`File ${file.name} terlalu besar. Maksimal ukuran 4MB.`);
+                    continue;
+                }
+                
+                // Validasi tipe file
+                if (!allowedTypes.includes(file.type)) {
+                    alert(`File ${file.name} tidak valid. Hanya diperbolehkan JPG, JPEG, PNG.`);
+                    continue;
+                }
 
                 // hindari duplikasi
                 if (!filesBuffer.some(f => f.name === file.name && f.size === file.size)) {
@@ -210,8 +286,31 @@
         let dokumenBuffer = [];
 
         dokumenInput.addEventListener('change', function() {
+            const maxFiles = 5;
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            const allowedTypes = ['application/pdf', 'application/msword', 
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+            
+            if (dokumenBuffer.length + this.files.length > maxFiles) {
+                alert(`Maksimal ${maxFiles} file dokumen. Saat ini ada ${dokumenBuffer.length} file.`);
+                this.value = '';
+                return;
+            }
+            
             Array.from(this.files).forEach(file => {
                 if (!file.type.match(/pdf|word|officedocument/)) return;
+                
+                // Validasi ukuran file
+                if (file.size > maxSize) {
+                    alert(`File ${file.name} terlalu besar. Maksimal ukuran 5MB.`);
+                    return;
+                }
+                
+                // Validasi tipe file
+                if (!allowedTypes.includes(file.type)) {
+                    alert(`File ${file.name} tidak valid. Hanya diperbolehkan PDF, DOC, DOCX.`);
+                    return;
+                }
 
                 const exists = dokumenBuffer.some(
                     f => f.name === file.name && f.size === file.size
@@ -269,7 +368,15 @@
         <script>
             $(function() {
                 // Summernote
-                $('#summernote').summernote()
+                $('#summernote').summernote({
+                    toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'underline', 'clear']],
+                        ['fontname', ['fontname']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']]
+                    ]
+                })
 
                 // CodeMirror
                 CodeMirror.fromTextArea(document.getElementById("codeMirrorDemo"), {

@@ -10,25 +10,27 @@
             </h4>
 
             <div>
-                <a href="{{ route('rencana_kegiatan.create') }}" class="btn btn-primary btn-sm"
-                    style="height: 35px; display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-plus mr-1"></i>
-                    Tambah
-                </a>
+                @can('create', \App\Models\RencanaKegiatan::class)
+                    <a href="{{ route('rencana_kegiatan.create') }}" class="btn btn-primary btn-sm"
+                        style="height: 35px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-plus mr-1"></i>
+                        Tambah
+                    </a>
+                @endcan
             </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered table-striped table-sm" id="table2">
-                    <thead>
+                <table class="table table-bordered table-sm" id="table2">
+                    <thead class="bg-navy">
                         <tr>
-                            <th width="50">No</th>
-                            <th width="120">Opsi</th>
-                            <th>Nama Kegiatan</th>
-                            <th>Penanggung Jawab</th>
-                            <th>Desa</th>
-                            <th>Tanggal Rencana</th>
-                            <th>Status</th>
+                            <th class="align-middle" style=" padding-left: 18px; height: 35px; width: 35px">No</th>
+                            <th class="align-middle" style=" padding-left: 18px; height: 35px; width: 110px">Aksi</th>
+                            <th class="align-middle" style=" padding-left: 18px; height: 35px;">Nama Kegiatan</th>
+                            <th class="align-middle text-nowrap" style=" padding-left: 18px; height: 35px; width: 165px">Penanggung Jawab</th>
+                            <!-- <th class="align-middle" style=" padding-left: 18px; height: 35px;">Desa</th> -->
+                            <th class="align-middle" style=" padding-left: 18px; height: 35px;">Tanggal</th>
+                            <th class="align-middle" style=" padding-left: 18px; height: 35px; width: 120px">Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,7 +48,7 @@
 
                                         {{-- Tombol Laporan Kegiatan --}}
                                         @if ($rencanaKegiatan->status === \App\Models\RencanaKegiatan::STATUS_SELESAI)
-                                            @if ($rencanaKegiatan->hasLaporan())
+                                            @if ($rencanaKegiatan->hasLaporan() && $rencanaKegiatan->laporanKegiatan)
                                                 <a class="btn btn-info btn-sm"
                                                     style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;"
                                                     href="{{ route('laporan_kegiatan.show', $rencanaKegiatan->laporanKegiatan) }}"
@@ -59,13 +61,13 @@
                                                         style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;"
                                                         href="{{ route('laporan_kegiatan.create', ['rencana_kegiatan_id' => $rencanaKegiatan->uuid]) }}"
                                                         title="Buat Laporan">
-                                                        <i class="fas fa-plus"></i>
+                                                        <i class="fas fa-file-medical"></i>
                                                     </a>
                                                 @else
                                                     <button class="btn btn-success btn-sm"
                                                         style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;"
-                                                        disabled title="Hubungi admin untuk membuat laporan">
-                                                        <i class="fas fa-plus"></i>
+                                                        disabled title="Hubungi user untuk membuat laporan">
+                                                        <i class="fas fa-file-medical"></i>
                                                     </button>
                                                 @endcan
                                             @endif
@@ -100,8 +102,8 @@
                                         class="text-muted">{{ $rencanaKegiatan->jenis_kegiatan ?? ($rencanaKegiatan->kategori ?? '-') }}</small>
                                 </td>
                                 <td>{{ $rencanaKegiatan->penanggung_jawab ?? '-' }}</td>
-                                <td>{{ $rencanaKegiatan->desa ?? '-' }}</td>
-                                <td>
+                                <!-- <td>{{ $rencanaKegiatan->desa ?? '-' }}</td> -->
+                                <td class="text-nowrap">
                                     @if ($rencanaKegiatan->tanggal_mulai)
                                         {{ \Carbon\Carbon::parse($rencanaKegiatan->tanggal_mulai)->format('d/m/Y') }}
                                         @if ($rencanaKegiatan->tanggal_selesai)
@@ -139,10 +141,10 @@
     </div>
 
     <style>
-        .table th {
+        /* .table th {
             background-color: #f8f9fa;
             font-weight: 600;
-        }
+        } */
 
         .btn-group .btn {
             margin-right: 2px;

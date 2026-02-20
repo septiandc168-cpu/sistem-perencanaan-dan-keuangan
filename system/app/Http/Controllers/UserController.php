@@ -20,7 +20,21 @@ class UserController extends Controller
             ->orderBy('updated_at', 'desc')
             ->get();
         $roles = Role::all();
-        confirmDelete('Hapus User', 'Apakah Anda yakin ingin menghapus user ini?');
+
+        // Konfigurasi SweetAlert untuk delete dengan warna danger
+        $confirm = [
+            'title' => 'Hapus User?',
+            'text' => 'Apakah Anda yakin ingin menghapus user ini? Data yang dihapus tidak dapat dikembalikan.',
+            'icon' => 'warning',
+            'showCancelButton' => true,
+            'confirmButtonColor' => '#dc3545',
+            'cancelButtonColor' => '#6c757d',
+            'confirmButtonText' => 'Ya, Hapus',
+            'cancelButtonText' => 'Batal'
+        ];
+
+        session()->flash('alert.delete', json_encode($confirm, JSON_UNESCAPED_SLASHES));
+
         return view('users.index', compact('users', 'roles'));
     }
 

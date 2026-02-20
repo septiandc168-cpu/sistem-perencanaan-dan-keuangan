@@ -21,9 +21,9 @@ class RencanaKegiatan extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'user_id',
         'nama_kegiatan',
         'jenis_kegiatan',
-        'kategori',
         'deskripsi',
         'tujuan',
         'lat',
@@ -75,6 +75,14 @@ class RencanaKegiatan extends Model
     public function laporanKegiatan()
     {
         return $this->hasOne(LaporanKegiatan::class, 'rencana_kegiatan_id', 'uuid');
+    }
+
+    /**
+     * Get the user that created this rencana.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     /**

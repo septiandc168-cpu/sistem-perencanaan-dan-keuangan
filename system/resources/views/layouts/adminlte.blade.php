@@ -28,6 +28,42 @@ scratch. This page gets rid of all links and provides the needed markup only.
     @stack('styles')
     @stack('css')
     @stack('js')
+    <style>
+        /* Custom CSS untuk page-link navy */
+        .page-link {
+            color: #001f3f !important;
+            background-color: transparent !important;
+            border: 1px solid #dee2e6 !important;
+        }
+ 
+        .page-link:hover {
+            color: #001f3f !important;
+            background-color: transparent !important;
+            border-color: #001f3f !important;
+        }
+ 
+        .page-item.active .page-link {
+            color: #ffffff !important;
+            background-color: #001f3f !important;
+            border-color: #001f3f !important;
+        }
+ 
+        .page-item.disabled .page-link {
+            color: #6c757d !important;
+            background-color: transparent !important;
+            border-color: #dee2e6 !important;
+        }
+ 
+        /* Custom CSS untuk bg-navy */
+        .bg-navy {
+            background-color: #001f3f !important;
+            color: #ffffff !important;
+        }
+ 
+        .bg-navy th {
+            color: #ffffff !important;
+        }
+    </style>
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -136,7 +172,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script>
         $(function() {
             // Summernote
-            $('#summernote').summernote()
+            $('#summernote').summernote({
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'underline', 'clear']],
+                    ['fontname', ['fontname']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']]
+                ]
+            })
 
             // CodeMirror
             // CodeMirror.fromTextArea(document.getElementById("codeMirrorDemo"), {
@@ -151,7 +195,29 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 "responsive": true,
                 "lengthChange": true,
                 "autoWidth": false,
-                "buttons": ["print"]
+                "buttons": ["print"],
+                "language": {
+                    "search": "Cari:",
+                    "lengthMenu": "Tampilkan _MENU_ data",
+                    "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                    "infoEmpty": "Menampilkan 0 sampai 0 dari 0 data",
+                    "infoFiltered": "(difilter dari _MAX_ total data)",
+                    "zeroRecords": "Tidak ada data yang ditemukan",
+                    "emptyTable": "Tidak ada data tersedia",
+                    "paginate": {
+                        "first": "Pertama",
+                        "last": "Terakhir",
+                        "next": "Selanjutnya",
+                        "previous": "Sebelumnya"
+                    },
+                    "aria": {
+                        "sortAscending": ": aktifkan untuk mengurutkan kolom secara ascending",
+                        "sortDescending": ": aktifkan untuk mengurutkan kolom secara descending"
+                    },
+                    "buttons": {
+                        "print": "Cetak"
+                    }
+                }
             }).buttons().container().appendTo('#table1_wrapper .col-md-6:eq(0)');
             $('#table2').DataTable({
                 "paging": true,
@@ -161,6 +227,25 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 "info": true,
                 "autoWidth": true,
                 "responsive": true,
+                "language": {
+                    "search": "Cari:",
+                    "lengthMenu": "Tampilkan _MENU_ data",
+                    "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                    "infoEmpty": "Menampilkan 0 sampai 0 dari 0 data",
+                    "infoFiltered": "(difilter dari _MAX_ total data)",
+                    "zeroRecords": "Tidak ada data yang ditemukan",
+                    "emptyTable": "Tidak ada data tersedia",
+                    "paginate": {
+                        "first": "Pertama",
+                        "last": "Terakhir",
+                        "next": "Selanjutnya",
+                        "previous": "Sebelumnya"
+                    },
+                    "aria": {
+                        "sortAscending": ": aktifkan untuk mengurutkan kolom secara ascending",
+                        "sortDescending": ": aktifkan untuk mengurutkan kolom secara descending"
+                    }
+                }
             });
         });
     </script>

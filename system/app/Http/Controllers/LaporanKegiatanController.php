@@ -15,23 +15,33 @@ class LaporanKegiatanController extends Controller
      */
     public function index()
     {
-        $laporans = LaporanKegiatan::with('rencanaKegiatan')
-            ->orderBy('updated_at', 'desc')
-            ->get();
-        // Provide SweetAlert delete configuration so the frontend can
-        // show a confirmation dialog when links with
-        // `data-confirm-delete` are clicked.
+        $user = auth()->user();
+        $isSupervisor = $user->role->role_name === 'supervisor';
+        
+        // Filter data berdasarkan peran
+        if ($isSupervisor) {
+            // Supervisor melihat semua data
+            $laporans = LaporanKegiatan::with('rencanaKegiatan', 'user')
+                ->orderBy('updated_at', 'desc')
+                ->get();
+        } else {
+            // Admin hanya melihat datanya sendiri
+            $laporans = LaporanKegiatan::with('rencanaKegiatan', 'user')
+                ->where('user_id', $user->id)
+                ->orderBy('updated_at', 'desc')
+                ->get();
+        }
+        
+        // Konfigurasi SweetAlert untuk delete dengan warna danger
         $confirm = [
-            'title' => 'Konfirmasi Hapus',
-            'text' => 'Data akan terhapus secara permanen. Lanjutkan?',
-            'icon' => config('sweetalert.confirm_delete_icon', 'warning'),
-            'showCancelButton' => config('sweetalert.confirm_delete_show_cancel_button', true),
-            'confirmButtonText' => config('sweetalert.confirm_delete_confirm_button_text', 'Yes, delete it!'),
-            'cancelButtonText' => config('sweetalert.confirm_delete_cancel_button_text', 'Cancel'),
-            'confirmButtonColor' => config('sweetalert.confirm_delete_confirm_button_color', null),
-            'cancelButtonColor' => config('sweetalert.confirm_delete_cancel_button_color', '#d33'),
-            'showCloseButton' => config('sweetalert.confirm_delete_show_close_button', false),
-            'showLoaderOnConfirm' => config('sweetalert.confirm_delete_show_loader_on_confirm', true),
+            'title' => 'Hapus Laporan Kegiatan?',
+            'text' => 'Apakah Anda yakin ingin menghapus laporan kegiatan ini? Data yang dihapus tidak dapat dikembalikan.',
+            'icon' => 'warning',
+            'showCancelButton' => true,
+            'confirmButtonColor' => '#dc3545',
+            'cancelButtonColor' => '#6c757d',
+            'confirmButtonText' => 'Ya, Hapus',
+            'cancelButtonText' => 'Batal'
         ];
 
         session()->flash('alert.delete', json_encode($confirm, JSON_UNESCAPED_SLASHES));
@@ -44,6 +54,9 @@ class LaporanKegiatanController extends Controller
      */
     public function create(Request $request)
     {
+        // Check authorization
+        $this->authorize('create', LaporanKegiatan::class);
+        
         $rencanaKegiatanId = $request->get('rencana_kegiatan_id');
 
         if (!$rencanaKegiatanId) {
@@ -73,6 +86,9 @@ class LaporanKegiatanController extends Controller
      */
     public function store(Request $request)
     {
+        // Check authorization
+        $this->authorize('create', LaporanKegiatan::class);
+        
         $request->validate([
             'rencana_kegiatan_id' => 'required|exists:rencana_kegiatans,uuid',
             'pelaksanaan_kegiatan' => 'required|string|min:10',
@@ -115,6 +131,7 @@ class LaporanKegiatanController extends Controller
         }
 
         $laporan = LaporanKegiatan::create([
+            'user_id' => auth()->id(),
             'rencana_kegiatan_id' => $request->rencana_kegiatan_id,
             'pelaksanaan_kegiatan' => $request->pelaksanaan_kegiatan,
             'hasil_kegiatan' => $request->hasil_kegiatan,
@@ -123,8 +140,14 @@ class LaporanKegiatanController extends Controller
             'dokumentasi' => !empty($dokumentasiPaths) ? $dokumentasiPaths : null,
         ]);
 
+        // Update rencana kegiatan status dan timestamp untuk memindahkan ke urutan teratas
+        $rencanaKegiatan->update([
+            'status' => \App\Models\RencanaKegiatan::STATUS_SELESAI,
+            'updated_at' => now()
+        ]);
+
         toast('Laporan kegiatan berhasil disimpan!', 'success');
-        return redirect()->route('laporan_kegiatan.index', $laporan);
+        return redirect()->route('laporan_kegiatan.index');
     }
 
     /**
@@ -132,6 +155,9 @@ class LaporanKegiatanController extends Controller
      */
     public function show(LaporanKegiatan $laporanKegiatan)
     {
+        // Check authorization
+        $this->authorize('view', $laporanKegiatan);
+        
         $laporanKegiatan->load('rencanaKegiatan');
         return view('laporan_kegiatan.show', compact('laporanKegiatan'));
     }
@@ -141,6 +167,9 @@ class LaporanKegiatanController extends Controller
      */
     public function edit(LaporanKegiatan $laporanKegiatan)
     {
+        // Check authorization
+        $this->authorize('update', $laporanKegiatan);
+        
         $laporanKegiatan->load('rencanaKegiatan');
         return view('laporan_kegiatan.edit', compact('laporanKegiatan'));
     }
@@ -150,6 +179,8 @@ class LaporanKegiatanController extends Controller
      */
     public function update(Request $request, LaporanKegiatan $laporanKegiatan)
     {
+        // Check authorization
+        $this->authorize('update', $laporanKegiatan);
         $request->validate([
             'pelaksanaan_kegiatan' => 'required|string|min:10',
             'hasil_kegiatan' => 'required|string|min:10',
@@ -203,7 +234,7 @@ class LaporanKegiatanController extends Controller
         ]);
 
         toast('Laporan kegiatan berhasil diperbarui!', 'success');
-        return redirect()->route('laporan_kegiatan.index', $laporanKegiatan);
+        return redirect()->route('laporan_kegiatan.index');
     }
 
     /**
@@ -211,6 +242,9 @@ class LaporanKegiatanController extends Controller
      */
     public function destroy(LaporanKegiatan $laporanKegiatan)
     {
+        // Check authorization
+        $this->authorize('delete', $laporanKegiatan);
+
         // Delete documentation files
         if (!empty($laporanKegiatan->dokumentasi)) {
             foreach ($laporanKegiatan->dokumentasi as $path) {

@@ -3,10 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasUuid;
 
 class LaporanKegiatan extends Model
 {
+    use HasUuid;
+
     protected $fillable = [
+        'user_id',
         'rencana_kegiatan_id',
         'pelaksanaan_kegiatan',
         'hasil_kegiatan',
@@ -20,11 +24,29 @@ class LaporanKegiatan extends Model
     ];
 
     /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'uuid';
+    }
+
+    /**
      * Get the rencana kegiatan that owns the laporan.
      */
     public function rencanaKegiatan()
     {
         return $this->belongsTo(RencanaKegiatan::class, 'rencana_kegiatan_id', 'uuid');
+    }
+
+    /**
+     * Get the user that created this laporan.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     /**

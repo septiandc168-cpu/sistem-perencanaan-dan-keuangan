@@ -24,7 +24,7 @@
             <input type="hidden" name="rencana_kegiatan_id" value="{{ $rencanaKegiatan->uuid }}">
 
             <!-- Informasi Rencana Kegiatan (Readonly) -->
-            <div class="card card-primary card-outline mb-4">
+            <div class="card mb-4">
                 <div class="card-header">
                     <h3 class="card-title">
                         <i class="fas fa-info-circle mr-1"></i>
@@ -98,7 +98,7 @@
             </div>
 
             <!-- Form Laporan Kegiatan -->
-            <div class="card card-success card-outline mb-4">
+            <div class="card mb-4">
                 <div class="card-header">
                     <h3 class="card-title">
                         <i class="fas fa-file-alt mr-1"></i>
@@ -109,7 +109,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">Pelaksanaan Kegiatan <span class="text-danger">*</span></label>
                         <textarea name="pelaksanaan_kegiatan" class="form-control" rows="5" required
-                            placeholder="Jelaskan bagaimana kegiatan dilaksanakan...">{{ old('pelaksanaan_kegiatan') }}</textarea>
+                            placeholder="Deskripsikan proses pelaksanaan kegiatan dalam kalimat yang singkat dan jelas.&#10;Deskripsi dapat dibuat dalam bentuk satu paragraf, dua paragraf atau maksimal tiga paragraf.">{{ old('pelaksanaan_kegiatan') }}</textarea>
                         @error('pelaksanaan_kegiatan')
                             <div class="text-danger small">{{ $message }}</div>
                         @enderror
@@ -118,7 +118,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">Hasil Kegiatan <span class="text-danger">*</span></label>
                         <textarea name="hasil_kegiatan" class="form-control" rows="5" required
-                            placeholder="Jelaskan hasil yang dicapai dari kegiatan...">{{ old('hasil_kegiatan') }}</textarea>
+                            placeholder="Deskripsikan hasil yang dicapai dari kegiatan dalam kalimat yang singkat dan jelas.&#10;Deskripsi dapat dibuat dalam bentuk satu paragraf, dua paragraf atau maksimal tiga paragraf.">{{ old('hasil_kegiatan') }}</textarea>
                         @error('hasil_kegiatan')
                             <div class="text-danger small">{{ $message }}</div>
                         @enderror
@@ -127,7 +127,7 @@
                     <div class="mb-3">
                         <label class="form-label">Kendala</label>
                         <textarea name="kendala" class="form-control" rows="4"
-                            placeholder="Jelaskan kendala yang dihadapi selama pelaksanaan...">{{ old('kendala') }}</textarea>
+                            placeholder="Deskripsikan kendala yang dihadapi selama pelaksanaan kegiatan dalam kalimat yang singkat dan jelas.&#10;Deskripsi dapat dibuat dalam bentuk satu paragraf, dua paragraf atau maksimal tiga paragraf.&#10;Sertakan juga solusi yang telah dilakukan untuk mengatasi kendala tersebut">{{ old('kendala') }}</textarea>
                         @error('kendala')
                             <div class="text-danger small">{{ $message }}</div>
                         @enderror
@@ -135,7 +135,7 @@
 
                     <div class="mb-3">
                         <label class="form-label">Evaluasi</label>
-                        <textarea name="evaluasi" class="form-control" rows="4" placeholder="Berikan evaluasi terhadap kegiatan...">{{ old('evaluasi') }}</textarea>
+                        <textarea name="evaluasi" class="form-control" rows="4" placeholder="Deskripsikan evaluasi terhadap kegiatan dalam kalimat yang singkat dan jelas.&#10;Deskripsi dapat dibuat dalam bentuk satu paragraf, dua paragraf atau maksimal tiga paragraf.&#10;Sertakan juga pembelajaran dan rekomendasi untuk kegiatan selanjutnya">{{ old('evaluasi') }}</textarea>
                         @error('evaluasi')
                             <div class="text-danger small">{{ $message }}</div>
                         @enderror
@@ -149,7 +149,9 @@
                         @error('dokumentasi')
                             <div class="text-danger small">{{ $message }}</div>
                         @enderror
-                        <small class="form-text text-muted">Pilih satu atau lebih file foto dokumentasi kegiatan</small>
+                        <small class="form-text text-muted">Unggah file foto dokumentasi kegiatan<br>
+                        Maksimal 5 foto dengan ukuran maksimal 2MB per foto<br>
+                            Format: JPG, JPEG, PNG</small>
                     </div>
                 </div>
             </div>

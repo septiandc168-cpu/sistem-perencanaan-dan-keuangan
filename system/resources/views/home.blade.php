@@ -17,7 +17,7 @@
         <!-- Welcome Card -->
         <div class="row mb-4">
             <div class="col-12">
-                <div class="card bg-gradient-primary">
+                <div class="card bg-navy">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-8">
@@ -34,33 +34,37 @@
 
         <!-- Statistics Cards -->
         <div class="row mb-4">
-            <!-- Total User -->
-            <div class="col-lg-4 col-6">
-                <div class="small-box bg-info">
-                    <div class="inner">
-                        <h3>{{ \App\Models\User::count() }}</h3>
-                        <p>Total User</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    @if (Auth::user()->role_id == 1)
+            <!-- Total User - Hanya untuk Supervisor -->
+            @if (isset(auth()->user()->role->role_name) && auth()->user()->role->role_name === 'supervisor')
+                <div class="col-lg-4 col-6">
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            <h3>{{ \App\Models\User::count() }}</h3>
+                            <p>Total User</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-users"></i>
+                        </div>
                         <a href="{{ route('users.index') }}" class="small-box-footer">
                             Lihat Detail <i class="fas fa-arrow-circle-right"></i>
                         </a>
-                    @else
-                        <a href="#" class="small-box-footer">
-                            ...
-                        </a>
-                    @endif
+                    </div>
                 </div>
-            </div>
+            @endif
 
             <!-- Total Rencana Kegiatan -->
-            <div class="col-lg-4 col-6">
+            <div class="@if(isset(auth()->user()->role->role_name) && auth()->user()->role->role_name === 'supervisor') col-lg-4 @else col-lg-6 @endif col-6">
                 <div class="small-box bg-success">
                     <div class="inner">
-                        <h3>{{ \App\Models\RencanaKegiatan::count() }}</h3>
+                        @php
+                            $user = auth()->user();
+                            if ($user->role->role_name === 'supervisor') {
+                                $totalRencana = \App\Models\RencanaKegiatan::count();
+                            } else {
+                                $totalRencana = \App\Models\RencanaKegiatan::where('user_id', $user->id)->count();
+                            }
+                        @endphp
+                        <h3>{{ $totalRencana }}</h3>
                         <p>Total Rencana Kegiatan</p>
                     </div>
                     <div class="icon">
@@ -74,10 +78,18 @@
 
             <!-- Total Laporan Kegiatan -->
             @if (isset(auth()->user()->role->role_name) && in_array(auth()->user()->role->role_name, ['admin', 'supervisor']))
-                <div class="col-lg-4 col-6">
+                <div class="@if(isset(auth()->user()->role->role_name) && auth()->user()->role->role_name === 'supervisor') col-lg-4 @else col-lg-6 @endif col-6">
                     <div class="small-box bg-warning">
                         <div class="inner">
-                            <h3>{{ \App\Models\LaporanKegiatan::count() }}</h3>
+                            @php
+                                $user = auth()->user();
+                                if ($user->role->role_name === 'supervisor') {
+                                    $totalLaporan = \App\Models\LaporanKegiatan::count();
+                                } else {
+                                    $totalLaporan = \App\Models\LaporanKegiatan::where('user_id', $user->id)->count();
+                                }
+                            @endphp
+                            <h3>{{ $totalLaporan }}</h3>
                             <p>Total Laporan Kegiatan</p>
                         </div>
                         <div class="icon">
@@ -110,9 +122,9 @@
         <!-- Tables Row -->
         <div class="row">
             <!-- Rencana Kegiatan Terbaru -->
-            <div class="col-md-6">
+            <div class="col-md-6 mb-3">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header bg-navy">
                         <h3 class="card-title">
                             <i class="fas fa-calendar-plus mr-2"></i>
                             Rencana Kegiatan Terbaru
@@ -125,7 +137,7 @@
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table table-striped table-hover">
+                            <table class="table table-hover">
                                 <thead>
                                     <tr>
                                         <th>Tanggal</th>
@@ -135,8 +147,16 @@
                                 </thead>
                                 <tbody>
                                     @php
+                                    $user = auth()->user();
+                                    if ($user->role->role_name === 'supervisor') {
                                         $rencanaTerbaru = \App\Models\RencanaKegiatan::latest()->take(5)->get();
-                                    @endphp
+                                    } else {
+                                        $rencanaTerbaru = \App\Models\RencanaKegiatan::where('user_id', $user->id)
+                                            ->latest()
+                                            ->take(5)
+                                            ->get();
+                                    }
+                                @endphp
                                     @forelse($rencanaTerbaru as $rencana)
                                         <tr>
                                             <td>{{ \Carbon\Carbon::parse($rencana->tanggal_mulai)->format('d/m/Y') }}
@@ -181,9 +201,9 @@
                 </div>
 
                 <!-- Rencana Disetujui Table -->
-                <div class="col-md-6">
+                <div class="col-md-6 mb-3">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header bg-navy">
                             <h3 class="card-title">
                                 <i class="fas fa-check-circle mr-2"></i>
                                 Rencana Kegiatan Disetujui
@@ -196,7 +216,7 @@
                         </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
-                                <table class="table table-striped table-hover">
+                                <table class="table table-hover">
                                     <thead>
                                         <tr>
                                             <th>Tanggal</th>
@@ -206,14 +226,20 @@
                                     </thead>
                                     <tbody>
                                         @php
-                                            $rencanaDisetujui = \App\Models\RencanaKegiatan::where(
-                                                'status',
-                                                'disetujui',
-                                            )
+                                        $user = auth()->user();
+                                        if ($user->role->role_name === 'supervisor') {
+                                            $rencanaDisetujui = \App\Models\RencanaKegiatan::where('status', 'disetujui')
                                                 ->latest()
                                                 ->take(10)
                                                 ->get();
-                                        @endphp
+                                        } else {
+                                            $rencanaDisetujui = \App\Models\RencanaKegiatan::where('user_id', $user->id)
+                                                ->where('status', 'disetujui')
+                                                ->latest()
+                                                ->take(10)
+                                                ->get();
+                                        }
+                                    @endphp
                                         @forelse($rencanaDisetujui as $rencana)
                                             <tr>
                                                 <td>{{ \Carbon\Carbon::parse($rencana->tanggal_mulai)->format('d/m/Y') }}
@@ -227,8 +253,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="7" class="text-center text-muted py-4">
-                                                    <i class="fas fa-inbox fa-2x mb-2"></i><br>
+                                                <td colspan="3" class="text-center text-muted">
                                                     Belum ada rencana kegiatan yang disetujui
                                                 </td>
                                             </tr>
@@ -239,58 +264,67 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Kegiatan Selesai Terbaru -->
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            <i class="fas fa-check-double mr-2"></i>
-                            Kegiatan Selesai Terbaru
-                        </h3>
-                        <div class="card-tools">
-                            <a href="{{ route('rencana_kegiatan.index') }}?status=selesai" class="btn btn-tool btn-sm">
-                                Lihat Semua
-                            </a>
+                <!-- Kegiatan Selesai Terbaru -->
+                <div class="col-md-6 mb-3">
+                    <div class="card">
+                        <div class="card-header bg-navy">
+                            <h3 class="card-title">
+                                <i class="fas fa-check-double mr-2"></i>
+                                Kegiatan Selesai Terbaru
+                            </h3>
+                            <div class="card-tools">
+                                <a href="{{ route('rencana_kegiatan.index') }}?status=selesai" class="btn btn-tool btn-sm">
+                                    Lihat Semua
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Tanggal</th>
-                                        <th>Nama Kegiatan</th>
-                                        <th>Penanggung Jawab</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @php
-                                        $kegiatanSelesai = \App\Models\RencanaKegiatan::where('status', 'selesai')
-                                            ->latest()
-                                            ->take(5)
-                                            ->get();
-                                    @endphp
-                                    @forelse($kegiatanSelesai as $kegiatan)
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
                                         <tr>
-                                            <td>{{ \Carbon\Carbon::parse($kegiatan->tanggal_mulai)->format('d/m/Y') }}
-                                            </td>
-                                            <td>
-                                                {{ Str::limit($kegiatan->nama_kegiatan, 30) }}
-                                            </td>
-                                            <td>
-                                                {{ Str::limit($kegiatan->penanggung_jawab, 30) }}
-                                            </td>
+                                            <th>Tanggal</th>
+                                            <th>Nama Kegiatan</th>
+                                            <th>Penanggung Jawab</th>
                                         </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="3" class="text-center text-muted">Belum ada kegiatan yang
-                                                selesai</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $user = auth()->user();
+                                            if ($user->role->role_name === 'supervisor') {
+                                                $kegiatanSelesai = \App\Models\RencanaKegiatan::where('status', 'selesai')
+                                                    ->latest()
+                                                    ->take(5)
+                                                    ->get();
+                                            } else {
+                                                $kegiatanSelesai = \App\Models\RencanaKegiatan::where('user_id', $user->id)
+                                                    ->where('status', 'selesai')
+                                                    ->latest()
+                                                    ->take(5)
+                                                    ->get();
+                                            }
+                                        @endphp
+                                        @forelse($kegiatanSelesai as $kegiatan)
+                                            <tr>
+                                                <td>{{ \Carbon\Carbon::parse($kegiatan->tanggal_mulai)->format('d/m/Y') }}
+                                                </td>
+                                                <td>
+                                                    {{ Str::limit($kegiatan->nama_kegiatan, 30) }}
+                                                </td>
+                                                <td>
+                                                    {{ Str::limit($kegiatan->penanggung_jawab, 30) }}
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="3" class="text-center text-muted">Belum ada kegiatan yang
+                                                    selesai</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -27,7 +27,7 @@
         </div>
 
         <!-- Informasi Rencana Kegiatan -->
-        <div class="card card-primary card-outline mb-4">
+        <div class="card mb-4">
             <div class="card-header">
                 <h3 class="card-title">
                     <i class="fas fa-info-circle mr-1"></i>
@@ -47,7 +47,7 @@
                                 <td>{{ $laporanKegiatan->rencanaKegiatan->jenis_kegiatan }}</td>
                             </tr>
                             <tr>
-                                <td><strong>Tujujuan</strong></td>
+                                <td><strong>Tujuan</strong></td>
                                 <td>{{ $laporanKegiatan->rencanaKegiatan->tujuan ?: '-' }}</td>
                             </tr>
                         </table>
@@ -109,7 +109,7 @@
         </div>
 
         <!-- Detail Laporan Kegiatan -->
-        <div class="card card-success card-outline mb-4">
+        <div class="card mb-4">
             <div class="card-header">
                 <h3 class="card-title">
                     <i class="fas fa-file-alt mr-1"></i>
@@ -118,14 +118,14 @@
             </div>
             <div class="card-body">
                 <div class="mb-4">
-                    <h5 class="text-primary"><i class="fas fa-tasks mr-1"></i>Pelaksanaan Kegiatan</h5>
+                    <h5><i class="fas fa-tasks mr-1"></i>Pelaksanaan Kegiatan</h5>
                     <div class="p-3 bg-light rounded">
                         {!! nl2br(e($laporanKegiatan->pelaksanaan_kegiatan)) !!}
                     </div>
                 </div>
 
                 <div class="mb-4">
-                    <h5 class="text-success"><i class="fas fa-check-circle mr-1"></i>Hasil Kegiatan</h5>
+                    <h5><i class="fas fa-check-circle mr-1"></i>Hasil Kegiatan</h5>
                     <div class="p-3 bg-light rounded">
                         {!! nl2br(e($laporanKegiatan->hasil_kegiatan)) !!}
                     </div>
@@ -133,7 +133,7 @@
 
                 @if ($laporanKegiatan->kendala)
                     <div class="mb-4">
-                        <h5 class="text-warning"><i class="fas fa-exclamation-triangle mr-1"></i>Kendala</h5>
+                        <h5><i class="fas fa-exclamation-triangle mr-1"></i>Kendala</h5>
                         <div class="p-3 bg-light rounded">
                             {!! nl2br(e($laporanKegiatan->kendala)) !!}
                         </div>
@@ -142,7 +142,7 @@
 
                 @if ($laporanKegiatan->evaluasi)
                     <div class="mb-4">
-                        <h5 class="text-info"><i class="fas fa-chart-line mr-1"></i>Evaluasi</h5>
+                        <h5><i class="fas fa-chart-line mr-1"></i>Evaluasi</h5>
                         <div class="p-3 bg-light rounded">
                             {!! nl2br(e($laporanKegiatan->evaluasi)) !!}
                         </div>
@@ -151,7 +151,7 @@
 
                 @if (!empty($laporanKegiatan->dokumentasi))
                     <div class="mb-4">
-                        <h5 class="text-secondary"><i class="fas fa-images mr-1"></i>Dokumentasi</h5>
+                        <h5><i class="fas fa-images mr-1"></i>Dokumentasi</h5>
                         <div class="row">
                             @foreach ($laporanKegiatan->dokumentasi as $index => $dokumentasi)
                                 <div class="col-md-3 mb-3">

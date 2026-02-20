@@ -16,23 +16,33 @@ class RencanaKegiatanController extends Controller
 {
     public function index(Request $request)
     {
-        $rencanaKegiatans = RencanaKegiatan::with('laporanKegiatan')
-            ->orderBy('updated_at', 'desc')
-            ->get();
-        // Provide SweetAlert delete configuration so the frontend can
-        // show a confirmation dialog when links with
-        // `data-confirm-delete` are clicked.
+        $user = auth()->user();
+        $isSupervisor = $user->role->role_name === 'supervisor';
+        
+        // Filter data berdasarkan peran
+        if ($isSupervisor) {
+            // Supervisor melihat semua data
+            $rencanaKegiatans = RencanaKegiatan::with('laporanKegiatan', 'user')
+                ->orderBy('updated_at', 'desc')
+                ->get();
+        } else {
+            // Admin hanya melihat datanya sendiri
+            $rencanaKegiatans = RencanaKegiatan::with('laporanKegiatan', 'user')
+                ->where('user_id', $user->id)
+                ->orderBy('updated_at', 'desc')
+                ->get();
+        }
+        
+        // Konfigurasi SweetAlert untuk delete dengan warna danger
         $confirm = [
-            'title' => 'Konfirmasi Hapus',
-            'text' => 'Data akan terhapus secara permanen. Lanjutkan?',
-            'icon' => config('sweetalert.confirm_delete_icon', 'warning'),
-            'showCancelButton' => config('sweetalert.confirm_delete_show_cancel_button', true),
-            'confirmButtonText' => config('sweetalert.confirm_delete_confirm_button_text', 'Yes, delete it!'),
-            'cancelButtonText' => config('sweetalert.confirm_delete_cancel_button_text', 'Cancel'),
-            'confirmButtonColor' => config('sweetalert.confirm_delete_confirm_button_color', null),
-            'cancelButtonColor' => config('sweetalert.confirm_delete_cancel_button_color', '#d33'),
-            'showCloseButton' => config('sweetalert.confirm_delete_show_close_button', false),
-            'showLoaderOnConfirm' => config('sweetalert.confirm_delete_show_loader_on_confirm', true),
+            'title' => 'Hapus Rencana Kegiatan?',
+            'text' => 'Apakah Anda yakin ingin menghapus rencana kegiatan ini? Data yang dihapus tidak dapat dikembalikan.',
+            'icon' => 'warning',
+            'showCancelButton' => true,
+            'confirmButtonColor' => '#dc3545',
+            'cancelButtonColor' => '#6c757d',
+            'confirmButtonText' => 'Ya, Hapus',
+            'cancelButtonText' => 'Batal'
         ];
 
         session()->flash('alert.delete', json_encode($confirm, JSON_UNESCAPED_SLASHES));
@@ -42,11 +52,17 @@ class RencanaKegiatanController extends Controller
 
     public function create()
     {
+        // Check authorization
+        $this->authorize('create', RencanaKegiatan::class);
+        
         return view('rencana_kegiatan.create');
     }
 
     public function store(Request $request)
     {
+        // Check authorization
+        $this->authorize('create', RencanaKegiatan::class);
+        
         $user = auth()->user();
         $isSupervisor = $user->role->role_name === 'supervisor';
         $isAdmin = $user->role->role_name === 'admin';
@@ -176,10 +192,9 @@ class RencanaKegiatanController extends Controller
 
         // map incoming fields to RencanaKegiatan structure
         $data = [
-            'judul' => $validated['nama_kegiatan'] ?? ($validated['judul'] ?? null),
+            'user_id' => $user->id,
             'nama_kegiatan' => $validated['nama_kegiatan'] ?? null,
             'jenis_kegiatan' => $validated['jenis_kegiatan'] ?? null,
-            'kategori' => $validated['jenis_kegiatan'] ?? $validated['kategori'] ?? null,
             'deskripsi' => $validated['deskripsi'] ?? null,
             'tujuan' => $validated['tujuan'] ?? null,
             'lat' => $validated['lat'] ?? null,
@@ -208,12 +223,32 @@ class RencanaKegiatanController extends Controller
      */
     public function frontIndex()
     {
-        $rencanaKegiatans = RencanaKegiatan::whereNotNull('lat')->whereNotNull('lng')->get();
+        $user = auth()->user();
+        $isSupervisor = $user ? $user->role->role_name === 'supervisor' : false;
+        
+        // Filter data berdasarkan peran untuk public map view
+        if ($isSupervisor) {
+            // Supervisor melihat semua data
+            $rencanaKegiatans = RencanaKegiatan::whereNotNull('lat')->whereNotNull('lng')->get();
+        } elseif ($user) {
+            // Admin hanya melihat datanya sendiri
+            $rencanaKegiatans = RencanaKegiatan::where('user_id', $user->id)
+                ->whereNotNull('lat')
+                ->whereNotNull('lng')
+                ->get();
+        } else {
+            // Guest tidak melihat data apa-apa atau bisa disesuaikan
+            $rencanaKegiatans = collect();
+        }
+        
         return view('rencana_kegiatan.front_index', compact('rencanaKegiatans'));
     }
 
     public function show(RencanaKegiatan $rencana_kegiatan)
     {
+        // Check authorization
+        $this->authorize('view', $rencana_kegiatan);
+        
         $rencana_kegiatan->load('laporanKegiatan');
         return view('rencana_kegiatan.show', compact('rencana_kegiatan'));
     }
@@ -238,43 +273,16 @@ class RencanaKegiatanController extends Controller
 
         // Different validation rules based on role
         if ($isSupervisor) {
-            // Supervisor can change status and must provide keterangan for approve/reject
+            // Supervisor hanya bisa ubah status dan keterangan
             $rules = [
-                'nama_kegiatan' => 'required|string',
-                'jenis_kegiatan' => 'required|string',
-                'deskripsi' => 'nullable|string',
-                'tujuan' => 'nullable|string',
-                'lat' => 'required|numeric',
-                'lng' => 'required|numeric',
-                'desa' => 'nullable|string',
-                'tanggal_mulai' => 'nullable|date',
-                'tanggal_selesai' => 'nullable|date',
-                'penanggung_jawab' => 'nullable|string',
-                'kelompok' => 'nullable|string',
-                'estimasi_peserta' => 'nullable|integer',
-                'rincian_kebutuhan' => 'nullable|string',
                 'status' => 'required|in:diajukan,disetujui,ditolak,selesai',
                 'keterangan_status' => 'required_if:status,disetujui,ditolak|string',
-                'foto' => 'nullable|array',
-                'foto.*' => 'image|mimes:jpg,jpeg,png|max:4096',
-                'dokumen' => 'nullable|array',
-                'dokumen.*' => 'file|mimes:pdf,doc,docx|max:5120',
-                'remove_foto' => 'nullable|array',
-                'remove_foto.*' => 'string',
-                'remove_dokumen' => 'nullable|array',
-                'remove_dokumen.*' => 'string',
             ];
 
             $messages = [
-                'nama_kegiatan.required' => 'Nama kegiatan wajib diisi.',
-                'jenis_kegiatan.required' => 'Jenis kegiatan wajib dipilih.',
-                'lat.required' => 'Latitude lokasi wajib diisi.',
-                'lng.required' => 'Longitude lokasi wajib diisi.',
                 'status.required' => 'Status wajib dipilih.',
                 'status.in' => 'Status tidak valid.',
                 'keterangan_status.required_if' => 'Keterangan status wajib diisi saat menyetujui atau menolak.',
-                'tanggal_mulai.date' => 'Format tanggal mulai tidak valid.',
-                'tanggal_selesai.date' => 'Format tanggal selesai tidak valid.',
             ];
         } else {
             // Admin cannot change status and no keterangan field
@@ -461,35 +469,16 @@ class RencanaKegiatanController extends Controller
 
         // Prepare update data based on role
         if ($isSupervisor) {
-            // Supervisor can update all fields including status and keterangan
+            // Supervisor hanya bisa update status dan keterangan_status
             $data = [
-                'judul' => $validated['nama_kegiatan'] ?? $rencana_kegiatan->judul,
-                'nama_kegiatan' => $validated['nama_kegiatan'],
-                'jenis_kegiatan' => $validated['jenis_kegiatan'],
-                'kategori' => $validated['jenis_kegiatan'],
-                'deskripsi' => $validated['deskripsi'] ?? null,
-                'tujuan' => $validated['tujuan'] ?? null,
-                'lat' => $validated['lat'],
-                'lng' => $validated['lng'],
-                'desa' => $validated['desa'] ?? null,
-                'tanggal_mulai' => $validated['tanggal_mulai'] ?? null,
-                'tanggal_selesai' => $validated['tanggal_selesai'] ?? null,
-                'penanggung_jawab' => $validated['penanggung_jawab'] ?? null,
-                'kelompok' => $validated['kelompok'] ?? null,
-                'estimasi_peserta' => $validated['estimasi_peserta'] ?? null,
-                'rincian_kebutuhan' => $validated['rincian_kebutuhan'] ?? null,
                 'status' => $validated['status'],
                 'keterangan_status' => $validated['keterangan_status'] ?? null,
-                'foto' => !empty($finalFoto) ? array_values($finalFoto) : null,
-                'dokumen' => !empty($finalDokumen) ? array_values($finalDokumen) : null,
             ];
         } else {
             // Admin revisi: reset status to 'diajukan' and clear keterangan
             $data = [
-                'judul' => $validated['nama_kegiatan'] ?? $rencana_kegiatan->judul,
                 'nama_kegiatan' => $validated['nama_kegiatan'],
                 'jenis_kegiatan' => $validated['jenis_kegiatan'],
-                'kategori' => $validated['jenis_kegiatan'],
                 'deskripsi' => $validated['deskripsi'] ?? null,
                 'tujuan' => $validated['tujuan'] ?? null,
                 'lat' => $validated['lat'],
@@ -520,6 +509,9 @@ class RencanaKegiatanController extends Controller
 
     public function destroy(RencanaKegiatan $rencana_kegiatan)
     {
+        // Check authorization
+        $this->authorize('delete', $rencana_kegiatan);
+
         // remove files
         // Hapus foto dengan format baru dan lama
         if (!empty($rencana_kegiatan->foto)) {

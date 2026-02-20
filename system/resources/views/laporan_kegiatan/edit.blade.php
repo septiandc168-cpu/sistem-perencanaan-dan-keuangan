@@ -24,7 +24,7 @@
             @method('PUT')
 
             <!-- Informasi Rencana Kegiatan (Readonly) -->
-            <div class="card card-primary card-outline mb-4">
+            <div class="card mb-4">
                 <div class="card-header">
                     <h3 class="card-title">
                         <i class="fas fa-info-circle mr-1"></i>
@@ -99,7 +99,7 @@
             </div>
 
             <!-- Form Edit Laporan Kegiatan -->
-            <div class="card card-warning card-outline mb-4">
+            <div class="card mb-4">
                 <div class="card-header">
                     <h3 class="card-title">
                         <i class="fas fa-edit mr-1"></i>
@@ -179,13 +179,14 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">
                             Upload Dokumentasi Baru
-                            {{-- <small class="text-muted">(Maksimal 5 file total, format JPG/PNG, maks 2MB per file)</small> --}}
+                            <small class="text-muted d-block">(Maksimal 5 foto total, format JPG/PNG, maksimal 2MB per foto)</small>
                         </label>
                         <input type="file" name="dokumentasi[]" class="form-control" accept="image/*" multiple>
                         @error('dokumentasi')
                             <div class="text-danger small">{{ $message }}</div>
                         @enderror
-                        <small class="form-text text-muted">Pilih satu atau lebih file foto dokumentasi baru</small>
+                        <small class="form-text text-muted">Pilih satu atau lebih file foto dokumentasi baru (Maksimal 5 foto, maksimal 2MB per foto)<br>
+                            Format: JPG, JPEG, PNG</small>
                     </div>
                 </div>
             </div>

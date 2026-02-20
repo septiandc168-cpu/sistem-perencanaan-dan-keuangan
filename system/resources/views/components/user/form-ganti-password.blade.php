@@ -14,14 +14,14 @@
                     <div class="modal-body">
                         <div class="form-group my-1">
                             <label for="">Password Lama</label>
-                            <input type="password" name="old_password" id="old_password" class="form-control">
+                            <input type="password" name="old_password" id="old_password" class="form-control" placeholder="Masukkan password lama">
                             @error('old_password')
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>
                         <div class="form-group my-1">
                             <label for="">Password Baru</label>
-                            <input type="password" name="password" id="password" class="form-control">
+                            <input type="password" name="password" id="password" class="form-control" placeholder="Masukkan password baru">
                             @error('password')
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
@@ -29,7 +29,7 @@
                         <div class="form-group my-1">
                             <label for="">Konfirmasi Password Baru</label>
                             <input type="password" name="password_confirmation" id="password_confirmation"
-                                class="form-control">
+                                class="form-control" placeholder="Konfirmasi password baru">
                         </div>
                     </div>
                     <div class="modal-footer">

@@ -1,4 +1,4 @@
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
+<aside class="main-sidebar sidebar-dark-secondary elevation-4" style="background-color: #001f3f !important;">
     <!-- Brand Logo -->
     <a href="/home" class="brand-link text-center">
         {{-- <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
@@ -7,7 +7,7 @@
     </a>
 
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div class="sidebar" style="background-color: #001f3f !important;">
         <!-- Sidebar user panel (optional) -->
         {{-- <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
@@ -91,3 +91,84 @@
     </div>
     <!-- /.sidebar -->
 </aside>
+
+<style>
+    /* Custom styles untuk nav-link active tanpa background */
+    .sidebar-dark-secondary .nav-sidebar .nav-link.active {
+        background-color: transparent !important;
+        color: #ffffff !important;
+        box-shadow: none !important;
+        border: none !important;
+        outline: none !important;
+    }
+
+    .sidebar-dark-secondary .nav-sidebar .nav-link.active i {
+        color: #ffffff !important;
+    }
+
+    .sidebar-dark-secondary .nav-sidebar .nav-link.active p {
+        color: #ffffff !important;
+    }
+
+    /* Default state - lebih redup */
+    .sidebar-dark-secondary .nav-sidebar .nav-link {
+        background-color: transparent !important;
+        color: rgba(255, 255, 255, 0.6) !important;
+        box-shadow: none !important;
+        border: none !important;
+        outline: none !important;
+    }
+
+    .sidebar-dark-secondary .nav-sidebar .nav-link i {
+        color: rgba(255, 255, 255, 0.6) !important;
+    }
+
+    .sidebar-dark-secondary .nav-sidebar .nav-link p {
+        color: rgba(255, 255, 255, 0.6) !important;
+    }
+
+    /* Hover state - tanpa background sama sekali */
+    .sidebar-dark-secondary .nav-sidebar .nav-link:hover,
+    .sidebar-dark-secondary .nav-sidebar > .nav-item > .nav-link:hover,
+    .sidebar-dark-secondary .nav-sidebar .nav-link:focus,
+    .sidebar-dark-secondary .nav-sidebar > .nav-item > .nav-link:focus {
+        background-color: transparent !important;
+        background: transparent !important;
+        color: #ffffff !important;
+        box-shadow: none !important;
+        border: none !important;
+        outline: none !important;
+        border-left: none !important;
+        border-right: none !important;
+        border-top: none !important;
+        border-bottom: none !important;
+    }
+
+    .sidebar-dark-secondary .nav-sidebar .nav-link:hover i,
+    .sidebar-dark-secondary .nav-sidebar > .nav-item > .nav-link:hover i,
+    .sidebar-dark-secondary .nav-sidebar .nav-link:focus i,
+    .sidebar-dark-secondary .nav-sidebar > .nav-item > .nav-link:focus i {
+        color: #ffffff !important;
+    }
+
+    .sidebar-dark-secondary .nav-sidebar .nav-link:hover p,
+    .sidebar-dark-secondary .nav-sidebar > .nav-item > .nav-link:hover p,
+    .sidebar-dark-secondary .nav-sidebar .nav-link:focus p,
+    .sidebar-dark-secondary .nav-sidebar > .nav-item > .nav-link:focus p {
+        color: #ffffff !important;
+    }
+
+    /* Override AdminLTE specific classes */
+    .sidebar-dark-secondary .nav-sidebar > .nav-item > .nav-link:hover,
+    .sidebar-dark-secondary .nav-sidebar > .nav-item > .nav-link:focus {
+        background-color: transparent !important;
+        background: transparent !important;
+    }
+
+    /* Remove any AdminLTE hover effects */
+    .nav-sidebar .nav-link:hover,
+    .nav-sidebar .nav-link:focus {
+        background-color: transparent !important;
+        background: transparent !important;
+    }
+</style>
